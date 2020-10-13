@@ -1,0 +1,3744 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> PROGRAMA
+Rule 1     PROGRAMA -> program id ; PROGRAMA_OPTS PRINCIPAL
+Rule 2     PROGRAMA -> program id ; PRINCIPAL
+Rule 3     PROGRAMA_OPTS -> DEC_V FUNCS
+Rule 4     PROGRAMA_OPTS -> DEC_V
+Rule 5     PROGRAMA_OPTS -> FUNCS
+Rule 6     PRINCIPAL -> main ( ) BLOQUE
+Rule 7     DEC_V -> DEC_V var TIPO_SIMPLE : LISTA_VAR ;
+Rule 8     DEC_V -> var TIPO_SIMPLE : LISTA_VAR ;
+Rule 9     LISTA_VAR -> LISTA_VAR , VARIABLE_FIX
+Rule 10    LISTA_VAR -> VARIABLE_FIX
+Rule 11    TIPO_SIMPLE -> int
+Rule 12    TIPO_SIMPLE -> float
+Rule 13    TIPO_SIMPLE -> char
+Rule 14    FUNCS -> FUNCS FUNC_TYPES module id ( ) BLOQUE
+Rule 15    FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) BLOQUE
+Rule 16    FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE
+Rule 17    FUNCS -> FUNCS FUNC_TYPES module id ( ) DEC_V BLOQUE
+Rule 18    FUNCS -> FUNC_TYPES module id ( ) BLOQUE
+Rule 19    FUNCS -> FUNC_TYPES module id ( PARAMS ) BLOQUE
+Rule 20    FUNCS -> FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE
+Rule 21    FUNCS -> FUNC_TYPES module id ( ) DEC_V BLOQUE
+Rule 22    FUNC_TYPES -> TIPO_SIMPLE
+Rule 23    FUNC_TYPES -> void
+Rule 24    PARAMS -> PARAMS , TIPO_SIMPLE id
+Rule 25    PARAMS -> TIPO_SIMPLE id
+Rule 26    VARIABLE_FIX -> id [ cte_i ]
+Rule 27    VARIABLE_FIX -> id
+Rule 28    VARIABLE -> id [ EXPRESION ]
+Rule 29    VARIABLE -> id
+Rule 30    BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; }
+Rule 31    BLOQUE -> { LOOP_ESTATUTO }
+Rule 32    BLOQUE -> { return EXPRESION ; }
+Rule 33    BLOQUE -> { }
+Rule 34    LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO
+Rule 35    LOOP_ESTATUTO -> ESTATUTO
+Rule 36    EXPRESION -> EXPRESION and EXP_R
+Rule 37    EXPRESION -> EXPRESION or EXP_R
+Rule 38    EXPRESION -> EXP_R
+Rule 39    EXP_R -> EXP_A > EXP_A
+Rule 40    EXP_R -> EXP_A < EXP_A
+Rule 41    EXP_R -> EXP_A equals EXP_A
+Rule 42    EXP_R -> EXP_A not_equals EXP_A
+Rule 43    EXP_R -> EXP_A
+Rule 44    EXP_A -> EXP_A + TERMINO
+Rule 45    EXP_A -> EXP_A minus TERMINO
+Rule 46    EXP_A -> TERMINO
+Rule 47    TERMINO -> TERMINO * FACTOR
+Rule 48    TERMINO -> TERMINO / FACTOR
+Rule 49    TERMINO -> FACTOR
+Rule 50    ESTATUTO -> ASIGNACION ;
+Rule 51    ESTATUTO -> CONDICION
+Rule 52    ESTATUTO -> WHILE
+Rule 53    ESTATUTO -> FOR
+Rule 54    ESTATUTO -> LLAMADA ;
+Rule 55    ESTATUTO -> LECTURA ;
+Rule 56    ESTATUTO -> ESCRITURA ;
+Rule 57    ESTATUTO -> LLAMADA_BI ;
+Rule 58    FACTOR -> LLAMADA
+Rule 59    FACTOR -> CTE
+Rule 60    FACTOR -> VARIABLE
+Rule 61    FACTOR -> ( EXPRESION )
+Rule 62    CTE -> cte_i
+Rule 63    CTE -> cte_f
+Rule 64    CTE -> cte_c
+Rule 65    LLAMADA -> id ( LLAMADA_OPTS )
+Rule 66    LLAMADA -> id ( )
+Rule 67    LLAMADA_OPTS -> LLAMADA_OPTS , EXPRESION
+Rule 68    LLAMADA_OPTS -> EXPRESION
+Rule 69    ASIGNACION -> VARIABLE = EXPRESION
+Rule 70    CONDICION -> if ( EXPRESION ) then BLOQUE
+Rule 71    CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE
+Rule 72    WHILE -> while ( EXPRESION ) do BLOQUE
+Rule 73    FOR -> for ASIGNACION to EXPRESION do BLOQUE
+Rule 74    LECTURA -> read ( LECTURA_OPTS )
+Rule 75    LECTURA_OPTS -> LECTURA_OPTS , id
+Rule 76    LECTURA_OPTS -> id
+Rule 77    ESCRITURA -> write ( ESCRITURA_OPTS )
+Rule 78    ESCRITURA_OPTS -> ESCRITURA_OPTS , cte_s
+Rule 79    ESCRITURA_OPTS -> ESCRITURA_OPTS , EXPRESION
+Rule 80    ESCRITURA_OPTS -> cte_s
+Rule 81    ESCRITURA_OPTS -> EXPRESION
+Rule 82    LLAMADA_BI -> POINT
+Rule 83    LLAMADA_BI -> CIRCLE
+Rule 84    LLAMADA_BI -> PENUP
+Rule 85    LLAMADA_BI -> PENDOWN
+Rule 86    LLAMADA_BI -> COLOR
+Rule 87    LLAMADA_BI -> SIZE
+Rule 88    LLAMADA_BI -> CLEAR
+Rule 89    CLEAR -> clear ( )
+Rule 90    POINT -> point ( EXPRESION , EXPRESION )
+Rule 91    CIRCLE -> circle ( EXPRESION )
+Rule 92    PENUP -> penup ( )
+Rule 93    PENDOWN -> pendown ( )
+Rule 94    COLOR -> color ( cte_s )
+Rule 95    SIZE -> size ( EXPRESION )
+
+Terminals, with rules where they appear
+
+(                    : 6 14 15 16 17 18 19 20 21 61 65 66 70 71 72 74 77 89 90 91 92 93 94 95
+)                    : 6 14 15 16 17 18 19 20 21 61 65 66 70 71 72 74 77 89 90 91 92 93 94 95
+*                    : 47
++                    : 44
+,                    : 9 24 67 75 78 79 90
+/                    : 48
+:                    : 7 8
+;                    : 1 2 7 8 30 32 50 54 55 56 57
+<                    : 40
+=                    : 69
+>                    : 39
+[                    : 26 28
+]                    : 26 28
+and                  : 36
+char                 : 13
+circle               : 91
+clear                : 89
+color                : 94
+cte_c                : 64
+cte_f                : 63
+cte_i                : 26 62
+cte_s                : 78 80 94
+do                   : 72 73
+else                 : 71
+equals               : 41
+error                : 
+float                : 12
+for                  : 73
+id                   : 1 2 14 15 16 17 18 19 20 21 24 25 26 27 28 29 65 66 75 76
+if                   : 70 71
+int                  : 11
+main                 : 6
+minus                : 45
+module               : 14 15 16 17 18 19 20 21
+not_equals           : 42
+or                   : 37
+pendown              : 93
+penup                : 92
+point                : 90
+program              : 1 2
+read                 : 74
+return               : 30 32
+size                 : 95
+then                 : 70 71
+to                   : 73
+var                  : 7 8
+void                 : 23
+while                : 72
+write                : 77
+{                    : 30 31 32 33
+}                    : 30 31 32 33
+
+Nonterminals, with rules where they appear
+
+ASIGNACION           : 50 73
+BLOQUE               : 6 14 15 16 17 18 19 20 21 70 71 71 72 73
+CIRCLE               : 83
+CLEAR                : 88
+COLOR                : 86
+CONDICION            : 51
+CTE                  : 59
+DEC_V                : 3 4 7 16 17 20 21
+ESCRITURA            : 56
+ESCRITURA_OPTS       : 77 78 79
+ESTATUTO             : 34 35
+EXPRESION            : 28 30 32 36 37 61 67 68 69 70 71 72 73 79 81 90 90 91 95
+EXP_A                : 39 39 40 40 41 41 42 42 43 44 45
+EXP_R                : 36 37 38
+FACTOR               : 47 48 49
+FOR                  : 53
+FUNCS                : 3 5 14 15 16 17
+FUNC_TYPES           : 14 15 16 17 18 19 20 21
+LECTURA              : 55
+LECTURA_OPTS         : 74 75
+LISTA_VAR            : 7 8 9
+LLAMADA              : 54 58
+LLAMADA_BI           : 57
+LLAMADA_OPTS         : 65 67
+LOOP_ESTATUTO        : 30 31 34
+PARAMS               : 15 16 19 20 24
+PENDOWN              : 85
+PENUP                : 84
+POINT                : 82
+PRINCIPAL            : 1 2
+PROGRAMA             : 0
+PROGRAMA_OPTS        : 1
+SIZE                 : 87
+TERMINO              : 44 45 46 47 48
+TIPO_SIMPLE          : 7 8 22 24 25
+VARIABLE             : 60 69
+VARIABLE_FIX         : 9 10
+WHILE                : 52
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . PROGRAMA
+    (1) PROGRAMA -> . program id ; PROGRAMA_OPTS PRINCIPAL
+    (2) PROGRAMA -> . program id ; PRINCIPAL
+
+    program         shift and go to state 2
+
+    PROGRAMA                       shift and go to state 1
+
+state 1
+
+    (0) S' -> PROGRAMA .
+
+
+
+state 2
+
+    (1) PROGRAMA -> program . id ; PROGRAMA_OPTS PRINCIPAL
+    (2) PROGRAMA -> program . id ; PRINCIPAL
+
+    id              shift and go to state 3
+
+
+state 3
+
+    (1) PROGRAMA -> program id . ; PROGRAMA_OPTS PRINCIPAL
+    (2) PROGRAMA -> program id . ; PRINCIPAL
+
+    ;               shift and go to state 4
+
+
+state 4
+
+    (1) PROGRAMA -> program id ; . PROGRAMA_OPTS PRINCIPAL
+    (2) PROGRAMA -> program id ; . PRINCIPAL
+    (3) PROGRAMA_OPTS -> . DEC_V FUNCS
+    (4) PROGRAMA_OPTS -> . DEC_V
+    (5) PROGRAMA_OPTS -> . FUNCS
+    (6) PRINCIPAL -> . main ( ) BLOQUE
+    (7) DEC_V -> . DEC_V var TIPO_SIMPLE : LISTA_VAR ;
+    (8) DEC_V -> . var TIPO_SIMPLE : LISTA_VAR ;
+    (14) FUNCS -> . FUNCS FUNC_TYPES module id ( ) BLOQUE
+    (15) FUNCS -> . FUNCS FUNC_TYPES module id ( PARAMS ) BLOQUE
+    (16) FUNCS -> . FUNCS FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE
+    (17) FUNCS -> . FUNCS FUNC_TYPES module id ( ) DEC_V BLOQUE
+    (18) FUNCS -> . FUNC_TYPES module id ( ) BLOQUE
+    (19) FUNCS -> . FUNC_TYPES module id ( PARAMS ) BLOQUE
+    (20) FUNCS -> . FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE
+    (21) FUNCS -> . FUNC_TYPES module id ( ) DEC_V BLOQUE
+    (22) FUNC_TYPES -> . TIPO_SIMPLE
+    (23) FUNC_TYPES -> . void
+    (11) TIPO_SIMPLE -> . int
+    (12) TIPO_SIMPLE -> . float
+    (13) TIPO_SIMPLE -> . char
+
+    main            shift and go to state 9
+    var             shift and go to state 10
+    void            shift and go to state 13
+    int             shift and go to state 14
+    float           shift and go to state 15
+    char            shift and go to state 16
+
+    PROGRAMA_OPTS                  shift and go to state 5
+    PRINCIPAL                      shift and go to state 6
+    DEC_V                          shift and go to state 7
+    FUNCS                          shift and go to state 8
+    TIPO_SIMPLE                    shift and go to state 11
+    FUNC_TYPES                     shift and go to state 12
+
+state 5
+
+    (1) PROGRAMA -> program id ; PROGRAMA_OPTS . PRINCIPAL
+    (6) PRINCIPAL -> . main ( ) BLOQUE
+
+    main            shift and go to state 9
+
+    PRINCIPAL                      shift and go to state 17
+
+state 6
+
+    (2) PROGRAMA -> program id ; PRINCIPAL .
+
+    $end            reduce using rule 2 (PROGRAMA -> program id ; PRINCIPAL .)
+
+
+state 7
+
+    (3) PROGRAMA_OPTS -> DEC_V . FUNCS
+    (4) PROGRAMA_OPTS -> DEC_V .
+    (7) DEC_V -> DEC_V . var TIPO_SIMPLE : LISTA_VAR ;
+    (14) FUNCS -> . FUNCS FUNC_TYPES module id ( ) BLOQUE
+    (15) FUNCS -> . FUNCS FUNC_TYPES module id ( PARAMS ) BLOQUE
+    (16) FUNCS -> . FUNCS FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE
+    (17) FUNCS -> . FUNCS FUNC_TYPES module id ( ) DEC_V BLOQUE
+    (18) FUNCS -> . FUNC_TYPES module id ( ) BLOQUE
+    (19) FUNCS -> . FUNC_TYPES module id ( PARAMS ) BLOQUE
+    (20) FUNCS -> . FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE
+    (21) FUNCS -> . FUNC_TYPES module id ( ) DEC_V BLOQUE
+    (22) FUNC_TYPES -> . TIPO_SIMPLE
+    (23) FUNC_TYPES -> . void
+    (11) TIPO_SIMPLE -> . int
+    (12) TIPO_SIMPLE -> . float
+    (13) TIPO_SIMPLE -> . char
+
+    main            reduce using rule 4 (PROGRAMA_OPTS -> DEC_V .)
+    var             shift and go to state 19
+    void            shift and go to state 13
+    int             shift and go to state 14
+    float           shift and go to state 15
+    char            shift and go to state 16
+
+    FUNCS                          shift and go to state 18
+    TIPO_SIMPLE                    shift and go to state 11
+    FUNC_TYPES                     shift and go to state 12
+
+state 8
+
+    (5) PROGRAMA_OPTS -> FUNCS .
+    (14) FUNCS -> FUNCS . FUNC_TYPES module id ( ) BLOQUE
+    (15) FUNCS -> FUNCS . FUNC_TYPES module id ( PARAMS ) BLOQUE
+    (16) FUNCS -> FUNCS . FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE
+    (17) FUNCS -> FUNCS . FUNC_TYPES module id ( ) DEC_V BLOQUE
+    (22) FUNC_TYPES -> . TIPO_SIMPLE
+    (23) FUNC_TYPES -> . void
+    (11) TIPO_SIMPLE -> . int
+    (12) TIPO_SIMPLE -> . float
+    (13) TIPO_SIMPLE -> . char
+
+    main            reduce using rule 5 (PROGRAMA_OPTS -> FUNCS .)
+    void            shift and go to state 13
+    int             shift and go to state 14
+    float           shift and go to state 15
+    char            shift and go to state 16
+
+    FUNC_TYPES                     shift and go to state 20
+    TIPO_SIMPLE                    shift and go to state 11
+
+state 9
+
+    (6) PRINCIPAL -> main . ( ) BLOQUE
+
+    (               shift and go to state 21
+
+
+state 10
+
+    (8) DEC_V -> var . TIPO_SIMPLE : LISTA_VAR ;
+    (11) TIPO_SIMPLE -> . int
+    (12) TIPO_SIMPLE -> . float
+    (13) TIPO_SIMPLE -> . char
+
+    int             shift and go to state 14
+    float           shift and go to state 15
+    char            shift and go to state 16
+
+    TIPO_SIMPLE                    shift and go to state 22
+
+state 11
+
+    (22) FUNC_TYPES -> TIPO_SIMPLE .
+
+    module          reduce using rule 22 (FUNC_TYPES -> TIPO_SIMPLE .)
+
+
+state 12
+
+    (18) FUNCS -> FUNC_TYPES . module id ( ) BLOQUE
+    (19) FUNCS -> FUNC_TYPES . module id ( PARAMS ) BLOQUE
+    (20) FUNCS -> FUNC_TYPES . module id ( PARAMS ) DEC_V BLOQUE
+    (21) FUNCS -> FUNC_TYPES . module id ( ) DEC_V BLOQUE
+
+    module          shift and go to state 23
+
+
+state 13
+
+    (23) FUNC_TYPES -> void .
+
+    module          reduce using rule 23 (FUNC_TYPES -> void .)
+
+
+state 14
+
+    (11) TIPO_SIMPLE -> int .
+
+    module          reduce using rule 11 (TIPO_SIMPLE -> int .)
+    :               reduce using rule 11 (TIPO_SIMPLE -> int .)
+    id              reduce using rule 11 (TIPO_SIMPLE -> int .)
+
+
+state 15
+
+    (12) TIPO_SIMPLE -> float .
+
+    module          reduce using rule 12 (TIPO_SIMPLE -> float .)
+    :               reduce using rule 12 (TIPO_SIMPLE -> float .)
+    id              reduce using rule 12 (TIPO_SIMPLE -> float .)
+
+
+state 16
+
+    (13) TIPO_SIMPLE -> char .
+
+    module          reduce using rule 13 (TIPO_SIMPLE -> char .)
+    :               reduce using rule 13 (TIPO_SIMPLE -> char .)
+    id              reduce using rule 13 (TIPO_SIMPLE -> char .)
+
+
+state 17
+
+    (1) PROGRAMA -> program id ; PROGRAMA_OPTS PRINCIPAL .
+
+    $end            reduce using rule 1 (PROGRAMA -> program id ; PROGRAMA_OPTS PRINCIPAL .)
+
+
+state 18
+
+    (3) PROGRAMA_OPTS -> DEC_V FUNCS .
+    (14) FUNCS -> FUNCS . FUNC_TYPES module id ( ) BLOQUE
+    (15) FUNCS -> FUNCS . FUNC_TYPES module id ( PARAMS ) BLOQUE
+    (16) FUNCS -> FUNCS . FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE
+    (17) FUNCS -> FUNCS . FUNC_TYPES module id ( ) DEC_V BLOQUE
+    (22) FUNC_TYPES -> . TIPO_SIMPLE
+    (23) FUNC_TYPES -> . void
+    (11) TIPO_SIMPLE -> . int
+    (12) TIPO_SIMPLE -> . float
+    (13) TIPO_SIMPLE -> . char
+
+    main            reduce using rule 3 (PROGRAMA_OPTS -> DEC_V FUNCS .)
+    void            shift and go to state 13
+    int             shift and go to state 14
+    float           shift and go to state 15
+    char            shift and go to state 16
+
+    FUNC_TYPES                     shift and go to state 20
+    TIPO_SIMPLE                    shift and go to state 11
+
+state 19
+
+    (7) DEC_V -> DEC_V var . TIPO_SIMPLE : LISTA_VAR ;
+    (11) TIPO_SIMPLE -> . int
+    (12) TIPO_SIMPLE -> . float
+    (13) TIPO_SIMPLE -> . char
+
+    int             shift and go to state 14
+    float           shift and go to state 15
+    char            shift and go to state 16
+
+    TIPO_SIMPLE                    shift and go to state 24
+
+state 20
+
+    (14) FUNCS -> FUNCS FUNC_TYPES . module id ( ) BLOQUE
+    (15) FUNCS -> FUNCS FUNC_TYPES . module id ( PARAMS ) BLOQUE
+    (16) FUNCS -> FUNCS FUNC_TYPES . module id ( PARAMS ) DEC_V BLOQUE
+    (17) FUNCS -> FUNCS FUNC_TYPES . module id ( ) DEC_V BLOQUE
+
+    module          shift and go to state 25
+
+
+state 21
+
+    (6) PRINCIPAL -> main ( . ) BLOQUE
+
+    )               shift and go to state 26
+
+
+state 22
+
+    (8) DEC_V -> var TIPO_SIMPLE . : LISTA_VAR ;
+
+    :               shift and go to state 27
+
+
+state 23
+
+    (18) FUNCS -> FUNC_TYPES module . id ( ) BLOQUE
+    (19) FUNCS -> FUNC_TYPES module . id ( PARAMS ) BLOQUE
+    (20) FUNCS -> FUNC_TYPES module . id ( PARAMS ) DEC_V BLOQUE
+    (21) FUNCS -> FUNC_TYPES module . id ( ) DEC_V BLOQUE
+
+    id              shift and go to state 28
+
+
+state 24
+
+    (7) DEC_V -> DEC_V var TIPO_SIMPLE . : LISTA_VAR ;
+
+    :               shift and go to state 29
+
+
+state 25
+
+    (14) FUNCS -> FUNCS FUNC_TYPES module . id ( ) BLOQUE
+    (15) FUNCS -> FUNCS FUNC_TYPES module . id ( PARAMS ) BLOQUE
+    (16) FUNCS -> FUNCS FUNC_TYPES module . id ( PARAMS ) DEC_V BLOQUE
+    (17) FUNCS -> FUNCS FUNC_TYPES module . id ( ) DEC_V BLOQUE
+
+    id              shift and go to state 30
+
+
+state 26
+
+    (6) PRINCIPAL -> main ( ) . BLOQUE
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+
+    {               shift and go to state 32
+
+    BLOQUE                         shift and go to state 31
+
+state 27
+
+    (8) DEC_V -> var TIPO_SIMPLE : . LISTA_VAR ;
+    (9) LISTA_VAR -> . LISTA_VAR , VARIABLE_FIX
+    (10) LISTA_VAR -> . VARIABLE_FIX
+    (26) VARIABLE_FIX -> . id [ cte_i ]
+    (27) VARIABLE_FIX -> . id
+
+    id              shift and go to state 35
+
+    LISTA_VAR                      shift and go to state 33
+    VARIABLE_FIX                   shift and go to state 34
+
+state 28
+
+    (18) FUNCS -> FUNC_TYPES module id . ( ) BLOQUE
+    (19) FUNCS -> FUNC_TYPES module id . ( PARAMS ) BLOQUE
+    (20) FUNCS -> FUNC_TYPES module id . ( PARAMS ) DEC_V BLOQUE
+    (21) FUNCS -> FUNC_TYPES module id . ( ) DEC_V BLOQUE
+
+    (               shift and go to state 36
+
+
+state 29
+
+    (7) DEC_V -> DEC_V var TIPO_SIMPLE : . LISTA_VAR ;
+    (9) LISTA_VAR -> . LISTA_VAR , VARIABLE_FIX
+    (10) LISTA_VAR -> . VARIABLE_FIX
+    (26) VARIABLE_FIX -> . id [ cte_i ]
+    (27) VARIABLE_FIX -> . id
+
+    id              shift and go to state 35
+
+    LISTA_VAR                      shift and go to state 37
+    VARIABLE_FIX                   shift and go to state 34
+
+state 30
+
+    (14) FUNCS -> FUNCS FUNC_TYPES module id . ( ) BLOQUE
+    (15) FUNCS -> FUNCS FUNC_TYPES module id . ( PARAMS ) BLOQUE
+    (16) FUNCS -> FUNCS FUNC_TYPES module id . ( PARAMS ) DEC_V BLOQUE
+    (17) FUNCS -> FUNCS FUNC_TYPES module id . ( ) DEC_V BLOQUE
+
+    (               shift and go to state 38
+
+
+state 31
+
+    (6) PRINCIPAL -> main ( ) BLOQUE .
+
+    $end            reduce using rule 6 (PRINCIPAL -> main ( ) BLOQUE .)
+
+
+state 32
+
+    (30) BLOQUE -> { . LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> { . LOOP_ESTATUTO }
+    (32) BLOQUE -> { . return EXPRESION ; }
+    (33) BLOQUE -> { . }
+    (34) LOOP_ESTATUTO -> . LOOP_ESTATUTO ESTATUTO
+    (35) LOOP_ESTATUTO -> . ESTATUTO
+    (50) ESTATUTO -> . ASIGNACION ;
+    (51) ESTATUTO -> . CONDICION
+    (52) ESTATUTO -> . WHILE
+    (53) ESTATUTO -> . FOR
+    (54) ESTATUTO -> . LLAMADA ;
+    (55) ESTATUTO -> . LECTURA ;
+    (56) ESTATUTO -> . ESCRITURA ;
+    (57) ESTATUTO -> . LLAMADA_BI ;
+    (69) ASIGNACION -> . VARIABLE = EXPRESION
+    (70) CONDICION -> . if ( EXPRESION ) then BLOQUE
+    (71) CONDICION -> . if ( EXPRESION ) then BLOQUE else BLOQUE
+    (72) WHILE -> . while ( EXPRESION ) do BLOQUE
+    (73) FOR -> . for ASIGNACION to EXPRESION do BLOQUE
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (74) LECTURA -> . read ( LECTURA_OPTS )
+    (77) ESCRITURA -> . write ( ESCRITURA_OPTS )
+    (82) LLAMADA_BI -> . POINT
+    (83) LLAMADA_BI -> . CIRCLE
+    (84) LLAMADA_BI -> . PENUP
+    (85) LLAMADA_BI -> . PENDOWN
+    (86) LLAMADA_BI -> . COLOR
+    (87) LLAMADA_BI -> . SIZE
+    (88) LLAMADA_BI -> . CLEAR
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+    (90) POINT -> . point ( EXPRESION , EXPRESION )
+    (91) CIRCLE -> . circle ( EXPRESION )
+    (92) PENUP -> . penup ( )
+    (93) PENDOWN -> . pendown ( )
+    (94) COLOR -> . color ( cte_s )
+    (95) SIZE -> . size ( EXPRESION )
+    (89) CLEAR -> . clear ( )
+
+    return          shift and go to state 40
+    }               shift and go to state 41
+    if              shift and go to state 52
+    while           shift and go to state 53
+    for             shift and go to state 54
+    id              shift and go to state 55
+    read            shift and go to state 56
+    write           shift and go to state 57
+    point           shift and go to state 65
+    circle          shift and go to state 66
+    penup           shift and go to state 67
+    pendown         shift and go to state 68
+    color           shift and go to state 69
+    size            shift and go to state 70
+    clear           shift and go to state 71
+
+    LOOP_ESTATUTO                  shift and go to state 39
+    ESTATUTO                       shift and go to state 42
+    ASIGNACION                     shift and go to state 43
+    CONDICION                      shift and go to state 44
+    WHILE                          shift and go to state 45
+    FOR                            shift and go to state 46
+    LLAMADA                        shift and go to state 47
+    LECTURA                        shift and go to state 48
+    ESCRITURA                      shift and go to state 49
+    LLAMADA_BI                     shift and go to state 50
+    VARIABLE                       shift and go to state 51
+    POINT                          shift and go to state 58
+    CIRCLE                         shift and go to state 59
+    PENUP                          shift and go to state 60
+    PENDOWN                        shift and go to state 61
+    COLOR                          shift and go to state 62
+    SIZE                           shift and go to state 63
+    CLEAR                          shift and go to state 64
+
+state 33
+
+    (8) DEC_V -> var TIPO_SIMPLE : LISTA_VAR . ;
+    (9) LISTA_VAR -> LISTA_VAR . , VARIABLE_FIX
+
+    ;               shift and go to state 72
+    ,               shift and go to state 73
+
+
+state 34
+
+    (10) LISTA_VAR -> VARIABLE_FIX .
+
+    ;               reduce using rule 10 (LISTA_VAR -> VARIABLE_FIX .)
+    ,               reduce using rule 10 (LISTA_VAR -> VARIABLE_FIX .)
+
+
+state 35
+
+    (26) VARIABLE_FIX -> id . [ cte_i ]
+    (27) VARIABLE_FIX -> id .
+
+    [               shift and go to state 74
+    ;               reduce using rule 27 (VARIABLE_FIX -> id .)
+    ,               reduce using rule 27 (VARIABLE_FIX -> id .)
+
+
+state 36
+
+    (18) FUNCS -> FUNC_TYPES module id ( . ) BLOQUE
+    (19) FUNCS -> FUNC_TYPES module id ( . PARAMS ) BLOQUE
+    (20) FUNCS -> FUNC_TYPES module id ( . PARAMS ) DEC_V BLOQUE
+    (21) FUNCS -> FUNC_TYPES module id ( . ) DEC_V BLOQUE
+    (24) PARAMS -> . PARAMS , TIPO_SIMPLE id
+    (25) PARAMS -> . TIPO_SIMPLE id
+    (11) TIPO_SIMPLE -> . int
+    (12) TIPO_SIMPLE -> . float
+    (13) TIPO_SIMPLE -> . char
+
+    )               shift and go to state 75
+    int             shift and go to state 14
+    float           shift and go to state 15
+    char            shift and go to state 16
+
+    PARAMS                         shift and go to state 76
+    TIPO_SIMPLE                    shift and go to state 77
+
+state 37
+
+    (7) DEC_V -> DEC_V var TIPO_SIMPLE : LISTA_VAR . ;
+    (9) LISTA_VAR -> LISTA_VAR . , VARIABLE_FIX
+
+    ;               shift and go to state 78
+    ,               shift and go to state 73
+
+
+state 38
+
+    (14) FUNCS -> FUNCS FUNC_TYPES module id ( . ) BLOQUE
+    (15) FUNCS -> FUNCS FUNC_TYPES module id ( . PARAMS ) BLOQUE
+    (16) FUNCS -> FUNCS FUNC_TYPES module id ( . PARAMS ) DEC_V BLOQUE
+    (17) FUNCS -> FUNCS FUNC_TYPES module id ( . ) DEC_V BLOQUE
+    (24) PARAMS -> . PARAMS , TIPO_SIMPLE id
+    (25) PARAMS -> . TIPO_SIMPLE id
+    (11) TIPO_SIMPLE -> . int
+    (12) TIPO_SIMPLE -> . float
+    (13) TIPO_SIMPLE -> . char
+
+    )               shift and go to state 79
+    int             shift and go to state 14
+    float           shift and go to state 15
+    char            shift and go to state 16
+
+    PARAMS                         shift and go to state 80
+    TIPO_SIMPLE                    shift and go to state 77
+
+state 39
+
+    (30) BLOQUE -> { LOOP_ESTATUTO . return EXPRESION ; }
+    (31) BLOQUE -> { LOOP_ESTATUTO . }
+    (34) LOOP_ESTATUTO -> LOOP_ESTATUTO . ESTATUTO
+    (50) ESTATUTO -> . ASIGNACION ;
+    (51) ESTATUTO -> . CONDICION
+    (52) ESTATUTO -> . WHILE
+    (53) ESTATUTO -> . FOR
+    (54) ESTATUTO -> . LLAMADA ;
+    (55) ESTATUTO -> . LECTURA ;
+    (56) ESTATUTO -> . ESCRITURA ;
+    (57) ESTATUTO -> . LLAMADA_BI ;
+    (69) ASIGNACION -> . VARIABLE = EXPRESION
+    (70) CONDICION -> . if ( EXPRESION ) then BLOQUE
+    (71) CONDICION -> . if ( EXPRESION ) then BLOQUE else BLOQUE
+    (72) WHILE -> . while ( EXPRESION ) do BLOQUE
+    (73) FOR -> . for ASIGNACION to EXPRESION do BLOQUE
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (74) LECTURA -> . read ( LECTURA_OPTS )
+    (77) ESCRITURA -> . write ( ESCRITURA_OPTS )
+    (82) LLAMADA_BI -> . POINT
+    (83) LLAMADA_BI -> . CIRCLE
+    (84) LLAMADA_BI -> . PENUP
+    (85) LLAMADA_BI -> . PENDOWN
+    (86) LLAMADA_BI -> . COLOR
+    (87) LLAMADA_BI -> . SIZE
+    (88) LLAMADA_BI -> . CLEAR
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+    (90) POINT -> . point ( EXPRESION , EXPRESION )
+    (91) CIRCLE -> . circle ( EXPRESION )
+    (92) PENUP -> . penup ( )
+    (93) PENDOWN -> . pendown ( )
+    (94) COLOR -> . color ( cte_s )
+    (95) SIZE -> . size ( EXPRESION )
+    (89) CLEAR -> . clear ( )
+
+    return          shift and go to state 81
+    }               shift and go to state 82
+    if              shift and go to state 52
+    while           shift and go to state 53
+    for             shift and go to state 54
+    id              shift and go to state 55
+    read            shift and go to state 56
+    write           shift and go to state 57
+    point           shift and go to state 65
+    circle          shift and go to state 66
+    penup           shift and go to state 67
+    pendown         shift and go to state 68
+    color           shift and go to state 69
+    size            shift and go to state 70
+    clear           shift and go to state 71
+
+    ESTATUTO                       shift and go to state 83
+    ASIGNACION                     shift and go to state 43
+    CONDICION                      shift and go to state 44
+    WHILE                          shift and go to state 45
+    FOR                            shift and go to state 46
+    LLAMADA                        shift and go to state 47
+    LECTURA                        shift and go to state 48
+    ESCRITURA                      shift and go to state 49
+    LLAMADA_BI                     shift and go to state 50
+    VARIABLE                       shift and go to state 51
+    POINT                          shift and go to state 58
+    CIRCLE                         shift and go to state 59
+    PENUP                          shift and go to state 60
+    PENDOWN                        shift and go to state 61
+    COLOR                          shift and go to state 62
+    SIZE                           shift and go to state 63
+    CLEAR                          shift and go to state 64
+
+state 40
+
+    (32) BLOQUE -> { return . EXPRESION ; }
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 84
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 41
+
+    (33) BLOQUE -> { } .
+
+    $end            reduce using rule 33 (BLOQUE -> { } .)
+    void            reduce using rule 33 (BLOQUE -> { } .)
+    int             reduce using rule 33 (BLOQUE -> { } .)
+    float           reduce using rule 33 (BLOQUE -> { } .)
+    char            reduce using rule 33 (BLOQUE -> { } .)
+    main            reduce using rule 33 (BLOQUE -> { } .)
+    else            reduce using rule 33 (BLOQUE -> { } .)
+    return          reduce using rule 33 (BLOQUE -> { } .)
+    }               reduce using rule 33 (BLOQUE -> { } .)
+    if              reduce using rule 33 (BLOQUE -> { } .)
+    while           reduce using rule 33 (BLOQUE -> { } .)
+    for             reduce using rule 33 (BLOQUE -> { } .)
+    id              reduce using rule 33 (BLOQUE -> { } .)
+    read            reduce using rule 33 (BLOQUE -> { } .)
+    write           reduce using rule 33 (BLOQUE -> { } .)
+    point           reduce using rule 33 (BLOQUE -> { } .)
+    circle          reduce using rule 33 (BLOQUE -> { } .)
+    penup           reduce using rule 33 (BLOQUE -> { } .)
+    pendown         reduce using rule 33 (BLOQUE -> { } .)
+    color           reduce using rule 33 (BLOQUE -> { } .)
+    size            reduce using rule 33 (BLOQUE -> { } .)
+    clear           reduce using rule 33 (BLOQUE -> { } .)
+
+
+state 42
+
+    (35) LOOP_ESTATUTO -> ESTATUTO .
+
+    return          reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    }               reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    if              reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    while           reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    for             reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    id              reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    read            reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    write           reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    point           reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    circle          reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    penup           reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    pendown         reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    color           reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    size            reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+    clear           reduce using rule 35 (LOOP_ESTATUTO -> ESTATUTO .)
+
+
+state 43
+
+    (50) ESTATUTO -> ASIGNACION . ;
+
+    ;               shift and go to state 96
+
+
+state 44
+
+    (51) ESTATUTO -> CONDICION .
+
+    return          reduce using rule 51 (ESTATUTO -> CONDICION .)
+    }               reduce using rule 51 (ESTATUTO -> CONDICION .)
+    if              reduce using rule 51 (ESTATUTO -> CONDICION .)
+    while           reduce using rule 51 (ESTATUTO -> CONDICION .)
+    for             reduce using rule 51 (ESTATUTO -> CONDICION .)
+    id              reduce using rule 51 (ESTATUTO -> CONDICION .)
+    read            reduce using rule 51 (ESTATUTO -> CONDICION .)
+    write           reduce using rule 51 (ESTATUTO -> CONDICION .)
+    point           reduce using rule 51 (ESTATUTO -> CONDICION .)
+    circle          reduce using rule 51 (ESTATUTO -> CONDICION .)
+    penup           reduce using rule 51 (ESTATUTO -> CONDICION .)
+    pendown         reduce using rule 51 (ESTATUTO -> CONDICION .)
+    color           reduce using rule 51 (ESTATUTO -> CONDICION .)
+    size            reduce using rule 51 (ESTATUTO -> CONDICION .)
+    clear           reduce using rule 51 (ESTATUTO -> CONDICION .)
+
+
+state 45
+
+    (52) ESTATUTO -> WHILE .
+
+    return          reduce using rule 52 (ESTATUTO -> WHILE .)
+    }               reduce using rule 52 (ESTATUTO -> WHILE .)
+    if              reduce using rule 52 (ESTATUTO -> WHILE .)
+    while           reduce using rule 52 (ESTATUTO -> WHILE .)
+    for             reduce using rule 52 (ESTATUTO -> WHILE .)
+    id              reduce using rule 52 (ESTATUTO -> WHILE .)
+    read            reduce using rule 52 (ESTATUTO -> WHILE .)
+    write           reduce using rule 52 (ESTATUTO -> WHILE .)
+    point           reduce using rule 52 (ESTATUTO -> WHILE .)
+    circle          reduce using rule 52 (ESTATUTO -> WHILE .)
+    penup           reduce using rule 52 (ESTATUTO -> WHILE .)
+    pendown         reduce using rule 52 (ESTATUTO -> WHILE .)
+    color           reduce using rule 52 (ESTATUTO -> WHILE .)
+    size            reduce using rule 52 (ESTATUTO -> WHILE .)
+    clear           reduce using rule 52 (ESTATUTO -> WHILE .)
+
+
+state 46
+
+    (53) ESTATUTO -> FOR .
+
+    return          reduce using rule 53 (ESTATUTO -> FOR .)
+    }               reduce using rule 53 (ESTATUTO -> FOR .)
+    if              reduce using rule 53 (ESTATUTO -> FOR .)
+    while           reduce using rule 53 (ESTATUTO -> FOR .)
+    for             reduce using rule 53 (ESTATUTO -> FOR .)
+    id              reduce using rule 53 (ESTATUTO -> FOR .)
+    read            reduce using rule 53 (ESTATUTO -> FOR .)
+    write           reduce using rule 53 (ESTATUTO -> FOR .)
+    point           reduce using rule 53 (ESTATUTO -> FOR .)
+    circle          reduce using rule 53 (ESTATUTO -> FOR .)
+    penup           reduce using rule 53 (ESTATUTO -> FOR .)
+    pendown         reduce using rule 53 (ESTATUTO -> FOR .)
+    color           reduce using rule 53 (ESTATUTO -> FOR .)
+    size            reduce using rule 53 (ESTATUTO -> FOR .)
+    clear           reduce using rule 53 (ESTATUTO -> FOR .)
+
+
+state 47
+
+    (54) ESTATUTO -> LLAMADA . ;
+
+    ;               shift and go to state 97
+
+
+state 48
+
+    (55) ESTATUTO -> LECTURA . ;
+
+    ;               shift and go to state 98
+
+
+state 49
+
+    (56) ESTATUTO -> ESCRITURA . ;
+
+    ;               shift and go to state 99
+
+
+state 50
+
+    (57) ESTATUTO -> LLAMADA_BI . ;
+
+    ;               shift and go to state 100
+
+
+state 51
+
+    (69) ASIGNACION -> VARIABLE . = EXPRESION
+
+    =               shift and go to state 101
+
+
+state 52
+
+    (70) CONDICION -> if . ( EXPRESION ) then BLOQUE
+    (71) CONDICION -> if . ( EXPRESION ) then BLOQUE else BLOQUE
+
+    (               shift and go to state 102
+
+
+state 53
+
+    (72) WHILE -> while . ( EXPRESION ) do BLOQUE
+
+    (               shift and go to state 103
+
+
+state 54
+
+    (73) FOR -> for . ASIGNACION to EXPRESION do BLOQUE
+    (69) ASIGNACION -> . VARIABLE = EXPRESION
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    id              shift and go to state 105
+
+    ASIGNACION                     shift and go to state 104
+    VARIABLE                       shift and go to state 51
+
+state 55
+
+    (65) LLAMADA -> id . ( LLAMADA_OPTS )
+    (66) LLAMADA -> id . ( )
+    (28) VARIABLE -> id . [ EXPRESION ]
+    (29) VARIABLE -> id .
+
+    (               shift and go to state 106
+    [               shift and go to state 107
+    =               reduce using rule 29 (VARIABLE -> id .)
+    *               reduce using rule 29 (VARIABLE -> id .)
+    /               reduce using rule 29 (VARIABLE -> id .)
+    >               reduce using rule 29 (VARIABLE -> id .)
+    <               reduce using rule 29 (VARIABLE -> id .)
+    equals          reduce using rule 29 (VARIABLE -> id .)
+    not_equals      reduce using rule 29 (VARIABLE -> id .)
+    +               reduce using rule 29 (VARIABLE -> id .)
+    minus           reduce using rule 29 (VARIABLE -> id .)
+    ;               reduce using rule 29 (VARIABLE -> id .)
+    and             reduce using rule 29 (VARIABLE -> id .)
+    or              reduce using rule 29 (VARIABLE -> id .)
+    )               reduce using rule 29 (VARIABLE -> id .)
+    to              reduce using rule 29 (VARIABLE -> id .)
+    ,               reduce using rule 29 (VARIABLE -> id .)
+    ]               reduce using rule 29 (VARIABLE -> id .)
+    do              reduce using rule 29 (VARIABLE -> id .)
+
+
+state 56
+
+    (74) LECTURA -> read . ( LECTURA_OPTS )
+
+    (               shift and go to state 108
+
+
+state 57
+
+    (77) ESCRITURA -> write . ( ESCRITURA_OPTS )
+
+    (               shift and go to state 109
+
+
+state 58
+
+    (82) LLAMADA_BI -> POINT .
+
+    ;               reduce using rule 82 (LLAMADA_BI -> POINT .)
+
+
+state 59
+
+    (83) LLAMADA_BI -> CIRCLE .
+
+    ;               reduce using rule 83 (LLAMADA_BI -> CIRCLE .)
+
+
+state 60
+
+    (84) LLAMADA_BI -> PENUP .
+
+    ;               reduce using rule 84 (LLAMADA_BI -> PENUP .)
+
+
+state 61
+
+    (85) LLAMADA_BI -> PENDOWN .
+
+    ;               reduce using rule 85 (LLAMADA_BI -> PENDOWN .)
+
+
+state 62
+
+    (86) LLAMADA_BI -> COLOR .
+
+    ;               reduce using rule 86 (LLAMADA_BI -> COLOR .)
+
+
+state 63
+
+    (87) LLAMADA_BI -> SIZE .
+
+    ;               reduce using rule 87 (LLAMADA_BI -> SIZE .)
+
+
+state 64
+
+    (88) LLAMADA_BI -> CLEAR .
+
+    ;               reduce using rule 88 (LLAMADA_BI -> CLEAR .)
+
+
+state 65
+
+    (90) POINT -> point . ( EXPRESION , EXPRESION )
+
+    (               shift and go to state 110
+
+
+state 66
+
+    (91) CIRCLE -> circle . ( EXPRESION )
+
+    (               shift and go to state 111
+
+
+state 67
+
+    (92) PENUP -> penup . ( )
+
+    (               shift and go to state 112
+
+
+state 68
+
+    (93) PENDOWN -> pendown . ( )
+
+    (               shift and go to state 113
+
+
+state 69
+
+    (94) COLOR -> color . ( cte_s )
+
+    (               shift and go to state 114
+
+
+state 70
+
+    (95) SIZE -> size . ( EXPRESION )
+
+    (               shift and go to state 115
+
+
+state 71
+
+    (89) CLEAR -> clear . ( )
+
+    (               shift and go to state 116
+
+
+state 72
+
+    (8) DEC_V -> var TIPO_SIMPLE : LISTA_VAR ; .
+
+    var             reduce using rule 8 (DEC_V -> var TIPO_SIMPLE : LISTA_VAR ; .)
+    void            reduce using rule 8 (DEC_V -> var TIPO_SIMPLE : LISTA_VAR ; .)
+    int             reduce using rule 8 (DEC_V -> var TIPO_SIMPLE : LISTA_VAR ; .)
+    float           reduce using rule 8 (DEC_V -> var TIPO_SIMPLE : LISTA_VAR ; .)
+    char            reduce using rule 8 (DEC_V -> var TIPO_SIMPLE : LISTA_VAR ; .)
+    main            reduce using rule 8 (DEC_V -> var TIPO_SIMPLE : LISTA_VAR ; .)
+    {               reduce using rule 8 (DEC_V -> var TIPO_SIMPLE : LISTA_VAR ; .)
+
+
+state 73
+
+    (9) LISTA_VAR -> LISTA_VAR , . VARIABLE_FIX
+    (26) VARIABLE_FIX -> . id [ cte_i ]
+    (27) VARIABLE_FIX -> . id
+
+    id              shift and go to state 35
+
+    VARIABLE_FIX                   shift and go to state 117
+
+state 74
+
+    (26) VARIABLE_FIX -> id [ . cte_i ]
+
+    cte_i           shift and go to state 118
+
+
+state 75
+
+    (18) FUNCS -> FUNC_TYPES module id ( ) . BLOQUE
+    (21) FUNCS -> FUNC_TYPES module id ( ) . DEC_V BLOQUE
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+    (7) DEC_V -> . DEC_V var TIPO_SIMPLE : LISTA_VAR ;
+    (8) DEC_V -> . var TIPO_SIMPLE : LISTA_VAR ;
+
+    {               shift and go to state 32
+    var             shift and go to state 10
+
+    BLOQUE                         shift and go to state 119
+    DEC_V                          shift and go to state 120
+
+state 76
+
+    (19) FUNCS -> FUNC_TYPES module id ( PARAMS . ) BLOQUE
+    (20) FUNCS -> FUNC_TYPES module id ( PARAMS . ) DEC_V BLOQUE
+    (24) PARAMS -> PARAMS . , TIPO_SIMPLE id
+
+    )               shift and go to state 121
+    ,               shift and go to state 122
+
+
+state 77
+
+    (25) PARAMS -> TIPO_SIMPLE . id
+
+    id              shift and go to state 123
+
+
+state 78
+
+    (7) DEC_V -> DEC_V var TIPO_SIMPLE : LISTA_VAR ; .
+
+    var             reduce using rule 7 (DEC_V -> DEC_V var TIPO_SIMPLE : LISTA_VAR ; .)
+    void            reduce using rule 7 (DEC_V -> DEC_V var TIPO_SIMPLE : LISTA_VAR ; .)
+    int             reduce using rule 7 (DEC_V -> DEC_V var TIPO_SIMPLE : LISTA_VAR ; .)
+    float           reduce using rule 7 (DEC_V -> DEC_V var TIPO_SIMPLE : LISTA_VAR ; .)
+    char            reduce using rule 7 (DEC_V -> DEC_V var TIPO_SIMPLE : LISTA_VAR ; .)
+    main            reduce using rule 7 (DEC_V -> DEC_V var TIPO_SIMPLE : LISTA_VAR ; .)
+    {               reduce using rule 7 (DEC_V -> DEC_V var TIPO_SIMPLE : LISTA_VAR ; .)
+
+
+state 79
+
+    (14) FUNCS -> FUNCS FUNC_TYPES module id ( ) . BLOQUE
+    (17) FUNCS -> FUNCS FUNC_TYPES module id ( ) . DEC_V BLOQUE
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+    (7) DEC_V -> . DEC_V var TIPO_SIMPLE : LISTA_VAR ;
+    (8) DEC_V -> . var TIPO_SIMPLE : LISTA_VAR ;
+
+    {               shift and go to state 32
+    var             shift and go to state 10
+
+    BLOQUE                         shift and go to state 124
+    DEC_V                          shift and go to state 125
+
+state 80
+
+    (15) FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS . ) BLOQUE
+    (16) FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS . ) DEC_V BLOQUE
+    (24) PARAMS -> PARAMS . , TIPO_SIMPLE id
+
+    )               shift and go to state 126
+    ,               shift and go to state 122
+
+
+state 81
+
+    (30) BLOQUE -> { LOOP_ESTATUTO return . EXPRESION ; }
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 127
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 82
+
+    (31) BLOQUE -> { LOOP_ESTATUTO } .
+
+    $end            reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    void            reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    int             reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    float           reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    char            reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    main            reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    else            reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    return          reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    }               reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    if              reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    while           reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    for             reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    id              reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    read            reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    write           reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    point           reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    circle          reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    penup           reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    pendown         reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    color           reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    size            reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+    clear           reduce using rule 31 (BLOQUE -> { LOOP_ESTATUTO } .)
+
+
+state 83
+
+    (34) LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .
+
+    return          reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    }               reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    if              reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    while           reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    for             reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    id              reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    read            reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    write           reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    point           reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    circle          reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    penup           reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    pendown         reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    color           reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    size            reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+    clear           reduce using rule 34 (LOOP_ESTATUTO -> LOOP_ESTATUTO ESTATUTO .)
+
+
+state 84
+
+    (32) BLOQUE -> { return EXPRESION . ; }
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    ;               shift and go to state 128
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 85
+
+    (38) EXPRESION -> EXP_R .
+
+    ;               reduce using rule 38 (EXPRESION -> EXP_R .)
+    and             reduce using rule 38 (EXPRESION -> EXP_R .)
+    or              reduce using rule 38 (EXPRESION -> EXP_R .)
+    )               reduce using rule 38 (EXPRESION -> EXP_R .)
+    to              reduce using rule 38 (EXPRESION -> EXP_R .)
+    ,               reduce using rule 38 (EXPRESION -> EXP_R .)
+    ]               reduce using rule 38 (EXPRESION -> EXP_R .)
+    do              reduce using rule 38 (EXPRESION -> EXP_R .)
+
+
+state 86
+
+    (39) EXP_R -> EXP_A . > EXP_A
+    (40) EXP_R -> EXP_A . < EXP_A
+    (41) EXP_R -> EXP_A . equals EXP_A
+    (42) EXP_R -> EXP_A . not_equals EXP_A
+    (43) EXP_R -> EXP_A .
+    (44) EXP_A -> EXP_A . + TERMINO
+    (45) EXP_A -> EXP_A . minus TERMINO
+
+    >               shift and go to state 131
+    <               shift and go to state 132
+    equals          shift and go to state 133
+    not_equals      shift and go to state 134
+    ;               reduce using rule 43 (EXP_R -> EXP_A .)
+    and             reduce using rule 43 (EXP_R -> EXP_A .)
+    or              reduce using rule 43 (EXP_R -> EXP_A .)
+    )               reduce using rule 43 (EXP_R -> EXP_A .)
+    to              reduce using rule 43 (EXP_R -> EXP_A .)
+    ,               reduce using rule 43 (EXP_R -> EXP_A .)
+    ]               reduce using rule 43 (EXP_R -> EXP_A .)
+    do              reduce using rule 43 (EXP_R -> EXP_A .)
+    +               shift and go to state 135
+    minus           shift and go to state 136
+
+
+state 87
+
+    (46) EXP_A -> TERMINO .
+    (47) TERMINO -> TERMINO . * FACTOR
+    (48) TERMINO -> TERMINO . / FACTOR
+
+    >               reduce using rule 46 (EXP_A -> TERMINO .)
+    <               reduce using rule 46 (EXP_A -> TERMINO .)
+    equals          reduce using rule 46 (EXP_A -> TERMINO .)
+    not_equals      reduce using rule 46 (EXP_A -> TERMINO .)
+    +               reduce using rule 46 (EXP_A -> TERMINO .)
+    minus           reduce using rule 46 (EXP_A -> TERMINO .)
+    ;               reduce using rule 46 (EXP_A -> TERMINO .)
+    and             reduce using rule 46 (EXP_A -> TERMINO .)
+    or              reduce using rule 46 (EXP_A -> TERMINO .)
+    )               reduce using rule 46 (EXP_A -> TERMINO .)
+    to              reduce using rule 46 (EXP_A -> TERMINO .)
+    ,               reduce using rule 46 (EXP_A -> TERMINO .)
+    ]               reduce using rule 46 (EXP_A -> TERMINO .)
+    do              reduce using rule 46 (EXP_A -> TERMINO .)
+    *               shift and go to state 137
+    /               shift and go to state 138
+
+
+state 88
+
+    (49) TERMINO -> FACTOR .
+
+    *               reduce using rule 49 (TERMINO -> FACTOR .)
+    /               reduce using rule 49 (TERMINO -> FACTOR .)
+    >               reduce using rule 49 (TERMINO -> FACTOR .)
+    <               reduce using rule 49 (TERMINO -> FACTOR .)
+    equals          reduce using rule 49 (TERMINO -> FACTOR .)
+    not_equals      reduce using rule 49 (TERMINO -> FACTOR .)
+    +               reduce using rule 49 (TERMINO -> FACTOR .)
+    minus           reduce using rule 49 (TERMINO -> FACTOR .)
+    ;               reduce using rule 49 (TERMINO -> FACTOR .)
+    and             reduce using rule 49 (TERMINO -> FACTOR .)
+    or              reduce using rule 49 (TERMINO -> FACTOR .)
+    )               reduce using rule 49 (TERMINO -> FACTOR .)
+    to              reduce using rule 49 (TERMINO -> FACTOR .)
+    ,               reduce using rule 49 (TERMINO -> FACTOR .)
+    ]               reduce using rule 49 (TERMINO -> FACTOR .)
+    do              reduce using rule 49 (TERMINO -> FACTOR .)
+
+
+state 89
+
+    (58) FACTOR -> LLAMADA .
+
+    *               reduce using rule 58 (FACTOR -> LLAMADA .)
+    /               reduce using rule 58 (FACTOR -> LLAMADA .)
+    >               reduce using rule 58 (FACTOR -> LLAMADA .)
+    <               reduce using rule 58 (FACTOR -> LLAMADA .)
+    equals          reduce using rule 58 (FACTOR -> LLAMADA .)
+    not_equals      reduce using rule 58 (FACTOR -> LLAMADA .)
+    +               reduce using rule 58 (FACTOR -> LLAMADA .)
+    minus           reduce using rule 58 (FACTOR -> LLAMADA .)
+    ;               reduce using rule 58 (FACTOR -> LLAMADA .)
+    and             reduce using rule 58 (FACTOR -> LLAMADA .)
+    or              reduce using rule 58 (FACTOR -> LLAMADA .)
+    )               reduce using rule 58 (FACTOR -> LLAMADA .)
+    to              reduce using rule 58 (FACTOR -> LLAMADA .)
+    ,               reduce using rule 58 (FACTOR -> LLAMADA .)
+    ]               reduce using rule 58 (FACTOR -> LLAMADA .)
+    do              reduce using rule 58 (FACTOR -> LLAMADA .)
+
+
+state 90
+
+    (59) FACTOR -> CTE .
+
+    *               reduce using rule 59 (FACTOR -> CTE .)
+    /               reduce using rule 59 (FACTOR -> CTE .)
+    >               reduce using rule 59 (FACTOR -> CTE .)
+    <               reduce using rule 59 (FACTOR -> CTE .)
+    equals          reduce using rule 59 (FACTOR -> CTE .)
+    not_equals      reduce using rule 59 (FACTOR -> CTE .)
+    +               reduce using rule 59 (FACTOR -> CTE .)
+    minus           reduce using rule 59 (FACTOR -> CTE .)
+    ;               reduce using rule 59 (FACTOR -> CTE .)
+    and             reduce using rule 59 (FACTOR -> CTE .)
+    or              reduce using rule 59 (FACTOR -> CTE .)
+    )               reduce using rule 59 (FACTOR -> CTE .)
+    to              reduce using rule 59 (FACTOR -> CTE .)
+    ,               reduce using rule 59 (FACTOR -> CTE .)
+    ]               reduce using rule 59 (FACTOR -> CTE .)
+    do              reduce using rule 59 (FACTOR -> CTE .)
+
+
+state 91
+
+    (60) FACTOR -> VARIABLE .
+
+    *               reduce using rule 60 (FACTOR -> VARIABLE .)
+    /               reduce using rule 60 (FACTOR -> VARIABLE .)
+    >               reduce using rule 60 (FACTOR -> VARIABLE .)
+    <               reduce using rule 60 (FACTOR -> VARIABLE .)
+    equals          reduce using rule 60 (FACTOR -> VARIABLE .)
+    not_equals      reduce using rule 60 (FACTOR -> VARIABLE .)
+    +               reduce using rule 60 (FACTOR -> VARIABLE .)
+    minus           reduce using rule 60 (FACTOR -> VARIABLE .)
+    ;               reduce using rule 60 (FACTOR -> VARIABLE .)
+    and             reduce using rule 60 (FACTOR -> VARIABLE .)
+    or              reduce using rule 60 (FACTOR -> VARIABLE .)
+    )               reduce using rule 60 (FACTOR -> VARIABLE .)
+    to              reduce using rule 60 (FACTOR -> VARIABLE .)
+    ,               reduce using rule 60 (FACTOR -> VARIABLE .)
+    ]               reduce using rule 60 (FACTOR -> VARIABLE .)
+    do              reduce using rule 60 (FACTOR -> VARIABLE .)
+
+
+state 92
+
+    (61) FACTOR -> ( . EXPRESION )
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 139
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 93
+
+    (62) CTE -> cte_i .
+
+    *               reduce using rule 62 (CTE -> cte_i .)
+    /               reduce using rule 62 (CTE -> cte_i .)
+    >               reduce using rule 62 (CTE -> cte_i .)
+    <               reduce using rule 62 (CTE -> cte_i .)
+    equals          reduce using rule 62 (CTE -> cte_i .)
+    not_equals      reduce using rule 62 (CTE -> cte_i .)
+    +               reduce using rule 62 (CTE -> cte_i .)
+    minus           reduce using rule 62 (CTE -> cte_i .)
+    ;               reduce using rule 62 (CTE -> cte_i .)
+    and             reduce using rule 62 (CTE -> cte_i .)
+    or              reduce using rule 62 (CTE -> cte_i .)
+    )               reduce using rule 62 (CTE -> cte_i .)
+    to              reduce using rule 62 (CTE -> cte_i .)
+    ,               reduce using rule 62 (CTE -> cte_i .)
+    ]               reduce using rule 62 (CTE -> cte_i .)
+    do              reduce using rule 62 (CTE -> cte_i .)
+
+
+state 94
+
+    (63) CTE -> cte_f .
+
+    *               reduce using rule 63 (CTE -> cte_f .)
+    /               reduce using rule 63 (CTE -> cte_f .)
+    >               reduce using rule 63 (CTE -> cte_f .)
+    <               reduce using rule 63 (CTE -> cte_f .)
+    equals          reduce using rule 63 (CTE -> cte_f .)
+    not_equals      reduce using rule 63 (CTE -> cte_f .)
+    +               reduce using rule 63 (CTE -> cte_f .)
+    minus           reduce using rule 63 (CTE -> cte_f .)
+    ;               reduce using rule 63 (CTE -> cte_f .)
+    and             reduce using rule 63 (CTE -> cte_f .)
+    or              reduce using rule 63 (CTE -> cte_f .)
+    )               reduce using rule 63 (CTE -> cte_f .)
+    to              reduce using rule 63 (CTE -> cte_f .)
+    ,               reduce using rule 63 (CTE -> cte_f .)
+    ]               reduce using rule 63 (CTE -> cte_f .)
+    do              reduce using rule 63 (CTE -> cte_f .)
+
+
+state 95
+
+    (64) CTE -> cte_c .
+
+    *               reduce using rule 64 (CTE -> cte_c .)
+    /               reduce using rule 64 (CTE -> cte_c .)
+    >               reduce using rule 64 (CTE -> cte_c .)
+    <               reduce using rule 64 (CTE -> cte_c .)
+    equals          reduce using rule 64 (CTE -> cte_c .)
+    not_equals      reduce using rule 64 (CTE -> cte_c .)
+    +               reduce using rule 64 (CTE -> cte_c .)
+    minus           reduce using rule 64 (CTE -> cte_c .)
+    ;               reduce using rule 64 (CTE -> cte_c .)
+    and             reduce using rule 64 (CTE -> cte_c .)
+    or              reduce using rule 64 (CTE -> cte_c .)
+    )               reduce using rule 64 (CTE -> cte_c .)
+    to              reduce using rule 64 (CTE -> cte_c .)
+    ,               reduce using rule 64 (CTE -> cte_c .)
+    ]               reduce using rule 64 (CTE -> cte_c .)
+    do              reduce using rule 64 (CTE -> cte_c .)
+
+
+state 96
+
+    (50) ESTATUTO -> ASIGNACION ; .
+
+    return          reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    }               reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    if              reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    while           reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    for             reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    id              reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    read            reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    write           reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    point           reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    circle          reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    penup           reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    pendown         reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    color           reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    size            reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+    clear           reduce using rule 50 (ESTATUTO -> ASIGNACION ; .)
+
+
+state 97
+
+    (54) ESTATUTO -> LLAMADA ; .
+
+    return          reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    }               reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    if              reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    while           reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    for             reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    id              reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    read            reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    write           reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    point           reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    circle          reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    penup           reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    pendown         reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    color           reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    size            reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+    clear           reduce using rule 54 (ESTATUTO -> LLAMADA ; .)
+
+
+state 98
+
+    (55) ESTATUTO -> LECTURA ; .
+
+    return          reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    }               reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    if              reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    while           reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    for             reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    id              reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    read            reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    write           reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    point           reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    circle          reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    penup           reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    pendown         reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    color           reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    size            reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+    clear           reduce using rule 55 (ESTATUTO -> LECTURA ; .)
+
+
+state 99
+
+    (56) ESTATUTO -> ESCRITURA ; .
+
+    return          reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    }               reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    if              reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    while           reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    for             reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    id              reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    read            reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    write           reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    point           reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    circle          reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    penup           reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    pendown         reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    color           reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    size            reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+    clear           reduce using rule 56 (ESTATUTO -> ESCRITURA ; .)
+
+
+state 100
+
+    (57) ESTATUTO -> LLAMADA_BI ; .
+
+    return          reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    }               reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    if              reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    while           reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    for             reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    id              reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    read            reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    write           reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    point           reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    circle          reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    penup           reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    pendown         reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    color           reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    size            reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+    clear           reduce using rule 57 (ESTATUTO -> LLAMADA_BI ; .)
+
+
+state 101
+
+    (69) ASIGNACION -> VARIABLE = . EXPRESION
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    VARIABLE                       shift and go to state 91
+    EXPRESION                      shift and go to state 140
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+
+state 102
+
+    (70) CONDICION -> if ( . EXPRESION ) then BLOQUE
+    (71) CONDICION -> if ( . EXPRESION ) then BLOQUE else BLOQUE
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 141
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 103
+
+    (72) WHILE -> while ( . EXPRESION ) do BLOQUE
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 142
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 104
+
+    (73) FOR -> for ASIGNACION . to EXPRESION do BLOQUE
+
+    to              shift and go to state 143
+
+
+state 105
+
+    (28) VARIABLE -> id . [ EXPRESION ]
+    (29) VARIABLE -> id .
+
+    [               shift and go to state 107
+    =               reduce using rule 29 (VARIABLE -> id .)
+
+
+state 106
+
+    (65) LLAMADA -> id ( . LLAMADA_OPTS )
+    (66) LLAMADA -> id ( . )
+    (67) LLAMADA_OPTS -> . LLAMADA_OPTS , EXPRESION
+    (68) LLAMADA_OPTS -> . EXPRESION
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    )               shift and go to state 145
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    LLAMADA_OPTS                   shift and go to state 144
+    EXPRESION                      shift and go to state 146
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 107
+
+    (28) VARIABLE -> id [ . EXPRESION ]
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 147
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 108
+
+    (74) LECTURA -> read ( . LECTURA_OPTS )
+    (75) LECTURA_OPTS -> . LECTURA_OPTS , id
+    (76) LECTURA_OPTS -> . id
+
+    id              shift and go to state 149
+
+    LECTURA_OPTS                   shift and go to state 148
+
+state 109
+
+    (77) ESCRITURA -> write ( . ESCRITURA_OPTS )
+    (78) ESCRITURA_OPTS -> . ESCRITURA_OPTS , cte_s
+    (79) ESCRITURA_OPTS -> . ESCRITURA_OPTS , EXPRESION
+    (80) ESCRITURA_OPTS -> . cte_s
+    (81) ESCRITURA_OPTS -> . EXPRESION
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    cte_s           shift and go to state 151
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    ESCRITURA_OPTS                 shift and go to state 150
+    EXPRESION                      shift and go to state 152
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 110
+
+    (90) POINT -> point ( . EXPRESION , EXPRESION )
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 153
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 111
+
+    (91) CIRCLE -> circle ( . EXPRESION )
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 154
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 112
+
+    (92) PENUP -> penup ( . )
+
+    )               shift and go to state 155
+
+
+state 113
+
+    (93) PENDOWN -> pendown ( . )
+
+    )               shift and go to state 156
+
+
+state 114
+
+    (94) COLOR -> color ( . cte_s )
+
+    cte_s           shift and go to state 157
+
+
+state 115
+
+    (95) SIZE -> size ( . EXPRESION )
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 158
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 116
+
+    (89) CLEAR -> clear ( . )
+
+    )               shift and go to state 159
+
+
+state 117
+
+    (9) LISTA_VAR -> LISTA_VAR , VARIABLE_FIX .
+
+    ;               reduce using rule 9 (LISTA_VAR -> LISTA_VAR , VARIABLE_FIX .)
+    ,               reduce using rule 9 (LISTA_VAR -> LISTA_VAR , VARIABLE_FIX .)
+
+
+state 118
+
+    (26) VARIABLE_FIX -> id [ cte_i . ]
+
+    ]               shift and go to state 160
+
+
+state 119
+
+    (18) FUNCS -> FUNC_TYPES module id ( ) BLOQUE .
+
+    void            reduce using rule 18 (FUNCS -> FUNC_TYPES module id ( ) BLOQUE .)
+    int             reduce using rule 18 (FUNCS -> FUNC_TYPES module id ( ) BLOQUE .)
+    float           reduce using rule 18 (FUNCS -> FUNC_TYPES module id ( ) BLOQUE .)
+    char            reduce using rule 18 (FUNCS -> FUNC_TYPES module id ( ) BLOQUE .)
+    main            reduce using rule 18 (FUNCS -> FUNC_TYPES module id ( ) BLOQUE .)
+
+
+state 120
+
+    (21) FUNCS -> FUNC_TYPES module id ( ) DEC_V . BLOQUE
+    (7) DEC_V -> DEC_V . var TIPO_SIMPLE : LISTA_VAR ;
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+
+    var             shift and go to state 19
+    {               shift and go to state 32
+
+    BLOQUE                         shift and go to state 161
+
+state 121
+
+    (19) FUNCS -> FUNC_TYPES module id ( PARAMS ) . BLOQUE
+    (20) FUNCS -> FUNC_TYPES module id ( PARAMS ) . DEC_V BLOQUE
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+    (7) DEC_V -> . DEC_V var TIPO_SIMPLE : LISTA_VAR ;
+    (8) DEC_V -> . var TIPO_SIMPLE : LISTA_VAR ;
+
+    {               shift and go to state 32
+    var             shift and go to state 10
+
+    BLOQUE                         shift and go to state 162
+    DEC_V                          shift and go to state 163
+
+state 122
+
+    (24) PARAMS -> PARAMS , . TIPO_SIMPLE id
+    (11) TIPO_SIMPLE -> . int
+    (12) TIPO_SIMPLE -> . float
+    (13) TIPO_SIMPLE -> . char
+
+    int             shift and go to state 14
+    float           shift and go to state 15
+    char            shift and go to state 16
+
+    TIPO_SIMPLE                    shift and go to state 164
+
+state 123
+
+    (25) PARAMS -> TIPO_SIMPLE id .
+
+    )               reduce using rule 25 (PARAMS -> TIPO_SIMPLE id .)
+    ,               reduce using rule 25 (PARAMS -> TIPO_SIMPLE id .)
+
+
+state 124
+
+    (14) FUNCS -> FUNCS FUNC_TYPES module id ( ) BLOQUE .
+
+    void            reduce using rule 14 (FUNCS -> FUNCS FUNC_TYPES module id ( ) BLOQUE .)
+    int             reduce using rule 14 (FUNCS -> FUNCS FUNC_TYPES module id ( ) BLOQUE .)
+    float           reduce using rule 14 (FUNCS -> FUNCS FUNC_TYPES module id ( ) BLOQUE .)
+    char            reduce using rule 14 (FUNCS -> FUNCS FUNC_TYPES module id ( ) BLOQUE .)
+    main            reduce using rule 14 (FUNCS -> FUNCS FUNC_TYPES module id ( ) BLOQUE .)
+
+
+state 125
+
+    (17) FUNCS -> FUNCS FUNC_TYPES module id ( ) DEC_V . BLOQUE
+    (7) DEC_V -> DEC_V . var TIPO_SIMPLE : LISTA_VAR ;
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+
+    var             shift and go to state 19
+    {               shift and go to state 32
+
+    BLOQUE                         shift and go to state 165
+
+state 126
+
+    (15) FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) . BLOQUE
+    (16) FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) . DEC_V BLOQUE
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+    (7) DEC_V -> . DEC_V var TIPO_SIMPLE : LISTA_VAR ;
+    (8) DEC_V -> . var TIPO_SIMPLE : LISTA_VAR ;
+
+    {               shift and go to state 32
+    var             shift and go to state 10
+
+    BLOQUE                         shift and go to state 166
+    DEC_V                          shift and go to state 167
+
+state 127
+
+    (30) BLOQUE -> { LOOP_ESTATUTO return EXPRESION . ; }
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    ;               shift and go to state 168
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 128
+
+    (32) BLOQUE -> { return EXPRESION ; . }
+
+    }               shift and go to state 169
+
+
+state 129
+
+    (36) EXPRESION -> EXPRESION and . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXP_R                          shift and go to state 170
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 130
+
+    (37) EXPRESION -> EXPRESION or . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXP_R                          shift and go to state 171
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 131
+
+    (39) EXP_R -> EXP_A > . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXP_A                          shift and go to state 172
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 132
+
+    (40) EXP_R -> EXP_A < . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXP_A                          shift and go to state 173
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 133
+
+    (41) EXP_R -> EXP_A equals . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXP_A                          shift and go to state 174
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 134
+
+    (42) EXP_R -> EXP_A not_equals . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXP_A                          shift and go to state 175
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 135
+
+    (44) EXP_A -> EXP_A + . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    TERMINO                        shift and go to state 176
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 136
+
+    (45) EXP_A -> EXP_A minus . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    TERMINO                        shift and go to state 177
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 137
+
+    (47) TERMINO -> TERMINO * . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    FACTOR                         shift and go to state 178
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 138
+
+    (48) TERMINO -> TERMINO / . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    FACTOR                         shift and go to state 179
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 139
+
+    (61) FACTOR -> ( EXPRESION . )
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    )               shift and go to state 180
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 140
+
+    (69) ASIGNACION -> VARIABLE = EXPRESION .
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    ;               reduce using rule 69 (ASIGNACION -> VARIABLE = EXPRESION .)
+    to              reduce using rule 69 (ASIGNACION -> VARIABLE = EXPRESION .)
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 141
+
+    (70) CONDICION -> if ( EXPRESION . ) then BLOQUE
+    (71) CONDICION -> if ( EXPRESION . ) then BLOQUE else BLOQUE
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    )               shift and go to state 181
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 142
+
+    (72) WHILE -> while ( EXPRESION . ) do BLOQUE
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    )               shift and go to state 182
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 143
+
+    (73) FOR -> for ASIGNACION to . EXPRESION do BLOQUE
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 183
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 144
+
+    (65) LLAMADA -> id ( LLAMADA_OPTS . )
+    (67) LLAMADA_OPTS -> LLAMADA_OPTS . , EXPRESION
+
+    )               shift and go to state 184
+    ,               shift and go to state 185
+
+
+state 145
+
+    (66) LLAMADA -> id ( ) .
+
+    ;               reduce using rule 66 (LLAMADA -> id ( ) .)
+    *               reduce using rule 66 (LLAMADA -> id ( ) .)
+    /               reduce using rule 66 (LLAMADA -> id ( ) .)
+    >               reduce using rule 66 (LLAMADA -> id ( ) .)
+    <               reduce using rule 66 (LLAMADA -> id ( ) .)
+    equals          reduce using rule 66 (LLAMADA -> id ( ) .)
+    not_equals      reduce using rule 66 (LLAMADA -> id ( ) .)
+    +               reduce using rule 66 (LLAMADA -> id ( ) .)
+    minus           reduce using rule 66 (LLAMADA -> id ( ) .)
+    and             reduce using rule 66 (LLAMADA -> id ( ) .)
+    or              reduce using rule 66 (LLAMADA -> id ( ) .)
+    )               reduce using rule 66 (LLAMADA -> id ( ) .)
+    to              reduce using rule 66 (LLAMADA -> id ( ) .)
+    ,               reduce using rule 66 (LLAMADA -> id ( ) .)
+    ]               reduce using rule 66 (LLAMADA -> id ( ) .)
+    do              reduce using rule 66 (LLAMADA -> id ( ) .)
+
+
+state 146
+
+    (68) LLAMADA_OPTS -> EXPRESION .
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    )               reduce using rule 68 (LLAMADA_OPTS -> EXPRESION .)
+    ,               reduce using rule 68 (LLAMADA_OPTS -> EXPRESION .)
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 147
+
+    (28) VARIABLE -> id [ EXPRESION . ]
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    ]               shift and go to state 186
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 148
+
+    (74) LECTURA -> read ( LECTURA_OPTS . )
+    (75) LECTURA_OPTS -> LECTURA_OPTS . , id
+
+    )               shift and go to state 187
+    ,               shift and go to state 188
+
+
+state 149
+
+    (76) LECTURA_OPTS -> id .
+
+    )               reduce using rule 76 (LECTURA_OPTS -> id .)
+    ,               reduce using rule 76 (LECTURA_OPTS -> id .)
+
+
+state 150
+
+    (77) ESCRITURA -> write ( ESCRITURA_OPTS . )
+    (78) ESCRITURA_OPTS -> ESCRITURA_OPTS . , cte_s
+    (79) ESCRITURA_OPTS -> ESCRITURA_OPTS . , EXPRESION
+
+    )               shift and go to state 189
+    ,               shift and go to state 190
+
+
+state 151
+
+    (80) ESCRITURA_OPTS -> cte_s .
+
+    )               reduce using rule 80 (ESCRITURA_OPTS -> cte_s .)
+    ,               reduce using rule 80 (ESCRITURA_OPTS -> cte_s .)
+
+
+state 152
+
+    (81) ESCRITURA_OPTS -> EXPRESION .
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    )               reduce using rule 81 (ESCRITURA_OPTS -> EXPRESION .)
+    ,               reduce using rule 81 (ESCRITURA_OPTS -> EXPRESION .)
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 153
+
+    (90) POINT -> point ( EXPRESION . , EXPRESION )
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    ,               shift and go to state 191
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 154
+
+    (91) CIRCLE -> circle ( EXPRESION . )
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    )               shift and go to state 192
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 155
+
+    (92) PENUP -> penup ( ) .
+
+    ;               reduce using rule 92 (PENUP -> penup ( ) .)
+
+
+state 156
+
+    (93) PENDOWN -> pendown ( ) .
+
+    ;               reduce using rule 93 (PENDOWN -> pendown ( ) .)
+
+
+state 157
+
+    (94) COLOR -> color ( cte_s . )
+
+    )               shift and go to state 193
+
+
+state 158
+
+    (95) SIZE -> size ( EXPRESION . )
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    )               shift and go to state 194
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 159
+
+    (89) CLEAR -> clear ( ) .
+
+    ;               reduce using rule 89 (CLEAR -> clear ( ) .)
+
+
+state 160
+
+    (26) VARIABLE_FIX -> id [ cte_i ] .
+
+    ;               reduce using rule 26 (VARIABLE_FIX -> id [ cte_i ] .)
+    ,               reduce using rule 26 (VARIABLE_FIX -> id [ cte_i ] .)
+
+
+state 161
+
+    (21) FUNCS -> FUNC_TYPES module id ( ) DEC_V BLOQUE .
+
+    void            reduce using rule 21 (FUNCS -> FUNC_TYPES module id ( ) DEC_V BLOQUE .)
+    int             reduce using rule 21 (FUNCS -> FUNC_TYPES module id ( ) DEC_V BLOQUE .)
+    float           reduce using rule 21 (FUNCS -> FUNC_TYPES module id ( ) DEC_V BLOQUE .)
+    char            reduce using rule 21 (FUNCS -> FUNC_TYPES module id ( ) DEC_V BLOQUE .)
+    main            reduce using rule 21 (FUNCS -> FUNC_TYPES module id ( ) DEC_V BLOQUE .)
+
+
+state 162
+
+    (19) FUNCS -> FUNC_TYPES module id ( PARAMS ) BLOQUE .
+
+    void            reduce using rule 19 (FUNCS -> FUNC_TYPES module id ( PARAMS ) BLOQUE .)
+    int             reduce using rule 19 (FUNCS -> FUNC_TYPES module id ( PARAMS ) BLOQUE .)
+    float           reduce using rule 19 (FUNCS -> FUNC_TYPES module id ( PARAMS ) BLOQUE .)
+    char            reduce using rule 19 (FUNCS -> FUNC_TYPES module id ( PARAMS ) BLOQUE .)
+    main            reduce using rule 19 (FUNCS -> FUNC_TYPES module id ( PARAMS ) BLOQUE .)
+
+
+state 163
+
+    (20) FUNCS -> FUNC_TYPES module id ( PARAMS ) DEC_V . BLOQUE
+    (7) DEC_V -> DEC_V . var TIPO_SIMPLE : LISTA_VAR ;
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+
+    var             shift and go to state 19
+    {               shift and go to state 32
+
+    BLOQUE                         shift and go to state 195
+
+state 164
+
+    (24) PARAMS -> PARAMS , TIPO_SIMPLE . id
+
+    id              shift and go to state 196
+
+
+state 165
+
+    (17) FUNCS -> FUNCS FUNC_TYPES module id ( ) DEC_V BLOQUE .
+
+    void            reduce using rule 17 (FUNCS -> FUNCS FUNC_TYPES module id ( ) DEC_V BLOQUE .)
+    int             reduce using rule 17 (FUNCS -> FUNCS FUNC_TYPES module id ( ) DEC_V BLOQUE .)
+    float           reduce using rule 17 (FUNCS -> FUNCS FUNC_TYPES module id ( ) DEC_V BLOQUE .)
+    char            reduce using rule 17 (FUNCS -> FUNCS FUNC_TYPES module id ( ) DEC_V BLOQUE .)
+    main            reduce using rule 17 (FUNCS -> FUNCS FUNC_TYPES module id ( ) DEC_V BLOQUE .)
+
+
+state 166
+
+    (15) FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) BLOQUE .
+
+    void            reduce using rule 15 (FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) BLOQUE .)
+    int             reduce using rule 15 (FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) BLOQUE .)
+    float           reduce using rule 15 (FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) BLOQUE .)
+    char            reduce using rule 15 (FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) BLOQUE .)
+    main            reduce using rule 15 (FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) BLOQUE .)
+
+
+state 167
+
+    (16) FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) DEC_V . BLOQUE
+    (7) DEC_V -> DEC_V . var TIPO_SIMPLE : LISTA_VAR ;
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+
+    var             shift and go to state 19
+    {               shift and go to state 32
+
+    BLOQUE                         shift and go to state 197
+
+state 168
+
+    (30) BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; . }
+
+    }               shift and go to state 198
+
+
+state 169
+
+    (32) BLOQUE -> { return EXPRESION ; } .
+
+    $end            reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    void            reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    int             reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    float           reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    char            reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    main            reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    else            reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    return          reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    }               reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    if              reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    while           reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    for             reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    id              reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    read            reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    write           reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    point           reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    circle          reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    penup           reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    pendown         reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    color           reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    size            reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+    clear           reduce using rule 32 (BLOQUE -> { return EXPRESION ; } .)
+
+
+state 170
+
+    (36) EXPRESION -> EXPRESION and EXP_R .
+
+    ;               reduce using rule 36 (EXPRESION -> EXPRESION and EXP_R .)
+    and             reduce using rule 36 (EXPRESION -> EXPRESION and EXP_R .)
+    or              reduce using rule 36 (EXPRESION -> EXPRESION and EXP_R .)
+    )               reduce using rule 36 (EXPRESION -> EXPRESION and EXP_R .)
+    to              reduce using rule 36 (EXPRESION -> EXPRESION and EXP_R .)
+    ,               reduce using rule 36 (EXPRESION -> EXPRESION and EXP_R .)
+    ]               reduce using rule 36 (EXPRESION -> EXPRESION and EXP_R .)
+    do              reduce using rule 36 (EXPRESION -> EXPRESION and EXP_R .)
+
+
+state 171
+
+    (37) EXPRESION -> EXPRESION or EXP_R .
+
+    ;               reduce using rule 37 (EXPRESION -> EXPRESION or EXP_R .)
+    and             reduce using rule 37 (EXPRESION -> EXPRESION or EXP_R .)
+    or              reduce using rule 37 (EXPRESION -> EXPRESION or EXP_R .)
+    )               reduce using rule 37 (EXPRESION -> EXPRESION or EXP_R .)
+    to              reduce using rule 37 (EXPRESION -> EXPRESION or EXP_R .)
+    ,               reduce using rule 37 (EXPRESION -> EXPRESION or EXP_R .)
+    ]               reduce using rule 37 (EXPRESION -> EXPRESION or EXP_R .)
+    do              reduce using rule 37 (EXPRESION -> EXPRESION or EXP_R .)
+
+
+state 172
+
+    (39) EXP_R -> EXP_A > EXP_A .
+    (44) EXP_A -> EXP_A . + TERMINO
+    (45) EXP_A -> EXP_A . minus TERMINO
+
+    ;               reduce using rule 39 (EXP_R -> EXP_A > EXP_A .)
+    and             reduce using rule 39 (EXP_R -> EXP_A > EXP_A .)
+    or              reduce using rule 39 (EXP_R -> EXP_A > EXP_A .)
+    )               reduce using rule 39 (EXP_R -> EXP_A > EXP_A .)
+    to              reduce using rule 39 (EXP_R -> EXP_A > EXP_A .)
+    ,               reduce using rule 39 (EXP_R -> EXP_A > EXP_A .)
+    ]               reduce using rule 39 (EXP_R -> EXP_A > EXP_A .)
+    do              reduce using rule 39 (EXP_R -> EXP_A > EXP_A .)
+    +               shift and go to state 135
+    minus           shift and go to state 136
+
+
+state 173
+
+    (40) EXP_R -> EXP_A < EXP_A .
+    (44) EXP_A -> EXP_A . + TERMINO
+    (45) EXP_A -> EXP_A . minus TERMINO
+
+    ;               reduce using rule 40 (EXP_R -> EXP_A < EXP_A .)
+    and             reduce using rule 40 (EXP_R -> EXP_A < EXP_A .)
+    or              reduce using rule 40 (EXP_R -> EXP_A < EXP_A .)
+    )               reduce using rule 40 (EXP_R -> EXP_A < EXP_A .)
+    to              reduce using rule 40 (EXP_R -> EXP_A < EXP_A .)
+    ,               reduce using rule 40 (EXP_R -> EXP_A < EXP_A .)
+    ]               reduce using rule 40 (EXP_R -> EXP_A < EXP_A .)
+    do              reduce using rule 40 (EXP_R -> EXP_A < EXP_A .)
+    +               shift and go to state 135
+    minus           shift and go to state 136
+
+
+state 174
+
+    (41) EXP_R -> EXP_A equals EXP_A .
+    (44) EXP_A -> EXP_A . + TERMINO
+    (45) EXP_A -> EXP_A . minus TERMINO
+
+    ;               reduce using rule 41 (EXP_R -> EXP_A equals EXP_A .)
+    and             reduce using rule 41 (EXP_R -> EXP_A equals EXP_A .)
+    or              reduce using rule 41 (EXP_R -> EXP_A equals EXP_A .)
+    )               reduce using rule 41 (EXP_R -> EXP_A equals EXP_A .)
+    to              reduce using rule 41 (EXP_R -> EXP_A equals EXP_A .)
+    ,               reduce using rule 41 (EXP_R -> EXP_A equals EXP_A .)
+    ]               reduce using rule 41 (EXP_R -> EXP_A equals EXP_A .)
+    do              reduce using rule 41 (EXP_R -> EXP_A equals EXP_A .)
+    +               shift and go to state 135
+    minus           shift and go to state 136
+
+
+state 175
+
+    (42) EXP_R -> EXP_A not_equals EXP_A .
+    (44) EXP_A -> EXP_A . + TERMINO
+    (45) EXP_A -> EXP_A . minus TERMINO
+
+    ;               reduce using rule 42 (EXP_R -> EXP_A not_equals EXP_A .)
+    and             reduce using rule 42 (EXP_R -> EXP_A not_equals EXP_A .)
+    or              reduce using rule 42 (EXP_R -> EXP_A not_equals EXP_A .)
+    )               reduce using rule 42 (EXP_R -> EXP_A not_equals EXP_A .)
+    to              reduce using rule 42 (EXP_R -> EXP_A not_equals EXP_A .)
+    ,               reduce using rule 42 (EXP_R -> EXP_A not_equals EXP_A .)
+    ]               reduce using rule 42 (EXP_R -> EXP_A not_equals EXP_A .)
+    do              reduce using rule 42 (EXP_R -> EXP_A not_equals EXP_A .)
+    +               shift and go to state 135
+    minus           shift and go to state 136
+
+
+state 176
+
+    (44) EXP_A -> EXP_A + TERMINO .
+    (47) TERMINO -> TERMINO . * FACTOR
+    (48) TERMINO -> TERMINO . / FACTOR
+
+    >               reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    <               reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    equals          reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    not_equals      reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    +               reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    minus           reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    ;               reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    and             reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    or              reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    )               reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    to              reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    ,               reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    ]               reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    do              reduce using rule 44 (EXP_A -> EXP_A + TERMINO .)
+    *               shift and go to state 137
+    /               shift and go to state 138
+
+
+state 177
+
+    (45) EXP_A -> EXP_A minus TERMINO .
+    (47) TERMINO -> TERMINO . * FACTOR
+    (48) TERMINO -> TERMINO . / FACTOR
+
+    >               reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    <               reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    equals          reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    not_equals      reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    +               reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    minus           reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    ;               reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    and             reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    or              reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    )               reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    to              reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    ,               reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    ]               reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    do              reduce using rule 45 (EXP_A -> EXP_A minus TERMINO .)
+    *               shift and go to state 137
+    /               shift and go to state 138
+
+
+state 178
+
+    (47) TERMINO -> TERMINO * FACTOR .
+
+    *               reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    /               reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    >               reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    <               reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    equals          reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    not_equals      reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    +               reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    minus           reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    ;               reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    and             reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    or              reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    )               reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    to              reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    ,               reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    ]               reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+    do              reduce using rule 47 (TERMINO -> TERMINO * FACTOR .)
+
+
+state 179
+
+    (48) TERMINO -> TERMINO / FACTOR .
+
+    *               reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    /               reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    >               reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    <               reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    equals          reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    not_equals      reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    +               reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    minus           reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    ;               reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    and             reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    or              reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    )               reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    to              reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    ,               reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    ]               reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+    do              reduce using rule 48 (TERMINO -> TERMINO / FACTOR .)
+
+
+state 180
+
+    (61) FACTOR -> ( EXPRESION ) .
+
+    *               reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    /               reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    >               reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    <               reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    equals          reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    not_equals      reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    +               reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    minus           reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    ;               reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    and             reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    or              reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    )               reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    to              reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    ,               reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    ]               reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+    do              reduce using rule 61 (FACTOR -> ( EXPRESION ) .)
+
+
+state 181
+
+    (70) CONDICION -> if ( EXPRESION ) . then BLOQUE
+    (71) CONDICION -> if ( EXPRESION ) . then BLOQUE else BLOQUE
+
+    then            shift and go to state 199
+
+
+state 182
+
+    (72) WHILE -> while ( EXPRESION ) . do BLOQUE
+
+    do              shift and go to state 200
+
+
+state 183
+
+    (73) FOR -> for ASIGNACION to EXPRESION . do BLOQUE
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    do              shift and go to state 201
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 184
+
+    (65) LLAMADA -> id ( LLAMADA_OPTS ) .
+
+    ;               reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    *               reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    /               reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    >               reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    <               reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    equals          reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    not_equals      reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    +               reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    minus           reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    and             reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    or              reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    )               reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    to              reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    ,               reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    ]               reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    do              reduce using rule 65 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+
+
+state 185
+
+    (67) LLAMADA_OPTS -> LLAMADA_OPTS , . EXPRESION
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 202
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 186
+
+    (28) VARIABLE -> id [ EXPRESION ] .
+
+    =               reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    *               reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    /               reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    >               reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    <               reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    equals          reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    not_equals      reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    +               reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    minus           reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    ;               reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    and             reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    or              reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    )               reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    to              reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    ,               reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    ]               reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+    do              reduce using rule 28 (VARIABLE -> id [ EXPRESION ] .)
+
+
+state 187
+
+    (74) LECTURA -> read ( LECTURA_OPTS ) .
+
+    ;               reduce using rule 74 (LECTURA -> read ( LECTURA_OPTS ) .)
+
+
+state 188
+
+    (75) LECTURA_OPTS -> LECTURA_OPTS , . id
+
+    id              shift and go to state 203
+
+
+state 189
+
+    (77) ESCRITURA -> write ( ESCRITURA_OPTS ) .
+
+    ;               reduce using rule 77 (ESCRITURA -> write ( ESCRITURA_OPTS ) .)
+
+
+state 190
+
+    (78) ESCRITURA_OPTS -> ESCRITURA_OPTS , . cte_s
+    (79) ESCRITURA_OPTS -> ESCRITURA_OPTS , . EXPRESION
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    cte_s           shift and go to state 204
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 205
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 191
+
+    (90) POINT -> point ( EXPRESION , . EXPRESION )
+    (36) EXPRESION -> . EXPRESION and EXP_R
+    (37) EXPRESION -> . EXPRESION or EXP_R
+    (38) EXPRESION -> . EXP_R
+    (39) EXP_R -> . EXP_A > EXP_A
+    (40) EXP_R -> . EXP_A < EXP_A
+    (41) EXP_R -> . EXP_A equals EXP_A
+    (42) EXP_R -> . EXP_A not_equals EXP_A
+    (43) EXP_R -> . EXP_A
+    (44) EXP_A -> . EXP_A + TERMINO
+    (45) EXP_A -> . EXP_A minus TERMINO
+    (46) EXP_A -> . TERMINO
+    (47) TERMINO -> . TERMINO * FACTOR
+    (48) TERMINO -> . TERMINO / FACTOR
+    (49) TERMINO -> . FACTOR
+    (58) FACTOR -> . LLAMADA
+    (59) FACTOR -> . CTE
+    (60) FACTOR -> . VARIABLE
+    (61) FACTOR -> . ( EXPRESION )
+    (65) LLAMADA -> . id ( LLAMADA_OPTS )
+    (66) LLAMADA -> . id ( )
+    (62) CTE -> . cte_i
+    (63) CTE -> . cte_f
+    (64) CTE -> . cte_c
+    (28) VARIABLE -> . id [ EXPRESION ]
+    (29) VARIABLE -> . id
+
+    (               shift and go to state 92
+    id              shift and go to state 55
+    cte_i           shift and go to state 93
+    cte_f           shift and go to state 94
+    cte_c           shift and go to state 95
+
+    EXPRESION                      shift and go to state 206
+    EXP_R                          shift and go to state 85
+    EXP_A                          shift and go to state 86
+    TERMINO                        shift and go to state 87
+    FACTOR                         shift and go to state 88
+    LLAMADA                        shift and go to state 89
+    CTE                            shift and go to state 90
+    VARIABLE                       shift and go to state 91
+
+state 192
+
+    (91) CIRCLE -> circle ( EXPRESION ) .
+
+    ;               reduce using rule 91 (CIRCLE -> circle ( EXPRESION ) .)
+
+
+state 193
+
+    (94) COLOR -> color ( cte_s ) .
+
+    ;               reduce using rule 94 (COLOR -> color ( cte_s ) .)
+
+
+state 194
+
+    (95) SIZE -> size ( EXPRESION ) .
+
+    ;               reduce using rule 95 (SIZE -> size ( EXPRESION ) .)
+
+
+state 195
+
+    (20) FUNCS -> FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE .
+
+    void            reduce using rule 20 (FUNCS -> FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE .)
+    int             reduce using rule 20 (FUNCS -> FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE .)
+    float           reduce using rule 20 (FUNCS -> FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE .)
+    char            reduce using rule 20 (FUNCS -> FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE .)
+    main            reduce using rule 20 (FUNCS -> FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE .)
+
+
+state 196
+
+    (24) PARAMS -> PARAMS , TIPO_SIMPLE id .
+
+    )               reduce using rule 24 (PARAMS -> PARAMS , TIPO_SIMPLE id .)
+    ,               reduce using rule 24 (PARAMS -> PARAMS , TIPO_SIMPLE id .)
+
+
+state 197
+
+    (16) FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE .
+
+    void            reduce using rule 16 (FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE .)
+    int             reduce using rule 16 (FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE .)
+    float           reduce using rule 16 (FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE .)
+    char            reduce using rule 16 (FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE .)
+    main            reduce using rule 16 (FUNCS -> FUNCS FUNC_TYPES module id ( PARAMS ) DEC_V BLOQUE .)
+
+
+state 198
+
+    (30) BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .
+
+    $end            reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    void            reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    int             reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    float           reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    char            reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    main            reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    else            reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    return          reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    }               reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    if              reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    while           reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    for             reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    id              reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    read            reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    write           reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    point           reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    circle          reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    penup           reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    pendown         reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    color           reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    size            reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+    clear           reduce using rule 30 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
+
+
+state 199
+
+    (70) CONDICION -> if ( EXPRESION ) then . BLOQUE
+    (71) CONDICION -> if ( EXPRESION ) then . BLOQUE else BLOQUE
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+
+    {               shift and go to state 32
+
+    BLOQUE                         shift and go to state 207
+
+state 200
+
+    (72) WHILE -> while ( EXPRESION ) do . BLOQUE
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+
+    {               shift and go to state 32
+
+    BLOQUE                         shift and go to state 208
+
+state 201
+
+    (73) FOR -> for ASIGNACION to EXPRESION do . BLOQUE
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+
+    {               shift and go to state 32
+
+    BLOQUE                         shift and go to state 209
+
+state 202
+
+    (67) LLAMADA_OPTS -> LLAMADA_OPTS , EXPRESION .
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    )               reduce using rule 67 (LLAMADA_OPTS -> LLAMADA_OPTS , EXPRESION .)
+    ,               reduce using rule 67 (LLAMADA_OPTS -> LLAMADA_OPTS , EXPRESION .)
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 203
+
+    (75) LECTURA_OPTS -> LECTURA_OPTS , id .
+
+    )               reduce using rule 75 (LECTURA_OPTS -> LECTURA_OPTS , id .)
+    ,               reduce using rule 75 (LECTURA_OPTS -> LECTURA_OPTS , id .)
+
+
+state 204
+
+    (78) ESCRITURA_OPTS -> ESCRITURA_OPTS , cte_s .
+
+    )               reduce using rule 78 (ESCRITURA_OPTS -> ESCRITURA_OPTS , cte_s .)
+    ,               reduce using rule 78 (ESCRITURA_OPTS -> ESCRITURA_OPTS , cte_s .)
+
+
+state 205
+
+    (79) ESCRITURA_OPTS -> ESCRITURA_OPTS , EXPRESION .
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    )               reduce using rule 79 (ESCRITURA_OPTS -> ESCRITURA_OPTS , EXPRESION .)
+    ,               reduce using rule 79 (ESCRITURA_OPTS -> ESCRITURA_OPTS , EXPRESION .)
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 206
+
+    (90) POINT -> point ( EXPRESION , EXPRESION . )
+    (36) EXPRESION -> EXPRESION . and EXP_R
+    (37) EXPRESION -> EXPRESION . or EXP_R
+
+    )               shift and go to state 210
+    and             shift and go to state 129
+    or              shift and go to state 130
+
+
+state 207
+
+    (70) CONDICION -> if ( EXPRESION ) then BLOQUE .
+    (71) CONDICION -> if ( EXPRESION ) then BLOQUE . else BLOQUE
+
+    return          reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    }               reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    if              reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    while           reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    for             reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    id              reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    read            reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    write           reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    point           reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    circle          reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    penup           reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    pendown         reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    color           reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    size            reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    clear           reduce using rule 70 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
+    else            shift and go to state 211
+
+
+state 208
+
+    (72) WHILE -> while ( EXPRESION ) do BLOQUE .
+
+    return          reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    }               reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    if              reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    while           reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    for             reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    id              reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    read            reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    write           reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    point           reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    circle          reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    penup           reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    pendown         reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    color           reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    size            reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+    clear           reduce using rule 72 (WHILE -> while ( EXPRESION ) do BLOQUE .)
+
+
+state 209
+
+    (73) FOR -> for ASIGNACION to EXPRESION do BLOQUE .
+
+    return          reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    }               reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    if              reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    while           reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    for             reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    id              reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    read            reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    write           reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    point           reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    circle          reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    penup           reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    pendown         reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    color           reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    size            reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+    clear           reduce using rule 73 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
+
+
+state 210
+
+    (90) POINT -> point ( EXPRESION , EXPRESION ) .
+
+    ;               reduce using rule 90 (POINT -> point ( EXPRESION , EXPRESION ) .)
+
+
+state 211
+
+    (71) CONDICION -> if ( EXPRESION ) then BLOQUE else . BLOQUE
+    (30) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
+    (31) BLOQUE -> . { LOOP_ESTATUTO }
+    (32) BLOQUE -> . { return EXPRESION ; }
+    (33) BLOQUE -> . { }
+
+    {               shift and go to state 32
+
+    BLOQUE                         shift and go to state 212
+
+state 212
+
+    (71) CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .
+
+    return          reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    }               reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    if              reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    while           reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    for             reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    id              reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    read            reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    write           reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    point           reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    circle          reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    penup           reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    pendown         reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    color           reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    size            reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+    clear           reduce using rule 71 (CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .)
+
