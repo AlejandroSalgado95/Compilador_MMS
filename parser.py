@@ -5,6 +5,9 @@ import ply.yacc as yacc
 from lexer import tokens
 import sys
 
+from CuboSemantico import CS
+
+
 precedence = (
     ('left', 'and', 'or'),
     ('left', '>', '<', 'equals', 'not_equals'),
