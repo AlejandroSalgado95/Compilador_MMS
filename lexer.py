@@ -34,7 +34,8 @@ reserved = {
 'penup' : 'penup',
 'pendown' : 'pendown',
 'color' : 'color',
-'size' : 'size'
+'size' : 'size',
+'global' : 'global'
 
 }
 
