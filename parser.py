@@ -5,6 +5,20 @@ import ply.yacc as yacc
 from lexer import tokens
 import sys
 
+from SemanticCube import SC
+from FunctionDirectory import FuncDirec
+
+#python variables
+funcDirec = FuncDirec()
+funcName = ""
+funcType = ""
+varType = ""
+varName = ""
+scope = "global"
+
+
+
+
 precedence = (
     ('left', 'and', 'or'),
     ('left', '>', '<', 'equals', 'not_equals'),
@@ -12,25 +26,29 @@ precedence = (
     ('left', '*', '/')
 )
 
+
+############################################SYNTACTIC RULES########################################
 def p_programa(p):
     '''
-     PROGRAMA : program id ';' PROGRAMA_OPTS PRINCIPAL 
-               | program id ';' PRINCIPAL 
+     PROGRAMA : program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PROGRAMA_OPTS PRINCIPAL 
+               | program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PRINCIPAL 
     '''
     print("ACCEPTED")
+    funcDirec.printContents(True)
+
 
 
 def p_programa_opts(p):
     '''
     PROGRAMA_OPTS :  DEC_V FUNCS
-                    | DEC_V 
+                    | DEC_V
                     | FUNCS
     '''
 
 
 def p_principal(p):
     '''
-    PRINCIPAL : main '(' ')' BLOQUE
+    PRINCIPAL : SEM_MAIN_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
     '''
 
 def p_dec_v(p):
@@ -38,7 +56,8 @@ def p_dec_v(p):
     DEC_V : DEC_V var  TIPO_SIMPLE ':' LISTA_VAR ';' 
             | var TIPO_SIMPLE ':' LISTA_VAR ';'
     '''
-
+    global scope
+    scope = "local"
 
 
 
@@ -69,39 +88,63 @@ def p_tipo_simple(p):
                  | float 
                  | char
     '''
+    global varType 
+    varType = p[1]
 
 
 def p_funcs(p):
     '''
-    FUNCS :  FUNCS FUNC_TYPES module id '(' ')' BLOQUE
-           | FUNCS FUNC_TYPES module id '(' PARAMS ')' BLOQUE
-           | FUNCS FUNC_TYPES module id '(' PARAMS ')' DEC_V BLOQUE 
-           | FUNCS FUNC_TYPES module id '(' ')' DEC_V BLOQUE
-           | FUNC_TYPES module id '(' ')' BLOQUE
-           | FUNC_TYPES module id '(' PARAMS ')' BLOQUE
-           | FUNC_TYPES module id '(' PARAMS ')' DEC_V BLOQUE
-           | FUNC_TYPES module id '(' ')' DEC_V BLOQUE
+    FUNCS :  FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
+           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
+           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE 
+           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE
+           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
+           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
+           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE
+           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE
 
     '''
+    global scope
+    scope = "local"
 
 def p_func_types(p):
     '''
-    FUNC_TYPES : TIPO_SIMPLE 
+    FUNC_TYPES :  char
+                 | float 
+                 | int
                  | void
     '''
+    global funcType
+    funcType = p[1]
 
 
 def p_params(p):
     '''
-    PARAMS : PARAMS ',' TIPO_SIMPLE id 
-            | TIPO_SIMPLE id
+    PARAMS : PARAMS ',' TIPO_SIMPLE PARAM_NAME
+            | TIPO_SIMPLE PARAM_NAME
     '''
+    
+def p_param_name(p):
+  '''
+  PARAM_NAME : id
+  '''
+  global varName
+  varName = p[1]
+  funcDirec.addLocalVariableToFunc(funcName, varName, varType, True)
 
 def p_variable_fix(p):
     '''
     VARIABLE_FIX : id '[' cte_i ']' 
                   | id
     '''
+    global varName
+    global varType
+    global scope
+    global funcDirec
+    varName = p[1]
+    funcDirec.addLocalVariableToFunc(funcName, varName, varType, False)
+
+
 
 def p_variable(p):
     '''
@@ -291,6 +334,72 @@ def p_error(p):
         print("Syntax error at EOF")
 
 
+################################################INBETWEEN RULES####################################
+
+
+
+
+
+###########################################SEMANTIC RULES#########################################
+
+def p_sem_global_name(p):
+  '''
+    SEM_GLOBAL_NAME : id
+  '''
+  global funcName
+  global funcType
+  funcName = "global"
+  funcType = "void"
+
+def p_sem_main_name(p):
+  '''
+    SEM_MAIN_NAME : main
+  '''
+  global funcName
+  global funcType
+  funcName = p[1]
+  funcType = "void"
+
+
+
+def p_sem_func_name(p):
+  '''
+    SEM_FUNC_NAME : id
+  '''
+  global funcName
+  funcName = p[1]
+
+
+def p_sem_add_func(p):
+  '''
+  SEM_ADD_FUNC : 
+  '''
+  funcDirec.addFunc(funcName, funcType)
+
+
+def p_sem_add_global_variables(p):
+  '''
+  SEM_ADD_GLOBAL_VARIABLES : 
+  '''
+  funcDirec.addGlobalVariablesToFunc(funcName)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################PARSER EXECUTION##############################
 
 #Parse a given file
 
