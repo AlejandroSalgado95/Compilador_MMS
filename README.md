@@ -17,7 +17,7 @@ This release performs:
 
 ## About
 
-## Author
+### Author
 * A00513221, Alejandro Alfredo Salgado Gaspar
 
 ### Notes
