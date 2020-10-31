@@ -1,11 +1,11 @@
-#SPRINT 1
+# SPRINT 1
 
-##Description
+## Description
 This release performs: 
 * The lexical and syntactical analysis of an input text, and determines whether the given text is valid within the rules of the “MMS” language
 * The semantical analysis and storage of the functions within a given input text, as well as its local and global variables
 
-##Installation 
+## Installation 
 1.Install python3: brew install python3
 
 2.Install python3 package manager: python3 -m pip install --upgrade virtualenv
@@ -15,12 +15,12 @@ This release performs:
 4.Run parser: python3 parser.py [file name]
  
 
-##About
+## About
 
-###Author
+### Author
 A00513221, Alejandro Alfredo Salgado Gaspar
 
-###Notes
+### Notes
 This release includes:
 * Handwritten evidence of the lexical and syntactic rules. These are found at the “Documentacion” folder
 * Source code for the lexer and parser, written on python and runnable through the console. These are found at the “Codigo” folder
