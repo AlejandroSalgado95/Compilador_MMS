@@ -22,6 +22,7 @@ cteType = ""
 operandsList = []
 operatorsList = []
 quadruples = Quadruples()
+errorQueue = []
 
 
 
@@ -41,6 +42,7 @@ def p_programa(p):
                | program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PRINCIPAL 
     '''
     global operandsList
+    global errorQueue
     print("ACCEPTED")
     funcDirec.printContents(True)
     quadruples.printContents()
@@ -49,6 +51,8 @@ def p_programa(p):
         print("Name: " + str(operand.name), "Value: " + str(operand.value), "Type: " + str(operand.type))
     for operator in operatorsList:
         print ("operator: " + operator)
+    for error in errorQueue:
+        print(error)
 
 
 
@@ -155,7 +159,8 @@ def p_variable(p):
     varName = p[1]
     retrievedVar = funcDirec.getVariableInFunc(funcName, varName)
     if isinstance(retrievedVar, str):
-      print ("Error: ", retrievedVar)
+      errorQueue.append("Error: " + retrievedVar)
+      print("Error: ", retrievedVar)
     else:
       operandsList.append( Operand(varName, None, retrievedVar["varType"]) )
       
@@ -176,17 +181,17 @@ def p_loop_estatuto(p):
 
 def p_expresion(p):
     '''
-    EXPRESION :  EXPRESION and EXP_R
-                | EXPRESION or EXP_R
+    EXPRESION :  EXPRESION SEM_PENDING_LOGIC_OP  and  SEM_ADD_AND  EXP_R  SEM_PENDING_LOGIC_OP
+                | EXPRESION SEM_PENDING_LOGIC_OP  or  SEM_ADD_OR   EXP_R  SEM_PENDING_LOGIC_OP
                 | EXP_R
     '''
 
 def p_exp_r(p):
     '''
-    EXP_R :  EXP_A '>' EXP_A 
-            | EXP_A '<' EXP_A 
-            | EXP_A equals EXP_A  
-            | EXP_A not_equals EXP_A 
+    EXP_R :  EXP_A '>' SEM_ADD_GREATER_THAN   EXP_A   SEM_PENDING_REL_OP
+            | EXP_A '<' SEM_ADD_LESS_THAN   EXP_A   SEM_PENDING_REL_OP
+            | EXP_A equals SEM_ADD_EQUALS_TO   EXP_A    SEM_PENDING_REL_OP
+            | EXP_A not_equals SEM_ADD_NOT_EQUALS_TO   EXP_A   SEM_PENDING_REL_OP
             | EXP_A
     '''
 
@@ -221,7 +226,7 @@ def p_factor(p):
     FACTOR : LLAMADA 
             | CTE  
             | VARIABLE 
-            | '(' EXPRESION ')' 
+            | '(' SEM_ADD_FONDO_FALSO EXPRESION ')' SEM_REMOVE_FONDO_FALSO
     '''
 
 def p_cte(p):
@@ -450,6 +455,70 @@ def p_sem_add_equals(p):
   operatorsList.append("=")
 
 
+def p_sem_add_fondo_falso(p):
+  '''
+  SEM_ADD_FONDO_FALSO : 
+  '''
+  global operatorsList
+  operatorsList.append("(")
+
+
+def p_sem_remove_fondo_falso(p):
+  '''
+  SEM_REMOVE_FONDO_FALSO : 
+  '''
+  global operatorsList
+  operatorsList.pop()
+
+
+def p_sem_add_greater_than(p):
+  '''
+  SEM_ADD_GREATER_THAN : 
+  '''
+  global operatorsList
+  operatorsList.append('>')
+
+
+def p_sem_add_less_than(p):
+  '''
+  SEM_ADD_LESS_THAN : 
+  '''
+  global operatorsList
+  operatorsList.append('<')
+
+
+def p_sem_add_equals_to(p):
+  '''
+  SEM_ADD_EQUALS_TO : 
+  '''
+  global operatorsList
+  operatorsList.append('==')
+
+
+def p_sem_add_not_equals_to(p):
+  '''
+  SEM_ADD_NOT_EQUALS_TO : 
+  '''
+  global operatorsList
+  operatorsList.append('!=')
+
+
+def p_sem_add_and(p):
+  '''
+  SEM_ADD_AND : 
+  '''
+  global operatorsList
+  operatorsList.append('&&')
+
+
+def p_sem_add_or(p):
+  '''
+  SEM_ADD_OR : 
+  '''
+  global operatorsList
+  operatorsList.append('||')
+
+
 def p_sem_pending_expa_op(p):
   '''
   SEM_PENDING_EXPA_OP : 
@@ -468,6 +537,7 @@ def p_sem_pending_expa_op(p):
     lOperand = operandsList.pop()
     resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
     if isinstance(resultOperand,str):
+      errorQueue.append("Error: " + resultOperand)
       print("Error: ", resultOperand)
     else: 
       operandsList.append(resultOperand)
@@ -491,6 +561,7 @@ def p_sem_pending_termino_op(p):
     lOperand = operandsList.pop()
     resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
     if isinstance(resultOperand,str):
+      errorQueue.append("Error: " + resultOperand)
       print("Error: ", resultOperand)
     else: 
       operandsList.append(resultOperand)
@@ -514,10 +585,58 @@ def p_sem_pending_assignation_op(p):
     resultOperand = operandsList.pop()
     result = quadruples.addAssignationCuadruple(operand,resultOperand)
     if isinstance(result,str):
+      errorQueue.append("Error: " + result)
       print("Error: ", result)
 
 
+def p_sem_pending_rel_op(p):
+  '''
+  SEM_PENDING_REL_OP : 
+  '''
+  global operatorsList
+  global operandsList
+  global quadruplesList
+  global errorQueue
 
+  topOp = ""
+
+  if len(operatorsList) > 0 :
+    topOp = operatorsList[-1]
+  if (topOp == ">") or (topOp == "<") or (topOp == "==") or (topOp == "!="):
+    topOp = operatorsList.pop()
+    rOperand = operandsList.pop()
+    lOperand = operandsList.pop()
+    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
+    if isinstance(resultOperand,str):
+      errorQueue.append("Error: " + resultOperand)
+      print("Error: ", resultOperand)
+    else: 
+      operandsList.append(resultOperand)
+
+
+def p_sem_pending_logic_op(p):
+  '''
+  SEM_PENDING_LOGIC_OP : 
+  '''
+  global operatorsList
+  global operandsList
+  global quadruplesList
+  global errorQueue
+
+  topOp = ""
+
+  if len(operatorsList) > 0 :
+    topOp = operatorsList[-1]
+  if (topOp == "&&") or (topOp == "||"):
+    topOp = operatorsList.pop()
+    rOperand = operandsList.pop()
+    lOperand = operandsList.pop()
+    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
+    if isinstance(resultOperand,str):
+      errorQueue.append("Error: " + resultOperand)
+      print("Error: ", resultOperand)
+    else: 
+      operandsList.append(resultOperand)
 
 
 
