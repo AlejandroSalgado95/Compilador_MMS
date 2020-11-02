@@ -5,8 +5,11 @@ import ply.yacc as yacc
 from lexer import tokens
 import sys
 
-from SemanticCube import SC
 from FunctionDirectory import FuncDirec
+from Quadruples import Quadruples
+from SemanticCube import SC
+from Operand import Operand
+
 
 #python variables
 funcDirec = FuncDirec()
@@ -14,7 +17,11 @@ funcName = ""
 funcType = ""
 varType = ""
 varName = ""
-scope = "global"
+cteValue = ""
+cteType = ""
+operandsList = []
+operatorsList = []
+quadruples = Quadruples()
 
 
 
@@ -33,8 +40,15 @@ def p_programa(p):
      PROGRAMA : program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PROGRAMA_OPTS PRINCIPAL 
                | program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PRINCIPAL 
     '''
+    global operandsList
     print("ACCEPTED")
     funcDirec.printContents(True)
+    quadruples.printContents()
+    print("amount of cuadruples: " + str( len(quadruples.quadruples) ) )
+    for operand in operandsList:
+        print("Name: " + str(operand.name), "Value: " + str(operand.value), "Type: " + str(operand.type))
+    for operator in operatorsList:
+        print ("operator: " + operator)
 
 
 
@@ -56,24 +70,6 @@ def p_dec_v(p):
     DEC_V : DEC_V var  TIPO_SIMPLE ':' LISTA_VAR ';' 
             | var TIPO_SIMPLE ':' LISTA_VAR ';'
     '''
-    global scope
-    scope = "local"
-
-
-
-#GENERABA CONFLICTOS Y NO TERMINABA EL PARSEO (FAILED)
-#def p_dec_v(p):
-    '''
-    DEC_V : var DEC_V_LOOP
-    '''
-#GENERABA CONFLICTOS Y NO TERMINABA EL PARSEO (FAILED)
-#def p_dec_v_loop(p):
-    '''
-    DEC_V_LOOP : DEC_V_LOOP TIPO_SIMPLE ':' LISTA_VAR ';' 
-                | TIPO_SIMPLE ':' LISTA_VAR ';'
-    '''
-
-
 
 
 def p_lista_var(p):
@@ -89,6 +85,7 @@ def p_tipo_simple(p):
                  | char
     '''
     global varType 
+
     varType = p[1]
 
 
@@ -104,8 +101,6 @@ def p_funcs(p):
            | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE
 
     '''
-    global scope
-    scope = "local"
 
 def p_func_types(p):
     '''
@@ -115,6 +110,7 @@ def p_func_types(p):
                  | void
     '''
     global funcType
+
     funcType = p[1]
 
 
@@ -129,6 +125,7 @@ def p_param_name(p):
   PARAM_NAME : id
   '''
   global varName
+
   varName = p[1]
   funcDirec.addLocalVariableToFunc(funcName, varName, varType, True)
 
@@ -139,8 +136,8 @@ def p_variable_fix(p):
     '''
     global varName
     global varType
-    global scope
     global funcDirec
+
     varName = p[1]
     funcDirec.addLocalVariableToFunc(funcName, varName, varType, False)
 
@@ -151,6 +148,17 @@ def p_variable(p):
     VARIABLE : id '[' EXPRESION ']' 
               | id
     '''
+    global varName
+    global funcDirec
+    global operandsList
+
+    varName = p[1]
+    retrievedVar = funcDirec.getVariableInFunc(funcName, varName)
+    if isinstance(retrievedVar, str):
+      print ("Error: ", retrievedVar)
+    else:
+      operandsList.append( Operand(varName, None, retrievedVar["varType"]) )
+      
 
 def p_bloque(p):
     '''
@@ -184,15 +192,15 @@ def p_exp_r(p):
 
 def p_exp_a(p):
     '''
-    EXP_A :  EXP_A '+' TERMINO 
-            | EXP_A minus TERMINO 
+    EXP_A :  EXP_A SEM_PENDING_EXPA_OP '+' SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+            | EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
             | TERMINO
     '''
 
 def p_termino(p):
     '''
-    TERMINO : TERMINO '*' FACTOR 
-             | TERMINO '/' FACTOR 
+    TERMINO : TERMINO SEM_PENDING_TERMINO_OP '*' SEM_ADD_TIMES  FACTOR  SEM_PENDING_TERMINO_OP
+             | TERMINO SEM_PENDING_TERMINO_OP '/' SEM_ADD_DIVISION  FACTOR  SEM_PENDING_TERMINO_OP
              | FACTOR
     '''
 
@@ -222,6 +230,25 @@ def p_cte(p):
          | cte_f 
          | cte_c
     '''
+    global cteValue
+    global cteType
+    global operandsList
+
+    cteValue = p[1]
+    if isinstance(p[1],int):
+      cteType = "int"
+    elif isinstance(p[1],float):
+      cteType = "float"
+    elif isinstance(p[1],str):
+      cteType = "char"
+
+    consOperand = Operand(None, cteValue, cteType)
+    operandsList.append( consOperand )
+    
+
+
+
+
 
 def p_llamada(p):
     '''
@@ -237,7 +264,7 @@ def p_llamada_opts(p):
 
 def p_asignacion(p):
     '''
-    ASIGNACION : VARIABLE '=' EXPRESION
+    ASIGNACION : VARIABLE '=' SEM_ADD_EQUALS EXPRESION SEM_PENDING_ASSIGNATION_OP
     '''
 
 def p_condicion(p):
@@ -384,14 +411,110 @@ def p_sem_add_global_variables(p):
   funcDirec.addGlobalVariablesToFunc(funcName)
 
 
+def p_sem_add_plus(p):
+  '''
+  SEM_ADD_PLUS : 
+  '''
+  global operatorsList
+  operatorsList.append("+")
 
 
+def p_sem_add_minus(p):
+  '''
+  SEM_ADD_MINUS : 
+  '''
+  global operatorsList
+  operatorsList.append("-")
+  print
+
+def p_sem_add_times(p):
+  '''
+  SEM_ADD_TIMES : 
+  '''
+  global operatorsList
+  operatorsList.append("*")
+
+def p_sem_add_division(p):
+  '''
+  SEM_ADD_DIVISION : 
+  '''
+  global operatorsList
+  operatorsList.append("/")
 
 
+def p_sem_add_equals(p):
+  '''
+  SEM_ADD_EQUALS : 
+  '''
+  global operatorsList
+  operatorsList.append("=")
 
 
+def p_sem_pending_expa_op(p):
+  '''
+  SEM_PENDING_EXPA_OP : 
+  '''
+  global operatorsList
+  global operandsList
+  global quadruplesList
+
+  topOp = ""
+
+  if len(operatorsList) > 0 :
+    topOp = operatorsList[-1]
+  if topOp == '+' or topOp == '-':
+    topOp = operatorsList.pop()
+    rOperand = operandsList.pop()
+    lOperand = operandsList.pop()
+    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
+    if isinstance(resultOperand,str):
+      print("Error: ", resultOperand)
+    else: 
+      operandsList.append(resultOperand)
 
 
+def p_sem_pending_termino_op(p):
+  '''
+  SEM_PENDING_TERMINO_OP : 
+  '''
+  global operatorsList
+  global operandsList
+  global quadruplesList
+
+  topOp = ""
+
+  if len(operatorsList) > 0 :
+    topOp = operatorsList[-1]
+  if topOp == '*' or topOp == '/':
+    topOp = operatorsList.pop()
+    rOperand = operandsList.pop()
+    lOperand = operandsList.pop()
+    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
+    if isinstance(resultOperand,str):
+      print("Error: ", resultOperand)
+    else: 
+      operandsList.append(resultOperand)
+
+
+def p_sem_pending_assignation_op(p):
+  '''
+  SEM_PENDING_ASSIGNATION_OP : 
+  '''
+  global operatorsList
+  global operandsList
+  global quadruplesList
+
+  topOp = ""
+
+  if len(operatorsList) > 0 :
+    topOp = operatorsList[-1]
+  if topOp == "=":
+    topOp = operatorsList.pop()
+    operand = operandsList.pop()
+    resultOperand = operandsList.pop()
+    result = quadruples.addAssignationCuadruple(operand,resultOperand)
+    if isinstance(result,str):
+      print("Error: ", result)
 
 
 

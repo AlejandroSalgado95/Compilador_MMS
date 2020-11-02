@@ -53,11 +53,11 @@ Rule 43    EXP_R -> EXP_A < EXP_A
 Rule 44    EXP_R -> EXP_A equals EXP_A
 Rule 45    EXP_R -> EXP_A not_equals EXP_A
 Rule 46    EXP_R -> EXP_A
-Rule 47    EXP_A -> EXP_A + TERMINO
-Rule 48    EXP_A -> EXP_A minus TERMINO
+Rule 47    EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+Rule 48    EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
 Rule 49    EXP_A -> TERMINO
-Rule 50    TERMINO -> TERMINO * FACTOR
-Rule 51    TERMINO -> TERMINO / FACTOR
+Rule 50    TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+Rule 51    TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
 Rule 52    TERMINO -> FACTOR
 Rule 53    ESTATUTO -> ASIGNACION ;
 Rule 54    ESTATUTO -> CONDICION
@@ -78,7 +78,7 @@ Rule 68    LLAMADA -> id ( LLAMADA_OPTS )
 Rule 69    LLAMADA -> id ( )
 Rule 70    LLAMADA_OPTS -> LLAMADA_OPTS , EXPRESION
 Rule 71    LLAMADA_OPTS -> EXPRESION
-Rule 72    ASIGNACION -> VARIABLE = EXPRESION
+Rule 72    ASIGNACION -> VARIABLE = SEM_ADD_EQUALS EXPRESION SEM_PENDING_ASSIGNATION_OP
 Rule 73    CONDICION -> if ( EXPRESION ) then BLOQUE
 Rule 74    CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE
 Rule 75    WHILE -> while ( EXPRESION ) do BLOQUE
@@ -110,6 +110,14 @@ Rule 100   SEM_MAIN_NAME -> main
 Rule 101   SEM_FUNC_NAME -> id
 Rule 102   SEM_ADD_FUNC -> <empty>
 Rule 103   SEM_ADD_GLOBAL_VARIABLES -> <empty>
+Rule 104   SEM_ADD_PLUS -> <empty>
+Rule 105   SEM_ADD_MINUS -> <empty>
+Rule 106   SEM_ADD_TIMES -> <empty>
+Rule 107   SEM_ADD_DIVISION -> <empty>
+Rule 108   SEM_ADD_EQUALS -> <empty>
+Rule 109   SEM_PENDING_EXPA_OP -> <empty>
+Rule 110   SEM_PENDING_TERMINO_OP -> <empty>
+Rule 111   SEM_PENDING_ASSIGNATION_OP -> <empty>
 
 Terminals, with rules where they appear
 
@@ -201,11 +209,19 @@ POINT                : 85
 PRINCIPAL            : 1 2
 PROGRAMA             : 0
 PROGRAMA_OPTS        : 1
+SEM_ADD_DIVISION     : 51
+SEM_ADD_EQUALS       : 72
 SEM_ADD_FUNC         : 1 2 6 14 15 16 17 18 19 20 21
 SEM_ADD_GLOBAL_VARIABLES : 6 14 15 16 17 18 19 20 21
+SEM_ADD_MINUS        : 48
+SEM_ADD_PLUS         : 47
+SEM_ADD_TIMES        : 50
 SEM_FUNC_NAME        : 14 15 16 17 18 19 20 21
 SEM_GLOBAL_NAME      : 1 2
 SEM_MAIN_NAME        : 6
+SEM_PENDING_ASSIGNATION_OP : 72
+SEM_PENDING_EXPA_OP  : 47 47 48 48
+SEM_PENDING_TERMINO_OP : 50 50 51 51
 SIZE                 : 90
 TERMINO              : 47 48 49 50 51
 TIPO_SIMPLE          : 7 8 26 27
@@ -803,7 +819,7 @@ state 52
     (58) ESTATUTO -> . LECTURA ;
     (59) ESTATUTO -> . ESCRITURA ;
     (60) ESTATUTO -> . LLAMADA_BI ;
-    (72) ASIGNACION -> . VARIABLE = EXPRESION
+    (72) ASIGNACION -> . VARIABLE = SEM_ADD_EQUALS EXPRESION SEM_PENDING_ASSIGNATION_OP
     (73) CONDICION -> . if ( EXPRESION ) then BLOQUE
     (74) CONDICION -> . if ( EXPRESION ) then BLOQUE else BLOQUE
     (75) WHILE -> . while ( EXPRESION ) do BLOQUE
@@ -949,7 +965,7 @@ state 60
     (58) ESTATUTO -> . LECTURA ;
     (59) ESTATUTO -> . ESCRITURA ;
     (60) ESTATUTO -> . LLAMADA_BI ;
-    (72) ASIGNACION -> . VARIABLE = EXPRESION
+    (72) ASIGNACION -> . VARIABLE = SEM_ADD_EQUALS EXPRESION SEM_PENDING_ASSIGNATION_OP
     (73) CONDICION -> . if ( EXPRESION ) then BLOQUE
     (74) CONDICION -> . if ( EXPRESION ) then BLOQUE else BLOQUE
     (75) WHILE -> . while ( EXPRESION ) do BLOQUE
@@ -1020,11 +1036,11 @@ state 61
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -1202,7 +1218,7 @@ state 71
 
 state 72
 
-    (72) ASIGNACION -> VARIABLE . = EXPRESION
+    (72) ASIGNACION -> VARIABLE . = SEM_ADD_EQUALS EXPRESION SEM_PENDING_ASSIGNATION_OP
 
     =               shift and go to state 123
 
@@ -1225,7 +1241,7 @@ state 74
 state 75
 
     (76) FOR -> for . ASIGNACION to EXPRESION do BLOQUE
-    (72) ASIGNACION -> . VARIABLE = EXPRESION
+    (72) ASIGNACION -> . VARIABLE = SEM_ADD_EQUALS EXPRESION SEM_PENDING_ASSIGNATION_OP
     (31) VARIABLE -> . id [ EXPRESION ]
     (32) VARIABLE -> . id
 
@@ -1256,9 +1272,9 @@ state 76
     and             reduce using rule 32 (VARIABLE -> id .)
     or              reduce using rule 32 (VARIABLE -> id .)
     )               reduce using rule 32 (VARIABLE -> id .)
-    to              reduce using rule 32 (VARIABLE -> id .)
     ,               reduce using rule 32 (VARIABLE -> id .)
     ]               reduce using rule 32 (VARIABLE -> id .)
+    to              reduce using rule 32 (VARIABLE -> id .)
     do              reduce using rule 32 (VARIABLE -> id .)
 
 
@@ -1496,11 +1512,11 @@ state 103
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -1597,9 +1613,9 @@ state 107
     and             reduce using rule 41 (EXPRESION -> EXP_R .)
     or              reduce using rule 41 (EXPRESION -> EXP_R .)
     )               reduce using rule 41 (EXPRESION -> EXP_R .)
-    to              reduce using rule 41 (EXPRESION -> EXP_R .)
     ,               reduce using rule 41 (EXPRESION -> EXP_R .)
     ]               reduce using rule 41 (EXPRESION -> EXP_R .)
+    to              reduce using rule 41 (EXPRESION -> EXP_R .)
     do              reduce using rule 41 (EXPRESION -> EXP_R .)
 
 
@@ -1610,8 +1626,9 @@ state 108
     (44) EXP_R -> EXP_A . equals EXP_A
     (45) EXP_R -> EXP_A . not_equals EXP_A
     (46) EXP_R -> EXP_A .
-    (47) EXP_A -> EXP_A . + TERMINO
-    (48) EXP_A -> EXP_A . minus TERMINO
+    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (109) SEM_PENDING_EXPA_OP -> .
 
     >               shift and go to state 152
     <               shift and go to state 153
@@ -1621,19 +1638,21 @@ state 108
     and             reduce using rule 46 (EXP_R -> EXP_A .)
     or              reduce using rule 46 (EXP_R -> EXP_A .)
     )               reduce using rule 46 (EXP_R -> EXP_A .)
-    to              reduce using rule 46 (EXP_R -> EXP_A .)
     ,               reduce using rule 46 (EXP_R -> EXP_A .)
     ]               reduce using rule 46 (EXP_R -> EXP_A .)
+    to              reduce using rule 46 (EXP_R -> EXP_A .)
     do              reduce using rule 46 (EXP_R -> EXP_A .)
-    +               shift and go to state 156
-    minus           shift and go to state 157
+    +               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
 
+    SEM_PENDING_EXPA_OP            shift and go to state 156
 
 state 109
 
     (49) EXP_A -> TERMINO .
-    (50) TERMINO -> TERMINO . * FACTOR
-    (51) TERMINO -> TERMINO . / FACTOR
+    (50) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (110) SEM_PENDING_TERMINO_OP -> .
 
     >               reduce using rule 49 (EXP_A -> TERMINO .)
     <               reduce using rule 49 (EXP_A -> TERMINO .)
@@ -1645,13 +1664,14 @@ state 109
     and             reduce using rule 49 (EXP_A -> TERMINO .)
     or              reduce using rule 49 (EXP_A -> TERMINO .)
     )               reduce using rule 49 (EXP_A -> TERMINO .)
-    to              reduce using rule 49 (EXP_A -> TERMINO .)
     ,               reduce using rule 49 (EXP_A -> TERMINO .)
     ]               reduce using rule 49 (EXP_A -> TERMINO .)
+    to              reduce using rule 49 (EXP_A -> TERMINO .)
     do              reduce using rule 49 (EXP_A -> TERMINO .)
-    *               shift and go to state 158
-    /               shift and go to state 159
+    *               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    /               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
 
+    SEM_PENDING_TERMINO_OP         shift and go to state 157
 
 state 110
 
@@ -1669,9 +1689,9 @@ state 110
     and             reduce using rule 52 (TERMINO -> FACTOR .)
     or              reduce using rule 52 (TERMINO -> FACTOR .)
     )               reduce using rule 52 (TERMINO -> FACTOR .)
-    to              reduce using rule 52 (TERMINO -> FACTOR .)
     ,               reduce using rule 52 (TERMINO -> FACTOR .)
     ]               reduce using rule 52 (TERMINO -> FACTOR .)
+    to              reduce using rule 52 (TERMINO -> FACTOR .)
     do              reduce using rule 52 (TERMINO -> FACTOR .)
 
 
@@ -1691,9 +1711,9 @@ state 111
     and             reduce using rule 61 (FACTOR -> LLAMADA .)
     or              reduce using rule 61 (FACTOR -> LLAMADA .)
     )               reduce using rule 61 (FACTOR -> LLAMADA .)
-    to              reduce using rule 61 (FACTOR -> LLAMADA .)
     ,               reduce using rule 61 (FACTOR -> LLAMADA .)
     ]               reduce using rule 61 (FACTOR -> LLAMADA .)
+    to              reduce using rule 61 (FACTOR -> LLAMADA .)
     do              reduce using rule 61 (FACTOR -> LLAMADA .)
 
 
@@ -1713,9 +1733,9 @@ state 112
     and             reduce using rule 62 (FACTOR -> CTE .)
     or              reduce using rule 62 (FACTOR -> CTE .)
     )               reduce using rule 62 (FACTOR -> CTE .)
-    to              reduce using rule 62 (FACTOR -> CTE .)
     ,               reduce using rule 62 (FACTOR -> CTE .)
     ]               reduce using rule 62 (FACTOR -> CTE .)
+    to              reduce using rule 62 (FACTOR -> CTE .)
     do              reduce using rule 62 (FACTOR -> CTE .)
 
 
@@ -1735,9 +1755,9 @@ state 113
     and             reduce using rule 63 (FACTOR -> VARIABLE .)
     or              reduce using rule 63 (FACTOR -> VARIABLE .)
     )               reduce using rule 63 (FACTOR -> VARIABLE .)
-    to              reduce using rule 63 (FACTOR -> VARIABLE .)
     ,               reduce using rule 63 (FACTOR -> VARIABLE .)
     ]               reduce using rule 63 (FACTOR -> VARIABLE .)
+    to              reduce using rule 63 (FACTOR -> VARIABLE .)
     do              reduce using rule 63 (FACTOR -> VARIABLE .)
 
 
@@ -1752,11 +1772,11 @@ state 114
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -1776,7 +1796,7 @@ state 114
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    EXPRESION                      shift and go to state 160
+    EXPRESION                      shift and go to state 158
     EXP_R                          shift and go to state 107
     EXP_A                          shift and go to state 108
     TERMINO                        shift and go to state 109
@@ -1801,9 +1821,9 @@ state 115
     and             reduce using rule 65 (CTE -> cte_i .)
     or              reduce using rule 65 (CTE -> cte_i .)
     )               reduce using rule 65 (CTE -> cte_i .)
-    to              reduce using rule 65 (CTE -> cte_i .)
     ,               reduce using rule 65 (CTE -> cte_i .)
     ]               reduce using rule 65 (CTE -> cte_i .)
+    to              reduce using rule 65 (CTE -> cte_i .)
     do              reduce using rule 65 (CTE -> cte_i .)
 
 
@@ -1823,9 +1843,9 @@ state 116
     and             reduce using rule 66 (CTE -> cte_f .)
     or              reduce using rule 66 (CTE -> cte_f .)
     )               reduce using rule 66 (CTE -> cte_f .)
-    to              reduce using rule 66 (CTE -> cte_f .)
     ,               reduce using rule 66 (CTE -> cte_f .)
     ]               reduce using rule 66 (CTE -> cte_f .)
+    to              reduce using rule 66 (CTE -> cte_f .)
     do              reduce using rule 66 (CTE -> cte_f .)
 
 
@@ -1845,9 +1865,9 @@ state 117
     and             reduce using rule 67 (CTE -> cte_c .)
     or              reduce using rule 67 (CTE -> cte_c .)
     )               reduce using rule 67 (CTE -> cte_c .)
-    to              reduce using rule 67 (CTE -> cte_c .)
     ,               reduce using rule 67 (CTE -> cte_c .)
     ]               reduce using rule 67 (CTE -> cte_c .)
+    to              reduce using rule 67 (CTE -> cte_c .)
     do              reduce using rule 67 (CTE -> cte_c .)
 
 
@@ -1958,47 +1978,16 @@ state 122
 
 state 123
 
-    (72) ASIGNACION -> VARIABLE = . EXPRESION
-    (39) EXPRESION -> . EXPRESION and EXP_R
-    (40) EXPRESION -> . EXPRESION or EXP_R
-    (41) EXPRESION -> . EXP_R
-    (42) EXP_R -> . EXP_A > EXP_A
-    (43) EXP_R -> . EXP_A < EXP_A
-    (44) EXP_R -> . EXP_A equals EXP_A
-    (45) EXP_R -> . EXP_A not_equals EXP_A
-    (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
-    (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
-    (52) TERMINO -> . FACTOR
-    (61) FACTOR -> . LLAMADA
-    (62) FACTOR -> . CTE
-    (63) FACTOR -> . VARIABLE
-    (64) FACTOR -> . ( EXPRESION )
-    (68) LLAMADA -> . id ( LLAMADA_OPTS )
-    (69) LLAMADA -> . id ( )
-    (65) CTE -> . cte_i
-    (66) CTE -> . cte_f
-    (67) CTE -> . cte_c
-    (31) VARIABLE -> . id [ EXPRESION ]
-    (32) VARIABLE -> . id
+    (72) ASIGNACION -> VARIABLE = . SEM_ADD_EQUALS EXPRESION SEM_PENDING_ASSIGNATION_OP
+    (108) SEM_ADD_EQUALS -> .
 
-    (               shift and go to state 114
-    id              shift and go to state 76
-    cte_i           shift and go to state 115
-    cte_f           shift and go to state 116
-    cte_c           shift and go to state 117
+    (               reduce using rule 108 (SEM_ADD_EQUALS -> .)
+    id              reduce using rule 108 (SEM_ADD_EQUALS -> .)
+    cte_i           reduce using rule 108 (SEM_ADD_EQUALS -> .)
+    cte_f           reduce using rule 108 (SEM_ADD_EQUALS -> .)
+    cte_c           reduce using rule 108 (SEM_ADD_EQUALS -> .)
 
-    VARIABLE                       shift and go to state 113
-    EXPRESION                      shift and go to state 161
-    EXP_R                          shift and go to state 107
-    EXP_A                          shift and go to state 108
-    TERMINO                        shift and go to state 109
-    FACTOR                         shift and go to state 110
-    LLAMADA                        shift and go to state 111
-    CTE                            shift and go to state 112
+    SEM_ADD_EQUALS                 shift and go to state 159
 
 state 124
 
@@ -2012,11 +2001,11 @@ state 124
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2036,7 +2025,7 @@ state 124
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    EXPRESION                      shift and go to state 162
+    EXPRESION                      shift and go to state 160
     EXP_R                          shift and go to state 107
     EXP_A                          shift and go to state 108
     TERMINO                        shift and go to state 109
@@ -2056,11 +2045,11 @@ state 125
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2080,7 +2069,7 @@ state 125
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    EXPRESION                      shift and go to state 163
+    EXPRESION                      shift and go to state 161
     EXP_R                          shift and go to state 107
     EXP_A                          shift and go to state 108
     TERMINO                        shift and go to state 109
@@ -2093,7 +2082,7 @@ state 126
 
     (76) FOR -> for ASIGNACION . to EXPRESION do BLOQUE
 
-    to              shift and go to state 164
+    to              shift and go to state 162
 
 
 state 127
@@ -2119,11 +2108,11 @@ state 128
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2137,15 +2126,15 @@ state 128
     (31) VARIABLE -> . id [ EXPRESION ]
     (32) VARIABLE -> . id
 
-    )               shift and go to state 166
+    )               shift and go to state 164
     (               shift and go to state 114
     id              shift and go to state 76
     cte_i           shift and go to state 115
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    LLAMADA_OPTS                   shift and go to state 165
-    EXPRESION                      shift and go to state 167
+    LLAMADA_OPTS                   shift and go to state 163
+    EXPRESION                      shift and go to state 165
     EXP_R                          shift and go to state 107
     EXP_A                          shift and go to state 108
     TERMINO                        shift and go to state 109
@@ -2165,11 +2154,11 @@ state 129
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2189,7 +2178,7 @@ state 129
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    EXPRESION                      shift and go to state 168
+    EXPRESION                      shift and go to state 166
     EXP_R                          shift and go to state 107
     EXP_A                          shift and go to state 108
     TERMINO                        shift and go to state 109
@@ -2204,9 +2193,9 @@ state 130
     (78) LECTURA_OPTS -> . LECTURA_OPTS , id
     (79) LECTURA_OPTS -> . id
 
-    id              shift and go to state 170
+    id              shift and go to state 168
 
-    LECTURA_OPTS                   shift and go to state 169
+    LECTURA_OPTS                   shift and go to state 167
 
 state 131
 
@@ -2223,11 +2212,11 @@ state 131
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2241,15 +2230,15 @@ state 131
     (31) VARIABLE -> . id [ EXPRESION ]
     (32) VARIABLE -> . id
 
-    cte_s           shift and go to state 172
+    cte_s           shift and go to state 170
     (               shift and go to state 114
     id              shift and go to state 76
     cte_i           shift and go to state 115
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    ESCRITURA_OPTS                 shift and go to state 171
-    EXPRESION                      shift and go to state 173
+    ESCRITURA_OPTS                 shift and go to state 169
+    EXPRESION                      shift and go to state 171
     EXP_R                          shift and go to state 107
     EXP_A                          shift and go to state 108
     TERMINO                        shift and go to state 109
@@ -2269,11 +2258,11 @@ state 132
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2293,7 +2282,7 @@ state 132
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    EXPRESION                      shift and go to state 174
+    EXPRESION                      shift and go to state 172
     EXP_R                          shift and go to state 107
     EXP_A                          shift and go to state 108
     TERMINO                        shift and go to state 109
@@ -2313,11 +2302,11 @@ state 133
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2337,7 +2326,7 @@ state 133
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    EXPRESION                      shift and go to state 175
+    EXPRESION                      shift and go to state 173
     EXP_R                          shift and go to state 107
     EXP_A                          shift and go to state 108
     TERMINO                        shift and go to state 109
@@ -2350,21 +2339,21 @@ state 134
 
     (95) PENUP -> penup ( . )
 
-    )               shift and go to state 176
+    )               shift and go to state 174
 
 
 state 135
 
     (96) PENDOWN -> pendown ( . )
 
-    )               shift and go to state 177
+    )               shift and go to state 175
 
 
 state 136
 
     (97) COLOR -> color ( . cte_s )
 
-    cte_s           shift and go to state 178
+    cte_s           shift and go to state 176
 
 
 state 137
@@ -2378,11 +2367,11 @@ state 137
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2402,7 +2391,7 @@ state 137
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    EXPRESION                      shift and go to state 179
+    EXPRESION                      shift and go to state 177
     EXP_R                          shift and go to state 107
     EXP_A                          shift and go to state 108
     TERMINO                        shift and go to state 109
@@ -2415,7 +2404,7 @@ state 138
 
     (92) CLEAR -> clear ( . )
 
-    )               shift and go to state 180
+    )               shift and go to state 178
 
 
 state 139
@@ -2439,7 +2428,7 @@ state 140
 
     {               shift and go to state 52
 
-    BLOQUE                         shift and go to state 181
+    BLOQUE                         shift and go to state 179
 
 state 141
 
@@ -2451,7 +2440,7 @@ state 141
 
     {               shift and go to state 52
 
-    BLOQUE                         shift and go to state 182
+    BLOQUE                         shift and go to state 180
 
 state 142
 
@@ -2462,7 +2451,7 @@ state 142
     var             shift and go to state 21
     {               reduce using rule 103 (SEM_ADD_GLOBAL_VARIABLES -> .)
 
-    SEM_ADD_GLOBAL_VARIABLES       shift and go to state 183
+    SEM_ADD_GLOBAL_VARIABLES       shift and go to state 181
 
 state 143
 
@@ -2471,7 +2460,7 @@ state 143
 
     id              shift and go to state 99
 
-    PARAM_NAME                     shift and go to state 184
+    PARAM_NAME                     shift and go to state 182
 
 state 144
 
@@ -2494,7 +2483,7 @@ state 145
 
     {               shift and go to state 52
 
-    BLOQUE                         shift and go to state 185
+    BLOQUE                         shift and go to state 183
 
 state 146
 
@@ -2506,7 +2495,7 @@ state 146
 
     {               shift and go to state 52
 
-    BLOQUE                         shift and go to state 186
+    BLOQUE                         shift and go to state 184
 
 state 147
 
@@ -2517,7 +2506,7 @@ state 147
     var             shift and go to state 21
     {               reduce using rule 103 (SEM_ADD_GLOBAL_VARIABLES -> .)
 
-    SEM_ADD_GLOBAL_VARIABLES       shift and go to state 187
+    SEM_ADD_GLOBAL_VARIABLES       shift and go to state 185
 
 state 148
 
@@ -2525,7 +2514,7 @@ state 148
     (39) EXPRESION -> EXPRESION . and EXP_R
     (40) EXPRESION -> EXPRESION . or EXP_R
 
-    ;               shift and go to state 188
+    ;               shift and go to state 186
     and             shift and go to state 150
     or              shift and go to state 151
 
@@ -2534,7 +2523,7 @@ state 149
 
     (35) BLOQUE -> { return EXPRESION ; . }
 
-    }               shift and go to state 189
+    }               shift and go to state 187
 
 
 state 150
@@ -2545,11 +2534,11 @@ state 150
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2569,7 +2558,7 @@ state 150
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    EXP_R                          shift and go to state 190
+    EXP_R                          shift and go to state 188
     EXP_A                          shift and go to state 108
     TERMINO                        shift and go to state 109
     FACTOR                         shift and go to state 110
@@ -2585,11 +2574,11 @@ state 151
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2609,7 +2598,7 @@ state 151
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    EXP_R                          shift and go to state 191
+    EXP_R                          shift and go to state 189
     EXP_A                          shift and go to state 108
     TERMINO                        shift and go to state 109
     FACTOR                         shift and go to state 110
@@ -2620,11 +2609,79 @@ state 151
 state 152
 
     (42) EXP_R -> EXP_A > . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (52) TERMINO -> . FACTOR
+    (61) FACTOR -> . LLAMADA
+    (62) FACTOR -> . CTE
+    (63) FACTOR -> . VARIABLE
+    (64) FACTOR -> . ( EXPRESION )
+    (68) LLAMADA -> . id ( LLAMADA_OPTS )
+    (69) LLAMADA -> . id ( )
+    (65) CTE -> . cte_i
+    (66) CTE -> . cte_f
+    (67) CTE -> . cte_c
+    (31) VARIABLE -> . id [ EXPRESION ]
+    (32) VARIABLE -> . id
+
+    (               shift and go to state 114
+    id              shift and go to state 76
+    cte_i           shift and go to state 115
+    cte_f           shift and go to state 116
+    cte_c           shift and go to state 117
+
+    EXP_A                          shift and go to state 190
+    TERMINO                        shift and go to state 109
+    FACTOR                         shift and go to state 110
+    LLAMADA                        shift and go to state 111
+    CTE                            shift and go to state 112
+    VARIABLE                       shift and go to state 113
+
+state 153
+
+    (43) EXP_R -> EXP_A < . EXP_A
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (49) EXP_A -> . TERMINO
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (52) TERMINO -> . FACTOR
+    (61) FACTOR -> . LLAMADA
+    (62) FACTOR -> . CTE
+    (63) FACTOR -> . VARIABLE
+    (64) FACTOR -> . ( EXPRESION )
+    (68) LLAMADA -> . id ( LLAMADA_OPTS )
+    (69) LLAMADA -> . id ( )
+    (65) CTE -> . cte_i
+    (66) CTE -> . cte_f
+    (67) CTE -> . cte_c
+    (31) VARIABLE -> . id [ EXPRESION ]
+    (32) VARIABLE -> . id
+
+    (               shift and go to state 114
+    id              shift and go to state 76
+    cte_i           shift and go to state 115
+    cte_f           shift and go to state 116
+    cte_c           shift and go to state 117
+
+    EXP_A                          shift and go to state 191
+    TERMINO                        shift and go to state 109
+    FACTOR                         shift and go to state 110
+    LLAMADA                        shift and go to state 111
+    CTE                            shift and go to state 112
+    VARIABLE                       shift and go to state 113
+
+state 154
+
+    (44) EXP_R -> EXP_A equals . EXP_A
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (49) EXP_A -> . TERMINO
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2651,14 +2708,14 @@ state 152
     CTE                            shift and go to state 112
     VARIABLE                       shift and go to state 113
 
-state 153
+state 155
 
-    (43) EXP_R -> EXP_A < . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (45) EXP_R -> EXP_A not_equals . EXP_A
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2685,109 +2742,51 @@ state 153
     CTE                            shift and go to state 112
     VARIABLE                       shift and go to state 113
 
-state 154
-
-    (44) EXP_R -> EXP_A equals . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
-    (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
-    (52) TERMINO -> . FACTOR
-    (61) FACTOR -> . LLAMADA
-    (62) FACTOR -> . CTE
-    (63) FACTOR -> . VARIABLE
-    (64) FACTOR -> . ( EXPRESION )
-    (68) LLAMADA -> . id ( LLAMADA_OPTS )
-    (69) LLAMADA -> . id ( )
-    (65) CTE -> . cte_i
-    (66) CTE -> . cte_f
-    (67) CTE -> . cte_c
-    (31) VARIABLE -> . id [ EXPRESION ]
-    (32) VARIABLE -> . id
-
-    (               shift and go to state 114
-    id              shift and go to state 76
-    cte_i           shift and go to state 115
-    cte_f           shift and go to state 116
-    cte_c           shift and go to state 117
-
-    EXP_A                          shift and go to state 194
-    TERMINO                        shift and go to state 109
-    FACTOR                         shift and go to state 110
-    LLAMADA                        shift and go to state 111
-    CTE                            shift and go to state 112
-    VARIABLE                       shift and go to state 113
-
-state 155
-
-    (45) EXP_R -> EXP_A not_equals . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
-    (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
-    (52) TERMINO -> . FACTOR
-    (61) FACTOR -> . LLAMADA
-    (62) FACTOR -> . CTE
-    (63) FACTOR -> . VARIABLE
-    (64) FACTOR -> . ( EXPRESION )
-    (68) LLAMADA -> . id ( LLAMADA_OPTS )
-    (69) LLAMADA -> . id ( )
-    (65) CTE -> . cte_i
-    (66) CTE -> . cte_f
-    (67) CTE -> . cte_c
-    (31) VARIABLE -> . id [ EXPRESION ]
-    (32) VARIABLE -> . id
-
-    (               shift and go to state 114
-    id              shift and go to state 76
-    cte_i           shift and go to state 115
-    cte_f           shift and go to state 116
-    cte_c           shift and go to state 117
-
-    EXP_A                          shift and go to state 195
-    TERMINO                        shift and go to state 109
-    FACTOR                         shift and go to state 110
-    LLAMADA                        shift and go to state 111
-    CTE                            shift and go to state 112
-    VARIABLE                       shift and go to state 113
-
 state 156
 
-    (47) EXP_A -> EXP_A + . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
-    (52) TERMINO -> . FACTOR
-    (61) FACTOR -> . LLAMADA
-    (62) FACTOR -> . CTE
-    (63) FACTOR -> . VARIABLE
-    (64) FACTOR -> . ( EXPRESION )
-    (68) LLAMADA -> . id ( LLAMADA_OPTS )
-    (69) LLAMADA -> . id ( )
-    (65) CTE -> . cte_i
-    (66) CTE -> . cte_f
-    (67) CTE -> . cte_c
-    (31) VARIABLE -> . id [ EXPRESION ]
-    (32) VARIABLE -> . id
+    (47) EXP_A -> EXP_A SEM_PENDING_EXPA_OP . + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> EXP_A SEM_PENDING_EXPA_OP . minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
 
-    (               shift and go to state 114
-    id              shift and go to state 76
-    cte_i           shift and go to state 115
-    cte_f           shift and go to state 116
-    cte_c           shift and go to state 117
+    +               shift and go to state 194
+    minus           shift and go to state 195
 
-    TERMINO                        shift and go to state 196
-    FACTOR                         shift and go to state 110
-    LLAMADA                        shift and go to state 111
-    CTE                            shift and go to state 112
-    VARIABLE                       shift and go to state 113
 
 state 157
 
-    (48) EXP_A -> EXP_A minus . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP . * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP . / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+
+    *               shift and go to state 196
+    /               shift and go to state 197
+
+
+state 158
+
+    (64) FACTOR -> ( EXPRESION . )
+    (39) EXPRESION -> EXPRESION . and EXP_R
+    (40) EXPRESION -> EXPRESION . or EXP_R
+
+    )               shift and go to state 198
+    and             shift and go to state 150
+    or              shift and go to state 151
+
+
+state 159
+
+    (72) ASIGNACION -> VARIABLE = SEM_ADD_EQUALS . EXPRESION SEM_PENDING_ASSIGNATION_OP
+    (39) EXPRESION -> . EXPRESION and EXP_R
+    (40) EXPRESION -> . EXPRESION or EXP_R
+    (41) EXPRESION -> . EXP_R
+    (42) EXP_R -> . EXP_A > EXP_A
+    (43) EXP_R -> . EXP_A < EXP_A
+    (44) EXP_R -> . EXP_A equals EXP_A
+    (45) EXP_R -> . EXP_A not_equals EXP_A
+    (46) EXP_R -> . EXP_A
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (49) EXP_A -> . TERMINO
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2807,67 +2806,19 @@ state 157
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    TERMINO                        shift and go to state 197
+    VARIABLE                       shift and go to state 113
+    EXPRESION                      shift and go to state 199
+    EXP_R                          shift and go to state 107
+    EXP_A                          shift and go to state 108
+    TERMINO                        shift and go to state 109
     FACTOR                         shift and go to state 110
     LLAMADA                        shift and go to state 111
     CTE                            shift and go to state 112
-    VARIABLE                       shift and go to state 113
-
-state 158
-
-    (50) TERMINO -> TERMINO * . FACTOR
-    (61) FACTOR -> . LLAMADA
-    (62) FACTOR -> . CTE
-    (63) FACTOR -> . VARIABLE
-    (64) FACTOR -> . ( EXPRESION )
-    (68) LLAMADA -> . id ( LLAMADA_OPTS )
-    (69) LLAMADA -> . id ( )
-    (65) CTE -> . cte_i
-    (66) CTE -> . cte_f
-    (67) CTE -> . cte_c
-    (31) VARIABLE -> . id [ EXPRESION ]
-    (32) VARIABLE -> . id
-
-    (               shift and go to state 114
-    id              shift and go to state 76
-    cte_i           shift and go to state 115
-    cte_f           shift and go to state 116
-    cte_c           shift and go to state 117
-
-    FACTOR                         shift and go to state 198
-    LLAMADA                        shift and go to state 111
-    CTE                            shift and go to state 112
-    VARIABLE                       shift and go to state 113
-
-state 159
-
-    (51) TERMINO -> TERMINO / . FACTOR
-    (61) FACTOR -> . LLAMADA
-    (62) FACTOR -> . CTE
-    (63) FACTOR -> . VARIABLE
-    (64) FACTOR -> . ( EXPRESION )
-    (68) LLAMADA -> . id ( LLAMADA_OPTS )
-    (69) LLAMADA -> . id ( )
-    (65) CTE -> . cte_i
-    (66) CTE -> . cte_f
-    (67) CTE -> . cte_c
-    (31) VARIABLE -> . id [ EXPRESION ]
-    (32) VARIABLE -> . id
-
-    (               shift and go to state 114
-    id              shift and go to state 76
-    cte_i           shift and go to state 115
-    cte_f           shift and go to state 116
-    cte_c           shift and go to state 117
-
-    FACTOR                         shift and go to state 199
-    LLAMADA                        shift and go to state 111
-    CTE                            shift and go to state 112
-    VARIABLE                       shift and go to state 113
 
 state 160
 
-    (64) FACTOR -> ( EXPRESION . )
+    (73) CONDICION -> if ( EXPRESION . ) then BLOQUE
+    (74) CONDICION -> if ( EXPRESION . ) then BLOQUE else BLOQUE
     (39) EXPRESION -> EXPRESION . and EXP_R
     (40) EXPRESION -> EXPRESION . or EXP_R
 
@@ -2878,20 +2829,7 @@ state 160
 
 state 161
 
-    (72) ASIGNACION -> VARIABLE = EXPRESION .
-    (39) EXPRESION -> EXPRESION . and EXP_R
-    (40) EXPRESION -> EXPRESION . or EXP_R
-
-    ;               reduce using rule 72 (ASIGNACION -> VARIABLE = EXPRESION .)
-    to              reduce using rule 72 (ASIGNACION -> VARIABLE = EXPRESION .)
-    and             shift and go to state 150
-    or              shift and go to state 151
-
-
-state 162
-
-    (73) CONDICION -> if ( EXPRESION . ) then BLOQUE
-    (74) CONDICION -> if ( EXPRESION . ) then BLOQUE else BLOQUE
+    (75) WHILE -> while ( EXPRESION . ) do BLOQUE
     (39) EXPRESION -> EXPRESION . and EXP_R
     (40) EXPRESION -> EXPRESION . or EXP_R
 
@@ -2900,18 +2838,7 @@ state 162
     or              shift and go to state 151
 
 
-state 163
-
-    (75) WHILE -> while ( EXPRESION . ) do BLOQUE
-    (39) EXPRESION -> EXPRESION . and EXP_R
-    (40) EXPRESION -> EXPRESION . or EXP_R
-
-    )               shift and go to state 202
-    and             shift and go to state 150
-    or              shift and go to state 151
-
-
-state 164
+state 162
 
     (76) FOR -> for ASIGNACION to . EXPRESION do BLOQUE
     (39) EXPRESION -> . EXPRESION and EXP_R
@@ -2922,11 +2849,11 @@ state 164
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -2946,7 +2873,7 @@ state 164
     cte_f           shift and go to state 116
     cte_c           shift and go to state 117
 
-    EXPRESION                      shift and go to state 203
+    EXPRESION                      shift and go to state 202
     EXP_R                          shift and go to state 107
     EXP_A                          shift and go to state 108
     TERMINO                        shift and go to state 109
@@ -2955,16 +2882,16 @@ state 164
     CTE                            shift and go to state 112
     VARIABLE                       shift and go to state 113
 
-state 165
+state 163
 
     (68) LLAMADA -> id ( LLAMADA_OPTS . )
     (70) LLAMADA_OPTS -> LLAMADA_OPTS . , EXPRESION
 
-    )               shift and go to state 204
-    ,               shift and go to state 205
+    )               shift and go to state 203
+    ,               shift and go to state 204
 
 
-state 166
+state 164
 
     (69) LLAMADA -> id ( ) .
 
@@ -2980,13 +2907,13 @@ state 166
     and             reduce using rule 69 (LLAMADA -> id ( ) .)
     or              reduce using rule 69 (LLAMADA -> id ( ) .)
     )               reduce using rule 69 (LLAMADA -> id ( ) .)
-    to              reduce using rule 69 (LLAMADA -> id ( ) .)
     ,               reduce using rule 69 (LLAMADA -> id ( ) .)
     ]               reduce using rule 69 (LLAMADA -> id ( ) .)
+    to              reduce using rule 69 (LLAMADA -> id ( ) .)
     do              reduce using rule 69 (LLAMADA -> id ( ) .)
 
 
-state 167
+state 165
 
     (71) LLAMADA_OPTS -> EXPRESION .
     (39) EXPRESION -> EXPRESION . and EXP_R
@@ -2998,27 +2925,27 @@ state 167
     or              shift and go to state 151
 
 
-state 168
+state 166
 
     (31) VARIABLE -> id [ EXPRESION . ]
     (39) EXPRESION -> EXPRESION . and EXP_R
     (40) EXPRESION -> EXPRESION . or EXP_R
 
-    ]               shift and go to state 206
+    ]               shift and go to state 205
     and             shift and go to state 150
     or              shift and go to state 151
 
 
-state 169
+state 167
 
     (77) LECTURA -> read ( LECTURA_OPTS . )
     (78) LECTURA_OPTS -> LECTURA_OPTS . , id
 
-    )               shift and go to state 207
-    ,               shift and go to state 208
+    )               shift and go to state 206
+    ,               shift and go to state 207
 
 
-state 170
+state 168
 
     (79) LECTURA_OPTS -> id .
 
@@ -3026,17 +2953,17 @@ state 170
     ,               reduce using rule 79 (LECTURA_OPTS -> id .)
 
 
-state 171
+state 169
 
     (80) ESCRITURA -> write ( ESCRITURA_OPTS . )
     (81) ESCRITURA_OPTS -> ESCRITURA_OPTS . , cte_s
     (82) ESCRITURA_OPTS -> ESCRITURA_OPTS . , EXPRESION
 
-    )               shift and go to state 209
-    ,               shift and go to state 210
+    )               shift and go to state 208
+    ,               shift and go to state 209
 
 
-state 172
+state 170
 
     (83) ESCRITURA_OPTS -> cte_s .
 
@@ -3044,7 +2971,7 @@ state 172
     ,               reduce using rule 83 (ESCRITURA_OPTS -> cte_s .)
 
 
-state 173
+state 171
 
     (84) ESCRITURA_OPTS -> EXPRESION .
     (39) EXPRESION -> EXPRESION . and EXP_R
@@ -3056,68 +2983,68 @@ state 173
     or              shift and go to state 151
 
 
-state 174
+state 172
 
     (93) POINT -> point ( EXPRESION . , EXPRESION )
     (39) EXPRESION -> EXPRESION . and EXP_R
     (40) EXPRESION -> EXPRESION . or EXP_R
 
-    ,               shift and go to state 211
+    ,               shift and go to state 210
     and             shift and go to state 150
     or              shift and go to state 151
 
 
-state 175
+state 173
 
     (94) CIRCLE -> circle ( EXPRESION . )
     (39) EXPRESION -> EXPRESION . and EXP_R
     (40) EXPRESION -> EXPRESION . or EXP_R
 
-    )               shift and go to state 212
+    )               shift and go to state 211
     and             shift and go to state 150
     or              shift and go to state 151
 
 
-state 176
+state 174
 
     (95) PENUP -> penup ( ) .
 
     ;               reduce using rule 95 (PENUP -> penup ( ) .)
 
 
-state 177
+state 175
 
     (96) PENDOWN -> pendown ( ) .
 
     ;               reduce using rule 96 (PENDOWN -> pendown ( ) .)
 
 
-state 178
+state 176
 
     (97) COLOR -> color ( cte_s . )
 
-    )               shift and go to state 213
+    )               shift and go to state 212
 
 
-state 179
+state 177
 
     (98) SIZE -> size ( EXPRESION . )
     (39) EXPRESION -> EXPRESION . and EXP_R
     (40) EXPRESION -> EXPRESION . or EXP_R
 
-    )               shift and go to state 214
+    )               shift and go to state 213
     and             shift and go to state 150
     or              shift and go to state 151
 
 
-state 180
+state 178
 
     (92) CLEAR -> clear ( ) .
 
     ;               reduce using rule 92 (CLEAR -> clear ( ) .)
 
 
-state 181
+state 179
 
     (21) FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE .
 
@@ -3128,7 +3055,7 @@ state 181
     main            reduce using rule 21 (FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE .)
 
 
-state 182
+state 180
 
     (19) FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) SEM_ADD_GLOBAL_VARIABLES BLOQUE .
 
@@ -3139,7 +3066,7 @@ state 182
     main            reduce using rule 19 (FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) SEM_ADD_GLOBAL_VARIABLES BLOQUE .)
 
 
-state 183
+state 181
 
     (20) FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) DEC_V SEM_ADD_GLOBAL_VARIABLES . BLOQUE
     (33) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
@@ -3149,9 +3076,9 @@ state 183
 
     {               shift and go to state 52
 
-    BLOQUE                         shift and go to state 215
+    BLOQUE                         shift and go to state 214
 
-state 184
+state 182
 
     (26) PARAMS -> PARAMS , TIPO_SIMPLE PARAM_NAME .
 
@@ -3159,7 +3086,7 @@ state 184
     ,               reduce using rule 26 (PARAMS -> PARAMS , TIPO_SIMPLE PARAM_NAME .)
 
 
-state 185
+state 183
 
     (17) FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE .
 
@@ -3170,7 +3097,7 @@ state 185
     main            reduce using rule 17 (FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE .)
 
 
-state 186
+state 184
 
     (15) FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) SEM_ADD_GLOBAL_VARIABLES BLOQUE .
 
@@ -3181,7 +3108,7 @@ state 186
     main            reduce using rule 15 (FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) SEM_ADD_GLOBAL_VARIABLES BLOQUE .)
 
 
-state 187
+state 185
 
     (16) FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) DEC_V SEM_ADD_GLOBAL_VARIABLES . BLOQUE
     (33) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
@@ -3191,16 +3118,16 @@ state 187
 
     {               shift and go to state 52
 
-    BLOQUE                         shift and go to state 216
+    BLOQUE                         shift and go to state 215
 
-state 188
+state 186
 
     (33) BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; . }
 
-    }               shift and go to state 217
+    }               shift and go to state 216
 
 
-state 189
+state 187
 
     (35) BLOQUE -> { return EXPRESION ; } .
 
@@ -3228,7 +3155,7 @@ state 189
     clear           reduce using rule 35 (BLOQUE -> { return EXPRESION ; } .)
 
 
-state 190
+state 188
 
     (39) EXPRESION -> EXPRESION and EXP_R .
 
@@ -3236,13 +3163,13 @@ state 190
     and             reduce using rule 39 (EXPRESION -> EXPRESION and EXP_R .)
     or              reduce using rule 39 (EXPRESION -> EXPRESION and EXP_R .)
     )               reduce using rule 39 (EXPRESION -> EXPRESION and EXP_R .)
-    to              reduce using rule 39 (EXPRESION -> EXPRESION and EXP_R .)
     ,               reduce using rule 39 (EXPRESION -> EXPRESION and EXP_R .)
     ]               reduce using rule 39 (EXPRESION -> EXPRESION and EXP_R .)
+    to              reduce using rule 39 (EXPRESION -> EXPRESION and EXP_R .)
     do              reduce using rule 39 (EXPRESION -> EXPRESION and EXP_R .)
 
 
-state 191
+state 189
 
     (40) EXPRESION -> EXPRESION or EXP_R .
 
@@ -3250,177 +3177,145 @@ state 191
     and             reduce using rule 40 (EXPRESION -> EXPRESION or EXP_R .)
     or              reduce using rule 40 (EXPRESION -> EXPRESION or EXP_R .)
     )               reduce using rule 40 (EXPRESION -> EXPRESION or EXP_R .)
-    to              reduce using rule 40 (EXPRESION -> EXPRESION or EXP_R .)
     ,               reduce using rule 40 (EXPRESION -> EXPRESION or EXP_R .)
     ]               reduce using rule 40 (EXPRESION -> EXPRESION or EXP_R .)
+    to              reduce using rule 40 (EXPRESION -> EXPRESION or EXP_R .)
     do              reduce using rule 40 (EXPRESION -> EXPRESION or EXP_R .)
 
 
-state 192
+state 190
 
     (42) EXP_R -> EXP_A > EXP_A .
-    (47) EXP_A -> EXP_A . + TERMINO
-    (48) EXP_A -> EXP_A . minus TERMINO
+    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (109) SEM_PENDING_EXPA_OP -> .
 
     ;               reduce using rule 42 (EXP_R -> EXP_A > EXP_A .)
     and             reduce using rule 42 (EXP_R -> EXP_A > EXP_A .)
     or              reduce using rule 42 (EXP_R -> EXP_A > EXP_A .)
     )               reduce using rule 42 (EXP_R -> EXP_A > EXP_A .)
-    to              reduce using rule 42 (EXP_R -> EXP_A > EXP_A .)
     ,               reduce using rule 42 (EXP_R -> EXP_A > EXP_A .)
     ]               reduce using rule 42 (EXP_R -> EXP_A > EXP_A .)
+    to              reduce using rule 42 (EXP_R -> EXP_A > EXP_A .)
     do              reduce using rule 42 (EXP_R -> EXP_A > EXP_A .)
-    +               shift and go to state 156
-    minus           shift and go to state 157
+    +               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
 
+    SEM_PENDING_EXPA_OP            shift and go to state 156
 
-state 193
+state 191
 
     (43) EXP_R -> EXP_A < EXP_A .
-    (47) EXP_A -> EXP_A . + TERMINO
-    (48) EXP_A -> EXP_A . minus TERMINO
+    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (109) SEM_PENDING_EXPA_OP -> .
 
     ;               reduce using rule 43 (EXP_R -> EXP_A < EXP_A .)
     and             reduce using rule 43 (EXP_R -> EXP_A < EXP_A .)
     or              reduce using rule 43 (EXP_R -> EXP_A < EXP_A .)
     )               reduce using rule 43 (EXP_R -> EXP_A < EXP_A .)
-    to              reduce using rule 43 (EXP_R -> EXP_A < EXP_A .)
     ,               reduce using rule 43 (EXP_R -> EXP_A < EXP_A .)
     ]               reduce using rule 43 (EXP_R -> EXP_A < EXP_A .)
+    to              reduce using rule 43 (EXP_R -> EXP_A < EXP_A .)
     do              reduce using rule 43 (EXP_R -> EXP_A < EXP_A .)
-    +               shift and go to state 156
-    minus           shift and go to state 157
+    +               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
 
+    SEM_PENDING_EXPA_OP            shift and go to state 156
 
-state 194
+state 192
 
     (44) EXP_R -> EXP_A equals EXP_A .
-    (47) EXP_A -> EXP_A . + TERMINO
-    (48) EXP_A -> EXP_A . minus TERMINO
+    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (109) SEM_PENDING_EXPA_OP -> .
 
     ;               reduce using rule 44 (EXP_R -> EXP_A equals EXP_A .)
     and             reduce using rule 44 (EXP_R -> EXP_A equals EXP_A .)
     or              reduce using rule 44 (EXP_R -> EXP_A equals EXP_A .)
     )               reduce using rule 44 (EXP_R -> EXP_A equals EXP_A .)
-    to              reduce using rule 44 (EXP_R -> EXP_A equals EXP_A .)
     ,               reduce using rule 44 (EXP_R -> EXP_A equals EXP_A .)
     ]               reduce using rule 44 (EXP_R -> EXP_A equals EXP_A .)
+    to              reduce using rule 44 (EXP_R -> EXP_A equals EXP_A .)
     do              reduce using rule 44 (EXP_R -> EXP_A equals EXP_A .)
-    +               shift and go to state 156
-    minus           shift and go to state 157
+    +               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
 
+    SEM_PENDING_EXPA_OP            shift and go to state 156
 
-state 195
+state 193
 
     (45) EXP_R -> EXP_A not_equals EXP_A .
-    (47) EXP_A -> EXP_A . + TERMINO
-    (48) EXP_A -> EXP_A . minus TERMINO
+    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (109) SEM_PENDING_EXPA_OP -> .
 
     ;               reduce using rule 45 (EXP_R -> EXP_A not_equals EXP_A .)
     and             reduce using rule 45 (EXP_R -> EXP_A not_equals EXP_A .)
     or              reduce using rule 45 (EXP_R -> EXP_A not_equals EXP_A .)
     )               reduce using rule 45 (EXP_R -> EXP_A not_equals EXP_A .)
-    to              reduce using rule 45 (EXP_R -> EXP_A not_equals EXP_A .)
     ,               reduce using rule 45 (EXP_R -> EXP_A not_equals EXP_A .)
     ]               reduce using rule 45 (EXP_R -> EXP_A not_equals EXP_A .)
+    to              reduce using rule 45 (EXP_R -> EXP_A not_equals EXP_A .)
     do              reduce using rule 45 (EXP_R -> EXP_A not_equals EXP_A .)
-    +               shift and go to state 156
-    minus           shift and go to state 157
+    +               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
 
+    SEM_PENDING_EXPA_OP            shift and go to state 156
+
+state 194
+
+    (47) EXP_A -> EXP_A SEM_PENDING_EXPA_OP + . SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (104) SEM_ADD_PLUS -> .
+
+    (               reduce using rule 104 (SEM_ADD_PLUS -> .)
+    id              reduce using rule 104 (SEM_ADD_PLUS -> .)
+    cte_i           reduce using rule 104 (SEM_ADD_PLUS -> .)
+    cte_f           reduce using rule 104 (SEM_ADD_PLUS -> .)
+    cte_c           reduce using rule 104 (SEM_ADD_PLUS -> .)
+
+    SEM_ADD_PLUS                   shift and go to state 217
+
+state 195
+
+    (48) EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus . SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (105) SEM_ADD_MINUS -> .
+
+    (               reduce using rule 105 (SEM_ADD_MINUS -> .)
+    id              reduce using rule 105 (SEM_ADD_MINUS -> .)
+    cte_i           reduce using rule 105 (SEM_ADD_MINUS -> .)
+    cte_f           reduce using rule 105 (SEM_ADD_MINUS -> .)
+    cte_c           reduce using rule 105 (SEM_ADD_MINUS -> .)
+
+    SEM_ADD_MINUS                  shift and go to state 218
 
 state 196
 
-    (47) EXP_A -> EXP_A + TERMINO .
-    (50) TERMINO -> TERMINO . * FACTOR
-    (51) TERMINO -> TERMINO . / FACTOR
+    (50) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * . SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (106) SEM_ADD_TIMES -> .
 
-    >               reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    <               reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    equals          reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    not_equals      reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    +               reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    minus           reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    ;               reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    and             reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    or              reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    )               reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    to              reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    ,               reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    ]               reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    do              reduce using rule 47 (EXP_A -> EXP_A + TERMINO .)
-    *               shift and go to state 158
-    /               shift and go to state 159
+    (               reduce using rule 106 (SEM_ADD_TIMES -> .)
+    id              reduce using rule 106 (SEM_ADD_TIMES -> .)
+    cte_i           reduce using rule 106 (SEM_ADD_TIMES -> .)
+    cte_f           reduce using rule 106 (SEM_ADD_TIMES -> .)
+    cte_c           reduce using rule 106 (SEM_ADD_TIMES -> .)
 
+    SEM_ADD_TIMES                  shift and go to state 219
 
 state 197
 
-    (48) EXP_A -> EXP_A minus TERMINO .
-    (50) TERMINO -> TERMINO . * FACTOR
-    (51) TERMINO -> TERMINO . / FACTOR
+    (51) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / . SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (107) SEM_ADD_DIVISION -> .
 
-    >               reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    <               reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    equals          reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    not_equals      reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    +               reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    minus           reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    ;               reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    and             reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    or              reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    )               reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    to              reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    ,               reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    ]               reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    do              reduce using rule 48 (EXP_A -> EXP_A minus TERMINO .)
-    *               shift and go to state 158
-    /               shift and go to state 159
+    (               reduce using rule 107 (SEM_ADD_DIVISION -> .)
+    id              reduce using rule 107 (SEM_ADD_DIVISION -> .)
+    cte_i           reduce using rule 107 (SEM_ADD_DIVISION -> .)
+    cte_f           reduce using rule 107 (SEM_ADD_DIVISION -> .)
+    cte_c           reduce using rule 107 (SEM_ADD_DIVISION -> .)
 
+    SEM_ADD_DIVISION               shift and go to state 220
 
 state 198
-
-    (50) TERMINO -> TERMINO * FACTOR .
-
-    *               reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    /               reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    >               reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    <               reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    equals          reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    not_equals      reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    +               reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    minus           reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    ;               reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    and             reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    or              reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    )               reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    to              reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    ,               reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    ]               reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-    do              reduce using rule 50 (TERMINO -> TERMINO * FACTOR .)
-
-
-state 199
-
-    (51) TERMINO -> TERMINO / FACTOR .
-
-    *               reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    /               reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    >               reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    <               reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    equals          reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    not_equals      reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    +               reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    minus           reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    ;               reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    and             reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    or              reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    )               reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    to              reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    ,               reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    ]               reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-    do              reduce using rule 51 (TERMINO -> TERMINO / FACTOR .)
-
-
-state 200
 
     (64) FACTOR -> ( EXPRESION ) .
 
@@ -3436,39 +3331,53 @@ state 200
     and             reduce using rule 64 (FACTOR -> ( EXPRESION ) .)
     or              reduce using rule 64 (FACTOR -> ( EXPRESION ) .)
     )               reduce using rule 64 (FACTOR -> ( EXPRESION ) .)
-    to              reduce using rule 64 (FACTOR -> ( EXPRESION ) .)
     ,               reduce using rule 64 (FACTOR -> ( EXPRESION ) .)
     ]               reduce using rule 64 (FACTOR -> ( EXPRESION ) .)
+    to              reduce using rule 64 (FACTOR -> ( EXPRESION ) .)
     do              reduce using rule 64 (FACTOR -> ( EXPRESION ) .)
 
 
-state 201
+state 199
+
+    (72) ASIGNACION -> VARIABLE = SEM_ADD_EQUALS EXPRESION . SEM_PENDING_ASSIGNATION_OP
+    (39) EXPRESION -> EXPRESION . and EXP_R
+    (40) EXPRESION -> EXPRESION . or EXP_R
+    (111) SEM_PENDING_ASSIGNATION_OP -> .
+
+    and             shift and go to state 150
+    or              shift and go to state 151
+    ;               reduce using rule 111 (SEM_PENDING_ASSIGNATION_OP -> .)
+    to              reduce using rule 111 (SEM_PENDING_ASSIGNATION_OP -> .)
+
+    SEM_PENDING_ASSIGNATION_OP     shift and go to state 221
+
+state 200
 
     (73) CONDICION -> if ( EXPRESION ) . then BLOQUE
     (74) CONDICION -> if ( EXPRESION ) . then BLOQUE else BLOQUE
 
-    then            shift and go to state 218
+    then            shift and go to state 222
 
 
-state 202
+state 201
 
     (75) WHILE -> while ( EXPRESION ) . do BLOQUE
 
-    do              shift and go to state 219
+    do              shift and go to state 223
 
 
-state 203
+state 202
 
     (76) FOR -> for ASIGNACION to EXPRESION . do BLOQUE
     (39) EXPRESION -> EXPRESION . and EXP_R
     (40) EXPRESION -> EXPRESION . or EXP_R
 
-    do              shift and go to state 220
+    do              shift and go to state 224
     and             shift and go to state 150
     or              shift and go to state 151
 
 
-state 204
+state 203
 
     (68) LLAMADA -> id ( LLAMADA_OPTS ) .
 
@@ -3484,13 +3393,13 @@ state 204
     and             reduce using rule 68 (LLAMADA -> id ( LLAMADA_OPTS ) .)
     or              reduce using rule 68 (LLAMADA -> id ( LLAMADA_OPTS ) .)
     )               reduce using rule 68 (LLAMADA -> id ( LLAMADA_OPTS ) .)
-    to              reduce using rule 68 (LLAMADA -> id ( LLAMADA_OPTS ) .)
     ,               reduce using rule 68 (LLAMADA -> id ( LLAMADA_OPTS ) .)
     ]               reduce using rule 68 (LLAMADA -> id ( LLAMADA_OPTS ) .)
+    to              reduce using rule 68 (LLAMADA -> id ( LLAMADA_OPTS ) .)
     do              reduce using rule 68 (LLAMADA -> id ( LLAMADA_OPTS ) .)
 
 
-state 205
+state 204
 
     (70) LLAMADA_OPTS -> LLAMADA_OPTS , . EXPRESION
     (39) EXPRESION -> . EXPRESION and EXP_R
@@ -3501,145 +3410,11 @@ state 205
     (44) EXP_R -> . EXP_A equals EXP_A
     (45) EXP_R -> . EXP_A not_equals EXP_A
     (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
-    (52) TERMINO -> . FACTOR
-    (61) FACTOR -> . LLAMADA
-    (62) FACTOR -> . CTE
-    (63) FACTOR -> . VARIABLE
-    (64) FACTOR -> . ( EXPRESION )
-    (68) LLAMADA -> . id ( LLAMADA_OPTS )
-    (69) LLAMADA -> . id ( )
-    (65) CTE -> . cte_i
-    (66) CTE -> . cte_f
-    (67) CTE -> . cte_c
-    (31) VARIABLE -> . id [ EXPRESION ]
-    (32) VARIABLE -> . id
-
-    (               shift and go to state 114
-    id              shift and go to state 76
-    cte_i           shift and go to state 115
-    cte_f           shift and go to state 116
-    cte_c           shift and go to state 117
-
-    EXPRESION                      shift and go to state 221
-    EXP_R                          shift and go to state 107
-    EXP_A                          shift and go to state 108
-    TERMINO                        shift and go to state 109
-    FACTOR                         shift and go to state 110
-    LLAMADA                        shift and go to state 111
-    CTE                            shift and go to state 112
-    VARIABLE                       shift and go to state 113
-
-state 206
-
-    (31) VARIABLE -> id [ EXPRESION ] .
-
-    =               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    *               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    /               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    >               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    <               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    equals          reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    not_equals      reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    +               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    minus           reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    ;               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    and             reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    or              reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    )               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    to              reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    ,               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    ]               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-    do              reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
-
-
-state 207
-
-    (77) LECTURA -> read ( LECTURA_OPTS ) .
-
-    ;               reduce using rule 77 (LECTURA -> read ( LECTURA_OPTS ) .)
-
-
-state 208
-
-    (78) LECTURA_OPTS -> LECTURA_OPTS , . id
-
-    id              shift and go to state 222
-
-
-state 209
-
-    (80) ESCRITURA -> write ( ESCRITURA_OPTS ) .
-
-    ;               reduce using rule 80 (ESCRITURA -> write ( ESCRITURA_OPTS ) .)
-
-
-state 210
-
-    (81) ESCRITURA_OPTS -> ESCRITURA_OPTS , . cte_s
-    (82) ESCRITURA_OPTS -> ESCRITURA_OPTS , . EXPRESION
-    (39) EXPRESION -> . EXPRESION and EXP_R
-    (40) EXPRESION -> . EXPRESION or EXP_R
-    (41) EXPRESION -> . EXP_R
-    (42) EXP_R -> . EXP_A > EXP_A
-    (43) EXP_R -> . EXP_A < EXP_A
-    (44) EXP_R -> . EXP_A equals EXP_A
-    (45) EXP_R -> . EXP_A not_equals EXP_A
-    (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
-    (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
-    (52) TERMINO -> . FACTOR
-    (61) FACTOR -> . LLAMADA
-    (62) FACTOR -> . CTE
-    (63) FACTOR -> . VARIABLE
-    (64) FACTOR -> . ( EXPRESION )
-    (68) LLAMADA -> . id ( LLAMADA_OPTS )
-    (69) LLAMADA -> . id ( )
-    (65) CTE -> . cte_i
-    (66) CTE -> . cte_f
-    (67) CTE -> . cte_c
-    (31) VARIABLE -> . id [ EXPRESION ]
-    (32) VARIABLE -> . id
-
-    cte_s           shift and go to state 223
-    (               shift and go to state 114
-    id              shift and go to state 76
-    cte_i           shift and go to state 115
-    cte_f           shift and go to state 116
-    cte_c           shift and go to state 117
-
-    EXPRESION                      shift and go to state 224
-    EXP_R                          shift and go to state 107
-    EXP_A                          shift and go to state 108
-    TERMINO                        shift and go to state 109
-    FACTOR                         shift and go to state 110
-    LLAMADA                        shift and go to state 111
-    CTE                            shift and go to state 112
-    VARIABLE                       shift and go to state 113
-
-state 211
-
-    (93) POINT -> point ( EXPRESION , . EXPRESION )
-    (39) EXPRESION -> . EXPRESION and EXP_R
-    (40) EXPRESION -> . EXPRESION or EXP_R
-    (41) EXPRESION -> . EXP_R
-    (42) EXP_R -> . EXP_A > EXP_A
-    (43) EXP_R -> . EXP_A < EXP_A
-    (44) EXP_R -> . EXP_A equals EXP_A
-    (45) EXP_R -> . EXP_A not_equals EXP_A
-    (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A + TERMINO
-    (48) EXP_A -> . EXP_A minus TERMINO
-    (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO * FACTOR
-    (51) TERMINO -> . TERMINO / FACTOR
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
@@ -3668,28 +3443,162 @@ state 211
     CTE                            shift and go to state 112
     VARIABLE                       shift and go to state 113
 
-state 212
+state 205
+
+    (31) VARIABLE -> id [ EXPRESION ] .
+
+    =               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    *               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    /               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    >               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    <               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    equals          reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    not_equals      reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    +               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    minus           reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    ;               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    and             reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    or              reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    )               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    ,               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    ]               reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    to              reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+    do              reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
+
+
+state 206
+
+    (77) LECTURA -> read ( LECTURA_OPTS ) .
+
+    ;               reduce using rule 77 (LECTURA -> read ( LECTURA_OPTS ) .)
+
+
+state 207
+
+    (78) LECTURA_OPTS -> LECTURA_OPTS , . id
+
+    id              shift and go to state 226
+
+
+state 208
+
+    (80) ESCRITURA -> write ( ESCRITURA_OPTS ) .
+
+    ;               reduce using rule 80 (ESCRITURA -> write ( ESCRITURA_OPTS ) .)
+
+
+state 209
+
+    (81) ESCRITURA_OPTS -> ESCRITURA_OPTS , . cte_s
+    (82) ESCRITURA_OPTS -> ESCRITURA_OPTS , . EXPRESION
+    (39) EXPRESION -> . EXPRESION and EXP_R
+    (40) EXPRESION -> . EXPRESION or EXP_R
+    (41) EXPRESION -> . EXP_R
+    (42) EXP_R -> . EXP_A > EXP_A
+    (43) EXP_R -> . EXP_A < EXP_A
+    (44) EXP_R -> . EXP_A equals EXP_A
+    (45) EXP_R -> . EXP_A not_equals EXP_A
+    (46) EXP_R -> . EXP_A
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (49) EXP_A -> . TERMINO
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (52) TERMINO -> . FACTOR
+    (61) FACTOR -> . LLAMADA
+    (62) FACTOR -> . CTE
+    (63) FACTOR -> . VARIABLE
+    (64) FACTOR -> . ( EXPRESION )
+    (68) LLAMADA -> . id ( LLAMADA_OPTS )
+    (69) LLAMADA -> . id ( )
+    (65) CTE -> . cte_i
+    (66) CTE -> . cte_f
+    (67) CTE -> . cte_c
+    (31) VARIABLE -> . id [ EXPRESION ]
+    (32) VARIABLE -> . id
+
+    cte_s           shift and go to state 227
+    (               shift and go to state 114
+    id              shift and go to state 76
+    cte_i           shift and go to state 115
+    cte_f           shift and go to state 116
+    cte_c           shift and go to state 117
+
+    EXPRESION                      shift and go to state 228
+    EXP_R                          shift and go to state 107
+    EXP_A                          shift and go to state 108
+    TERMINO                        shift and go to state 109
+    FACTOR                         shift and go to state 110
+    LLAMADA                        shift and go to state 111
+    CTE                            shift and go to state 112
+    VARIABLE                       shift and go to state 113
+
+state 210
+
+    (93) POINT -> point ( EXPRESION , . EXPRESION )
+    (39) EXPRESION -> . EXPRESION and EXP_R
+    (40) EXPRESION -> . EXPRESION or EXP_R
+    (41) EXPRESION -> . EXP_R
+    (42) EXP_R -> . EXP_A > EXP_A
+    (43) EXP_R -> . EXP_A < EXP_A
+    (44) EXP_R -> . EXP_A equals EXP_A
+    (45) EXP_R -> . EXP_A not_equals EXP_A
+    (46) EXP_R -> . EXP_A
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (49) EXP_A -> . TERMINO
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (52) TERMINO -> . FACTOR
+    (61) FACTOR -> . LLAMADA
+    (62) FACTOR -> . CTE
+    (63) FACTOR -> . VARIABLE
+    (64) FACTOR -> . ( EXPRESION )
+    (68) LLAMADA -> . id ( LLAMADA_OPTS )
+    (69) LLAMADA -> . id ( )
+    (65) CTE -> . cte_i
+    (66) CTE -> . cte_f
+    (67) CTE -> . cte_c
+    (31) VARIABLE -> . id [ EXPRESION ]
+    (32) VARIABLE -> . id
+
+    (               shift and go to state 114
+    id              shift and go to state 76
+    cte_i           shift and go to state 115
+    cte_f           shift and go to state 116
+    cte_c           shift and go to state 117
+
+    EXPRESION                      shift and go to state 229
+    EXP_R                          shift and go to state 107
+    EXP_A                          shift and go to state 108
+    TERMINO                        shift and go to state 109
+    FACTOR                         shift and go to state 110
+    LLAMADA                        shift and go to state 111
+    CTE                            shift and go to state 112
+    VARIABLE                       shift and go to state 113
+
+state 211
 
     (94) CIRCLE -> circle ( EXPRESION ) .
 
     ;               reduce using rule 94 (CIRCLE -> circle ( EXPRESION ) .)
 
 
-state 213
+state 212
 
     (97) COLOR -> color ( cte_s ) .
 
     ;               reduce using rule 97 (COLOR -> color ( cte_s ) .)
 
 
-state 214
+state 213
 
     (98) SIZE -> size ( EXPRESION ) .
 
     ;               reduce using rule 98 (SIZE -> size ( EXPRESION ) .)
 
 
-state 215
+state 214
 
     (20) FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE .
 
@@ -3700,7 +3609,7 @@ state 215
     main            reduce using rule 20 (FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE .)
 
 
-state 216
+state 215
 
     (16) FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE .
 
@@ -3711,7 +3620,7 @@ state 216
     main            reduce using rule 16 (FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE .)
 
 
-state 217
+state 216
 
     (33) BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .
 
@@ -3739,7 +3648,127 @@ state 217
     clear           reduce using rule 33 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION ; } .)
 
 
+state 217
+
+    (47) EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS . TERMINO SEM_PENDING_EXPA_OP
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (52) TERMINO -> . FACTOR
+    (61) FACTOR -> . LLAMADA
+    (62) FACTOR -> . CTE
+    (63) FACTOR -> . VARIABLE
+    (64) FACTOR -> . ( EXPRESION )
+    (68) LLAMADA -> . id ( LLAMADA_OPTS )
+    (69) LLAMADA -> . id ( )
+    (65) CTE -> . cte_i
+    (66) CTE -> . cte_f
+    (67) CTE -> . cte_c
+    (31) VARIABLE -> . id [ EXPRESION ]
+    (32) VARIABLE -> . id
+
+    (               shift and go to state 114
+    id              shift and go to state 76
+    cte_i           shift and go to state 115
+    cte_f           shift and go to state 116
+    cte_c           shift and go to state 117
+
+    TERMINO                        shift and go to state 230
+    FACTOR                         shift and go to state 110
+    LLAMADA                        shift and go to state 111
+    CTE                            shift and go to state 112
+    VARIABLE                       shift and go to state 113
+
 state 218
+
+    (48) EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS . TERMINO SEM_PENDING_EXPA_OP
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (52) TERMINO -> . FACTOR
+    (61) FACTOR -> . LLAMADA
+    (62) FACTOR -> . CTE
+    (63) FACTOR -> . VARIABLE
+    (64) FACTOR -> . ( EXPRESION )
+    (68) LLAMADA -> . id ( LLAMADA_OPTS )
+    (69) LLAMADA -> . id ( )
+    (65) CTE -> . cte_i
+    (66) CTE -> . cte_f
+    (67) CTE -> . cte_c
+    (31) VARIABLE -> . id [ EXPRESION ]
+    (32) VARIABLE -> . id
+
+    (               shift and go to state 114
+    id              shift and go to state 76
+    cte_i           shift and go to state 115
+    cte_f           shift and go to state 116
+    cte_c           shift and go to state 117
+
+    TERMINO                        shift and go to state 231
+    FACTOR                         shift and go to state 110
+    LLAMADA                        shift and go to state 111
+    CTE                            shift and go to state 112
+    VARIABLE                       shift and go to state 113
+
+state 219
+
+    (50) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES . FACTOR SEM_PENDING_TERMINO_OP
+    (61) FACTOR -> . LLAMADA
+    (62) FACTOR -> . CTE
+    (63) FACTOR -> . VARIABLE
+    (64) FACTOR -> . ( EXPRESION )
+    (68) LLAMADA -> . id ( LLAMADA_OPTS )
+    (69) LLAMADA -> . id ( )
+    (65) CTE -> . cte_i
+    (66) CTE -> . cte_f
+    (67) CTE -> . cte_c
+    (31) VARIABLE -> . id [ EXPRESION ]
+    (32) VARIABLE -> . id
+
+    (               shift and go to state 114
+    id              shift and go to state 76
+    cte_i           shift and go to state 115
+    cte_f           shift and go to state 116
+    cte_c           shift and go to state 117
+
+    FACTOR                         shift and go to state 232
+    LLAMADA                        shift and go to state 111
+    CTE                            shift and go to state 112
+    VARIABLE                       shift and go to state 113
+
+state 220
+
+    (51) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION . FACTOR SEM_PENDING_TERMINO_OP
+    (61) FACTOR -> . LLAMADA
+    (62) FACTOR -> . CTE
+    (63) FACTOR -> . VARIABLE
+    (64) FACTOR -> . ( EXPRESION )
+    (68) LLAMADA -> . id ( LLAMADA_OPTS )
+    (69) LLAMADA -> . id ( )
+    (65) CTE -> . cte_i
+    (66) CTE -> . cte_f
+    (67) CTE -> . cte_c
+    (31) VARIABLE -> . id [ EXPRESION ]
+    (32) VARIABLE -> . id
+
+    (               shift and go to state 114
+    id              shift and go to state 76
+    cte_i           shift and go to state 115
+    cte_f           shift and go to state 116
+    cte_c           shift and go to state 117
+
+    FACTOR                         shift and go to state 233
+    LLAMADA                        shift and go to state 111
+    CTE                            shift and go to state 112
+    VARIABLE                       shift and go to state 113
+
+state 221
+
+    (72) ASIGNACION -> VARIABLE = SEM_ADD_EQUALS EXPRESION SEM_PENDING_ASSIGNATION_OP .
+
+    ;               reduce using rule 72 (ASIGNACION -> VARIABLE = SEM_ADD_EQUALS EXPRESION SEM_PENDING_ASSIGNATION_OP .)
+    to              reduce using rule 72 (ASIGNACION -> VARIABLE = SEM_ADD_EQUALS EXPRESION SEM_PENDING_ASSIGNATION_OP .)
+
+
+state 222
 
     (73) CONDICION -> if ( EXPRESION ) then . BLOQUE
     (74) CONDICION -> if ( EXPRESION ) then . BLOQUE else BLOQUE
@@ -3750,9 +3779,9 @@ state 218
 
     {               shift and go to state 52
 
-    BLOQUE                         shift and go to state 226
+    BLOQUE                         shift and go to state 234
 
-state 219
+state 223
 
     (75) WHILE -> while ( EXPRESION ) do . BLOQUE
     (33) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
@@ -3762,9 +3791,9 @@ state 219
 
     {               shift and go to state 52
 
-    BLOQUE                         shift and go to state 227
+    BLOQUE                         shift and go to state 235
 
-state 220
+state 224
 
     (76) FOR -> for ASIGNACION to EXPRESION do . BLOQUE
     (33) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
@@ -3774,9 +3803,9 @@ state 220
 
     {               shift and go to state 52
 
-    BLOQUE                         shift and go to state 228
+    BLOQUE                         shift and go to state 236
 
-state 221
+state 225
 
     (70) LLAMADA_OPTS -> LLAMADA_OPTS , EXPRESION .
     (39) EXPRESION -> EXPRESION . and EXP_R
@@ -3788,7 +3817,7 @@ state 221
     or              shift and go to state 151
 
 
-state 222
+state 226
 
     (78) LECTURA_OPTS -> LECTURA_OPTS , id .
 
@@ -3796,7 +3825,7 @@ state 222
     ,               reduce using rule 78 (LECTURA_OPTS -> LECTURA_OPTS , id .)
 
 
-state 223
+state 227
 
     (81) ESCRITURA_OPTS -> ESCRITURA_OPTS , cte_s .
 
@@ -3804,7 +3833,7 @@ state 223
     ,               reduce using rule 81 (ESCRITURA_OPTS -> ESCRITURA_OPTS , cte_s .)
 
 
-state 224
+state 228
 
     (82) ESCRITURA_OPTS -> ESCRITURA_OPTS , EXPRESION .
     (39) EXPRESION -> EXPRESION . and EXP_R
@@ -3816,18 +3845,122 @@ state 224
     or              shift and go to state 151
 
 
-state 225
+state 229
 
     (93) POINT -> point ( EXPRESION , EXPRESION . )
     (39) EXPRESION -> EXPRESION . and EXP_R
     (40) EXPRESION -> EXPRESION . or EXP_R
 
-    )               shift and go to state 229
+    )               shift and go to state 237
     and             shift and go to state 150
     or              shift and go to state 151
 
 
-state 226
+state 230
+
+    (47) EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO . SEM_PENDING_EXPA_OP
+    (50) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (109) SEM_PENDING_EXPA_OP -> .
+    (110) SEM_PENDING_TERMINO_OP -> .
+
+    >               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    <               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    equals          reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    not_equals      reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    +               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    ;               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    and             reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    or              reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    )               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    ,               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    ]               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    to              reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    do              reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    *               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    /               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+
+    SEM_PENDING_EXPA_OP            shift and go to state 238
+    SEM_PENDING_TERMINO_OP         shift and go to state 157
+
+state 231
+
+    (48) EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO . SEM_PENDING_EXPA_OP
+    (50) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (109) SEM_PENDING_EXPA_OP -> .
+    (110) SEM_PENDING_TERMINO_OP -> .
+
+    >               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    <               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    equals          reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    not_equals      reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    +               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    ;               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    and             reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    or              reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    )               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    ,               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    ]               reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    to              reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    do              reduce using rule 109 (SEM_PENDING_EXPA_OP -> .)
+    *               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    /               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+
+    SEM_PENDING_EXPA_OP            shift and go to state 239
+    SEM_PENDING_TERMINO_OP         shift and go to state 157
+
+state 232
+
+    (50) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR . SEM_PENDING_TERMINO_OP
+    (110) SEM_PENDING_TERMINO_OP -> .
+
+    *               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    /               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    >               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    <               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    equals          reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    not_equals      reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    +               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    minus           reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    ;               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    and             reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    or              reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    )               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    ,               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    ]               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    to              reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    do              reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+
+    SEM_PENDING_TERMINO_OP         shift and go to state 240
+
+state 233
+
+    (51) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR . SEM_PENDING_TERMINO_OP
+    (110) SEM_PENDING_TERMINO_OP -> .
+
+    *               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    /               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    >               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    <               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    equals          reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    not_equals      reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    +               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    minus           reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    ;               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    and             reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    or              reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    )               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    ,               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    ]               reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    to              reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+    do              reduce using rule 110 (SEM_PENDING_TERMINO_OP -> .)
+
+    SEM_PENDING_TERMINO_OP         shift and go to state 241
+
+state 234
 
     (73) CONDICION -> if ( EXPRESION ) then BLOQUE .
     (74) CONDICION -> if ( EXPRESION ) then BLOQUE . else BLOQUE
@@ -3847,10 +3980,10 @@ state 226
     color           reduce using rule 73 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
     size            reduce using rule 73 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
     clear           reduce using rule 73 (CONDICION -> if ( EXPRESION ) then BLOQUE .)
-    else            shift and go to state 230
+    else            shift and go to state 242
 
 
-state 227
+state 235
 
     (75) WHILE -> while ( EXPRESION ) do BLOQUE .
 
@@ -3871,7 +4004,7 @@ state 227
     clear           reduce using rule 75 (WHILE -> while ( EXPRESION ) do BLOQUE .)
 
 
-state 228
+state 236
 
     (76) FOR -> for ASIGNACION to EXPRESION do BLOQUE .
 
@@ -3892,14 +4025,98 @@ state 228
     clear           reduce using rule 76 (FOR -> for ASIGNACION to EXPRESION do BLOQUE .)
 
 
-state 229
+state 237
 
     (93) POINT -> point ( EXPRESION , EXPRESION ) .
 
     ;               reduce using rule 93 (POINT -> point ( EXPRESION , EXPRESION ) .)
 
 
-state 230
+state 238
+
+    (47) EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .
+
+    >               reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    <               reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    equals          reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    not_equals      reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    +               reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    minus           reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    ;               reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    and             reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    or              reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    )               reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    ,               reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    ]               reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    to              reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+    do              reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
+
+
+state 239
+
+    (48) EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .
+
+    >               reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    <               reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    equals          reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    not_equals      reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    +               reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    minus           reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    ;               reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    and             reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    or              reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    )               reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    ,               reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    ]               reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    to              reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+    do              reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
+
+
+state 240
+
+    (50) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .
+
+    *               reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    /               reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    >               reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    <               reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    equals          reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    not_equals      reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    +               reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    minus           reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    ;               reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    and             reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    or              reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    )               reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    ,               reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    ]               reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    to              reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+    do              reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
+
+
+state 241
+
+    (51) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .
+
+    *               reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    /               reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    >               reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    <               reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    equals          reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    not_equals      reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    +               reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    minus           reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    ;               reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    and             reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    or              reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    )               reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    ,               reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    ]               reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    to              reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+    do              reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
+
+
+state 242
 
     (74) CONDICION -> if ( EXPRESION ) then BLOQUE else . BLOQUE
     (33) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION ; }
@@ -3909,9 +4126,9 @@ state 230
 
     {               shift and go to state 52
 
-    BLOQUE                         shift and go to state 231
+    BLOQUE                         shift and go to state 243
 
-state 231
+state 243
 
     (74) CONDICION -> if ( EXPRESION ) then BLOQUE else BLOQUE .
 

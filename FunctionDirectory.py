@@ -15,6 +15,13 @@ class VarTable():
         else:
             return False
 
+    def getVariable(self, varName):
+        if varName in self.table:
+            return self.table[varName]
+        else: 
+            return False
+
+
     def addGlobalVariables(self, globalVariables):
         for varName,content in globalVariables.items():
             if not varName in self.table:
@@ -78,6 +85,17 @@ class FuncDirec():
 
         else:
             return "Failed operation. Function name not found"
+
+
+    def getVariableInFunc(self, funcName, varName):
+        if funcName in self.directory:
+            result = self.directory[funcName]["varTable"].getVariable(varName)
+            if result != False:
+                return result
+            else:
+                return "Failed operation. Var " + varName + " not found " + " in scope of " + funcName
+        else:
+            return "Failed operation. Function " + funcName + " not found"
 
 
     def printContents(self, varTableToo):
