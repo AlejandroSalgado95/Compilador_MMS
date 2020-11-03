@@ -26,12 +26,31 @@ class Quadruples():
             self.quadruples.append( ("=", operand, None, resultOperand) )
             return True
 
+    def addGoToCuadruple(self,operand,gotoKind):
+        if gotoKind == "gotoF" or gotoKind == "gotoV":
+            if operand.type == "bool":
+                self.quadruples.append( (gotoKind,operand,None,None) )
+            else:
+                return "Failed operation. Cannot evaluate " + operand.type + " expression inside of if operation"
+        elif gotoKind == "goto":
+            self.quadruples.append( ("goto", None, None, None) )
+            return True
+
+    def fillGoToCuadruple(self,gotoIndex,directionIndex):
+        incompleteGoTo = self.quadruples[gotoIndex]
+        newGoto = (incompleteGoTo[0],incompleteGoTo[1],incompleteGoTo[2], directionIndex )
+        #self.quadruples[gotoIndex][3] = directionIndex
+        self.quadruples[gotoIndex] = newGoto
+        
 
 
     def printContents(self):
+        quadrupleCounter = 1
+
         for quadruple in self.quadruples:
             tempName1 = None
             tempName2 = None
+            tempName3 = None
 
             if not quadruple[1] == None:
                 if quadruple[1].name == None:
@@ -45,6 +64,12 @@ class Quadruples():
                 else:
                     tempName2 = quadruple[2].name
 
-            print ("(", quadruple[0],',', str(tempName1), ',' ,str(tempName2), ',',quadruple[3].name,')')
+            if not quadruple[3] == None:
+                if isinstance(quadruple[3],int):
+                    tempName3 = quadruple[3]
+                else:
+                    tempName3 = quadruple[3].name
 
+            print (quadrupleCounter, ". (", quadruple[0],',', str(tempName1), ',' ,str(tempName2), ',', str(tempName3),')')
+            quadrupleCounter += 1
 

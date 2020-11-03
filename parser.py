@@ -23,7 +23,7 @@ operandsList = []
 operatorsList = []
 quadruples = Quadruples()
 errorQueue = []
-
+gotoList = []
 
 
 
@@ -274,8 +274,8 @@ def p_asignacion(p):
 
 def p_condicion(p):
     '''
-    CONDICION : if '(' EXPRESION ')' then BLOQUE 
-               | if '(' EXPRESION ')' then BLOQUE else BLOQUE
+    CONDICION : if '(' EXPRESION ')' SEM_ADD_GOTOF then BLOQUE SEM_FILL_GOTOF 
+               | if '(' EXPRESION ')' SEM_ADD_GOTOF then BLOQUE else BLOQUE SEM_FILL_GOTOF
     '''
 
 def p_while(p):
@@ -519,13 +519,47 @@ def p_sem_add_or(p):
   operatorsList.append('||')
 
 
+def p_sem_add_gotof(p):
+  '''
+  SEM_ADD_GOTOF : 
+  '''
+  global gotoList
+  global operandsList
+  global quadruples
+
+  operand = operandsList.pop()
+  result = quadruples.addGoToCuadruple(operand,"gotoF")
+  if isinstance(result,str):
+    errorQueue.append("Error: " + result)
+    print("Error: ", result)
+  else:
+    gotoCuadrupleIndex = len(quadruples.quadruples) - 1
+    gotoList.append(gotoCuadrupleIndex)
+
+def p_sem_fill_gotof(p):
+  '''
+  SEM_FILL_GOTOF : 
+  '''
+  global gotoList
+  global quadruples
+
+  gotoIndex = gotoList.pop()
+  directionIndex = len(quadruples.quadruples) +1 
+  quadruples.fillGoToCuadruple(gotoIndex,directionIndex)
+    
+
+
+
+
+
+
 def p_sem_pending_expa_op(p):
   '''
   SEM_PENDING_EXPA_OP : 
   '''
   global operatorsList
   global operandsList
-  global quadruplesList
+  global quadruples
 
   topOp = ""
 
@@ -549,7 +583,7 @@ def p_sem_pending_termino_op(p):
   '''
   global operatorsList
   global operandsList
-  global quadruplesList
+  global quadruples
 
   topOp = ""
 
@@ -573,7 +607,7 @@ def p_sem_pending_assignation_op(p):
   '''
   global operatorsList
   global operandsList
-  global quadruplesList
+  global quadruples
 
   topOp = ""
 
@@ -595,7 +629,7 @@ def p_sem_pending_rel_op(p):
   '''
   global operatorsList
   global operandsList
-  global quadruplesList
+  global quadruples
   global errorQueue
 
   topOp = ""
@@ -620,7 +654,7 @@ def p_sem_pending_logic_op(p):
   '''
   global operatorsList
   global operandsList
-  global quadruplesList
+  global quadruples
   global errorQueue
 
   topOp = ""

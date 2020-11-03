@@ -8,12 +8,21 @@ main ( )
 	
 	if (2>1) then {
 	  valor = j + 7 * p + 12;
-	  valor = 3 + p / valor - 4 * j;
-	  valor = (3+2)*4/3*(2+2);
+
+	  if (3<3) then {
+	  	p = 15;
+	  }
+
+	  p = 12;
 
 	}
 
-	valor = 3;
+	if (3<2) then {
 
+	  j = 3;
+	  p = 4; 
+	}
+
+	j = 2;
 
 }
