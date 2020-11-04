@@ -31,7 +31,7 @@ class Quadruples():
             if operand.type == "bool":
                 self.quadruples.append( (gotoKind,operand,None,None) )
             else:
-                return "Failed operation. Cannot evaluate " + operand.type + " expression inside of if operation"
+                return "Failed operation. Cannot evaluate " + operand.type + " expression, boolean expression required"
         elif gotoKind == "goto":
             self.quadruples.append( ("goto", None, None, None) )
             return True

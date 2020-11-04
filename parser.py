@@ -280,12 +280,12 @@ def p_condicion(p):
 
 def p_while(p):
     '''
-    WHILE : while  SEM_ADD_WHILE_COND_INDEX '(' EXPRESION ')' SEM_ADD_GOTOF do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_WHILE_COND_INDEX
+    WHILE : while  SEM_ADD_COND_INDEX '(' EXPRESION ')' SEM_ADD_GOTOF do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
     '''
 
 def p_for(p):
     '''
-    FOR : for ASIGNACION to EXPRESION do BLOQUE
+    FOR : for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION SEM_ADD_GOTOV do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
     '''
 
 def p_lectura(p):
@@ -572,29 +572,44 @@ def p_sem_add_goto_simple(p):
 
 
 
-#Añade index del cuadruplo donde ira la condicion del while
-def p_sem_add_while_cond_index(p):
+#Añade index del cuadruplo donde ira la condicion del loop
+def p_sem_add_cond_index(p):
   '''
-  SEM_ADD_WHILE_COND_INDEX : 
+  SEM_ADD_COND_INDEX : 
   '''
   global gotoList
 
-  whileCondIndex = len(quadruples.quadruples) + 1
-  gotoList.append(whileCondIndex)
+  condIndex = len(quadruples.quadruples) + 1
+  gotoList.append(condIndex)
 
 
 #Rellena el goto pendiente con el index donde comienzan los cuadruplos
-# de la condicion para un while que se repite
-def p_sem_fill_goto_while_cond_index(p):
+# de la condicion para un loop que se repite
+def p_sem_fill_goto_cond_index(p):
   '''
-  SEM_FILL_GOTO_WHILE_COND_INDEX : 
+  SEM_FILL_GOTO_COND_INDEX : 
   '''
   global gotoList
   global quadruples
   goToIndex = gotoList.pop()
-  whileCondIndex  = gotoList.pop()
-  quadruples.fillGoToCuadruple(goToIndex,whileCondIndex)
+  condIndex  = gotoList.pop()
+  quadruples.fillGoToCuadruple(goToIndex,condIndex)
 
+
+def p_sem_add_gotov(p):
+  '''
+  SEM_ADD_GOTOV : 
+  '''
+  global gotoList
+  global quadruples
+  operand = operandsList.pop()
+  result = quadruples.addGoToCuadruple(operand,"gotoV")
+  if isinstance(result,str):
+    errorQueue.append("Error: " + result)
+    print("Error: ", result)
+  else:
+    gotoCuadrupleIndex = len(quadruples.quadruples) - 1
+    gotoList.append(gotoCuadrupleIndex)
 
 
 
