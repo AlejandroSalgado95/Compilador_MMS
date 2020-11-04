@@ -1,0 +1,35 @@
+program MeMyself;
+
+var int : i, j, p;
+var float : valor, yepei ;
+
+main ( )
+{ 
+	
+	if (2>1) then {
+	 
+	  valor = j + 7 * p + 12;
+
+	  if (3+2>4) then {
+
+	  } else {
+
+	   valor = 3 + 2 ;
+	  }
+
+
+	} else {
+
+	  j = 3;
+	  p = 4;
+
+	  if (j > i) then {
+
+	  	j = i;
+	  }
+
+	}
+
+	j = 2;
+
+}

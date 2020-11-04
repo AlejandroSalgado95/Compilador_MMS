@@ -275,7 +275,7 @@ def p_asignacion(p):
 def p_condicion(p):
     '''
     CONDICION : if '(' EXPRESION ')' SEM_ADD_GOTOF then BLOQUE SEM_FILL_GOTOF 
-               | if '(' EXPRESION ')' SEM_ADD_GOTOF then BLOQUE else BLOQUE SEM_FILL_GOTOF
+               | if '(' EXPRESION ')' SEM_ADD_GOTOF then BLOQUE else SEM_ADD_GOTO_SIMPLE BLOQUE SEM_FILL_GOTOF
     '''
 
 def p_while(p):
@@ -546,7 +546,25 @@ def p_sem_fill_gotof(p):
   gotoIndex = gotoList.pop()
   directionIndex = len(quadruples.quadruples) +1 
   quadruples.fillGoToCuadruple(gotoIndex,directionIndex)
-    
+
+def p_sem_add_goto_simple(p):
+  '''
+  SEM_ADD_GOTO_SIMPLE : 
+  '''
+  global gotoList
+  global quadruples
+
+  gotoIndex = gotoList.pop()
+  directionIndex = len(quadruples.quadruples) + 2
+  quadruples.fillGoToCuadruple(gotoIndex,directionIndex)
+
+  quadruples.addGoToCuadruple(None,"goto")
+  gotoCuadrupleIndex = len(quadruples.quadruples) - 1
+  gotoList.append(gotoCuadrupleIndex)
+
+
+
+
 
 
 
