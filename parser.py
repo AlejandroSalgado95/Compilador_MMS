@@ -274,13 +274,13 @@ def p_asignacion(p):
 
 def p_condicion(p):
     '''
-    CONDICION : if '(' EXPRESION ')' SEM_ADD_GOTOF then BLOQUE SEM_FILL_GOTOF 
-               | if '(' EXPRESION ')' SEM_ADD_GOTOF then BLOQUE else SEM_ADD_GOTO_SIMPLE BLOQUE SEM_FILL_GOTOF
+    CONDICION : if '(' EXPRESION ')' SEM_ADD_GOTOF then BLOQUE SEM_FILL_GOTO_ANYKIND 
+               | if '(' EXPRESION ')' SEM_ADD_GOTOF then BLOQUE else SEM_ADD_GOTO_SIMPLE BLOQUE SEM_FILL_GOTO_ANYKIND
     '''
 
 def p_while(p):
     '''
-    WHILE : while '(' EXPRESION ')' do BLOQUE
+    WHILE : while  SEM_ADD_WHILE_COND_INDEX '(' EXPRESION ')' SEM_ADD_GOTOF do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_WHILE_COND_INDEX
     '''
 
 def p_for(p):
@@ -518,7 +518,9 @@ def p_sem_add_or(p):
   global operatorsList
   operatorsList.append('||')
 
-
+#Crea un cuadruplo gotof que recibe de argumento un operando de la pila, y 
+#guarda el index del cuadruplo gotof creado para rellenarlo despues con 
+#el index del cuadruplo al cual debe saltar
 def p_sem_add_gotof(p):
   '''
   SEM_ADD_GOTOF : 
@@ -536,9 +538,11 @@ def p_sem_add_gotof(p):
     gotoCuadrupleIndex = len(quadruples.quadruples) - 1
     gotoList.append(gotoCuadrupleIndex)
 
-def p_sem_fill_gotof(p):
+#Rellena ya sea un cuadruplo goto o un cuadruplo gotof con el index del 
+#cuadruplo siguiente
+def p_sem_fill_goto_anykind(p):
   '''
-  SEM_FILL_GOTOF : 
+  SEM_FILL_GOTO_ANYKIND : 
   '''
   global gotoList
   global quadruples
@@ -547,6 +551,10 @@ def p_sem_fill_gotof(p):
   directionIndex = len(quadruples.quadruples) +1 
   quadruples.fillGoToCuadruple(gotoIndex,directionIndex)
 
+#Rellena el cuadruplo gotof anteriormente guardado con destino a un index
+#mayor al index del cuadruplo goto que se va a insertar,
+#y luego se inserta el cuadruplo goto, guardando en la pila de saltos
+#el index del goto incompleto al cual le falta su direccion de ida
 def p_sem_add_goto_simple(p):
   '''
   SEM_ADD_GOTO_SIMPLE : 
@@ -564,6 +572,28 @@ def p_sem_add_goto_simple(p):
 
 
 
+#Añade index del cuadruplo donde ira la condicion del while
+def p_sem_add_while_cond_index(p):
+  '''
+  SEM_ADD_WHILE_COND_INDEX : 
+  '''
+  global gotoList
+
+  whileCondIndex = len(quadruples.quadruples) + 1
+  gotoList.append(whileCondIndex)
+
+
+#Rellena el goto pendiente con el index donde comienzan los cuadruplos
+# de la condicion para un while que se repite
+def p_sem_fill_goto_while_cond_index(p):
+  '''
+  SEM_FILL_GOTO_WHILE_COND_INDEX : 
+  '''
+  global gotoList
+  global quadruples
+  goToIndex = gotoList.pop()
+  whileCondIndex  = gotoList.pop()
+  quadruples.fillGoToCuadruple(goToIndex,whileCondIndex)
 
 
 
