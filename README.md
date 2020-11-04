@@ -4,6 +4,8 @@
 This release performs: 
 * The lexical and syntactical analysis of an input text, and determines whether the given text is valid within the rules of the “MMS” language
 * The semantical analysis and storage of the functions within a given input text, as well as its local and global variables
+* Semantical type checks between the operands of an expression, and the expression itself depending on the requiring statement
+* The quadruples generation for several statements, including: expressions (aritmetic,relational,logical), and non-linear statements (if-else, for, while)
 
 ## Installation 
 1.Install python3: brew install python3
@@ -33,7 +35,7 @@ This release performs:
 * So far there is no unary operator ‘-‘, only its binary version is available (subtraction operation)
 
 ### Overdue:
-* Source code for the cuadruples
+* Source code for the functions 
 
 ### Doubts:
 * Should the assignation precedence and association, which is right associative, also be written in code like the other operators?
