@@ -45,8 +45,7 @@ dirAddresses = {
 "constInt" : VirtualAdresses(16000, 16099),
 "constFloat" : VirtualAdresses(16100, 16199),
 "constChar" : VirtualAdresses(16200, 16299),
-"constBool" : VirtualAdresses(16300, 16399),
-"constString" : VirtualAdresses(16400, 16499)
+"constString" : VirtualAdresses(16300, 16399)
 }
 
 
@@ -161,7 +160,7 @@ def p_param_name(p):
 
   scope = "local"
   varName = p[1]
-  addressTableKey = determineTypeAddressTable(scope,varType)
+  addressTableKey = determineTypeAddressTable(scope,varType,None,False)
   vAddress = dirAddresses[addressTableKey].getAnAddress()
   funcDirec.addLocalVariableToFunc(funcName, varName, varType , True, vAddress)
 
@@ -182,7 +181,7 @@ def p_variable_fix(p):
       scope = "global"
 
     varName = p[1]
-    addressTableKey = determineTypeAddressTable(scope,varType)
+    addressTableKey = determineTypeAddressTable(scope,varType,None,False)
     vAddress = dirAddresses[addressTableKey].getAnAddress()
     result = funcDirec.addLocalVariableToFunc(funcName, varName, varType, False, vAddress)
 
@@ -201,6 +200,10 @@ def p_variable(p):
     global varName
     global funcDirec
     global operandsList
+    global funcDirec
+    global dirAddresses
+    global funcName
+
 
     varName = p[1]
     retrievedVar = funcDirec.getVariableInFunc(funcName, varName)
@@ -208,7 +211,7 @@ def p_variable(p):
       errorQueue.append("Error: " + retrievedVar)
       print("Error: ", retrievedVar)
     else:
-      operandsList.append( Operand(varName, None, retrievedVar["varType"]) )
+      operandsList.append( Operand(varName, None, retrievedVar["varType"], retrievedVar["vAddress"]) )
       
 
 def p_bloque(p):
@@ -284,6 +287,11 @@ def p_cte(p):
     global cteValue
     global cteType
     global operandsList
+    global dirAddresses
+    global funcName
+
+
+
 
     cteValue = p[1]
     if isinstance(p[1],int):
@@ -293,7 +301,10 @@ def p_cte(p):
     elif isinstance(p[1],str):
       cteType = "char"
 
-    consOperand = Operand(None, cteValue, cteType)
+    addressTableKey = determineTypeAddressTable(None,cteType,cteValue,None)
+    vAddress = dirAddresses[addressTableKey].getAnAddress()
+
+    consOperand = Operand(None, cteValue, cteType, vAddress)
     operandsList.append( consOperand )
     
 
@@ -669,6 +680,7 @@ def p_sem_pending_expa_op(p):
   global operatorsList
   global operandsList
   global quadruples
+  global dirAddresses
 
   topOp = ""
 
@@ -678,7 +690,7 @@ def p_sem_pending_expa_op(p):
     topOp = operatorsList.pop()
     rOperand = operandsList.pop()
     lOperand = operandsList.pop()
-    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
+    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand,dirAddresses)
     if isinstance(resultOperand,str):
       errorQueue.append("Error: " + resultOperand)
       print("Error: ", resultOperand)
@@ -693,6 +705,7 @@ def p_sem_pending_termino_op(p):
   global operatorsList
   global operandsList
   global quadruples
+  global dirAddresses
 
   topOp = ""
 
@@ -702,7 +715,7 @@ def p_sem_pending_termino_op(p):
     topOp = operatorsList.pop()
     rOperand = operandsList.pop()
     lOperand = operandsList.pop()
-    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
+    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand,dirAddresses)
     if isinstance(resultOperand,str):
       errorQueue.append("Error: " + resultOperand)
       print("Error: ", resultOperand)
@@ -740,6 +753,7 @@ def p_sem_pending_rel_op(p):
   global operandsList
   global quadruples
   global errorQueue
+  global dirAddresses
 
   topOp = ""
 
@@ -749,7 +763,7 @@ def p_sem_pending_rel_op(p):
     topOp = operatorsList.pop()
     rOperand = operandsList.pop()
     lOperand = operandsList.pop()
-    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
+    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand,dirAddresses )
     if isinstance(resultOperand,str):
       errorQueue.append("Error: " + resultOperand)
       print("Error: ", resultOperand)
@@ -765,6 +779,7 @@ def p_sem_pending_logic_op(p):
   global operandsList
   global quadruples
   global errorQueue
+  global dirAddresses
 
   topOp = ""
 
@@ -774,7 +789,7 @@ def p_sem_pending_logic_op(p):
     topOp = operatorsList.pop()
     rOperand = operandsList.pop()
     lOperand = operandsList.pop()
-    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
+    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand,dirAddresses)
     if isinstance(resultOperand,str):
       errorQueue.append("Error: " + resultOperand)
       print("Error: ", resultOperand)
