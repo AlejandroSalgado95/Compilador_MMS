@@ -681,6 +681,8 @@ def p_sem_pending_expa_op(p):
   global operandsList
   global quadruples
   global dirAddresses
+  global funcName
+  global funcDirec
 
   topOp = ""
 
@@ -696,6 +698,7 @@ def p_sem_pending_expa_op(p):
       print("Error: ", resultOperand)
     else: 
       operandsList.append(resultOperand)
+      funcDirec.addTempVarCountInFunc(funcName,resultOperand.type)
 
 
 def p_sem_pending_termino_op(p):
@@ -706,6 +709,8 @@ def p_sem_pending_termino_op(p):
   global operandsList
   global quadruples
   global dirAddresses
+  global funcName
+  global funcDirec
 
   topOp = ""
 
@@ -721,6 +726,8 @@ def p_sem_pending_termino_op(p):
       print("Error: ", resultOperand)
     else: 
       operandsList.append(resultOperand)
+      funcDirec.addTempVarCountInFunc(funcName,resultOperand.type)
+
 
 
 def p_sem_pending_assignation_op(p):
@@ -754,6 +761,8 @@ def p_sem_pending_rel_op(p):
   global quadruples
   global errorQueue
   global dirAddresses
+  global funcName
+  global funcDirec
 
   topOp = ""
 
@@ -769,6 +778,8 @@ def p_sem_pending_rel_op(p):
       print("Error: ", resultOperand)
     else: 
       operandsList.append(resultOperand)
+      funcDirec.addTempVarCountInFunc(funcName,resultOperand.type)
+
 
 
 def p_sem_pending_logic_op(p):
@@ -780,6 +791,8 @@ def p_sem_pending_logic_op(p):
   global quadruples
   global errorQueue
   global dirAddresses
+  global funcName
+  global funcDirec
 
   topOp = ""
 
@@ -795,6 +808,8 @@ def p_sem_pending_logic_op(p):
       print("Error: ", resultOperand)
     else: 
       operandsList.append(resultOperand)
+      funcDirec.addTempVarCountInFunc(funcName,resultOperand.type)
+
 
 
 
