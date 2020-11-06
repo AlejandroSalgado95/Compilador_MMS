@@ -9,6 +9,8 @@ from FunctionDirectory import FuncDirec
 from Quadruples import Quadruples
 from SemanticCube import SC
 from Operand import Operand
+from VirtualAddresses import VirtualAdresses
+from Tools import determineTypeAddressTable
 
 
 #python variables
@@ -24,6 +26,29 @@ operatorsList = []
 quadruples = Quadruples()
 errorQueue = []
 gotoList = []
+
+#Variables globales
+dirAddresses = {
+"globalInt" : VirtualAdresses(15000, 15099),
+"globalFloat" : VirtualAdresses(15100, 15199),
+"globalChar" : VirtualAdresses(15200, 15299),
+#Variables locales
+"localInt" : VirtualAdresses(15300, 15399),
+"localFloat" : VirtualAdresses(15400, 15499),
+"localChar" : VirtualAdresses(15500, 15599),
+#Resultados temporales
+"tempInt" : VirtualAdresses(15600, 15699),
+"tempFloat" : VirtualAdresses(15700, 15799),
+"tempChar" : VirtualAdresses(15800, 15899),
+"tempBool" : VirtualAdresses(15900, 15998),
+#Constantes temporales
+"constInt" : VirtualAdresses(16000, 16099),
+"constFloat" : VirtualAdresses(16100, 16199),
+"constChar" : VirtualAdresses(16200, 16299),
+"constBool" : VirtualAdresses(16300, 16399),
+"constString" : VirtualAdresses(16400, 16499)
+}
+
 
 
 
@@ -74,6 +99,7 @@ def p_dec_v(p):
     DEC_V : DEC_V var  TIPO_SIMPLE ':' LISTA_VAR ';' 
             | var TIPO_SIMPLE ':' LISTA_VAR ';'
     '''
+ 
 
 
 def p_lista_var(p):
@@ -129,9 +155,15 @@ def p_param_name(p):
   PARAM_NAME : id
   '''
   global varName
+  global funcDirec
+  global varType
+  global dirAddresses
 
+  scope = "local"
   varName = p[1]
-  funcDirec.addLocalVariableToFunc(funcName, varName, varType, True)
+  addressTableKey = determineTypeAddressTable(scope,varType)
+  vAddress = dirAddresses[addressTableKey].getAnAddress()
+  funcDirec.addLocalVariableToFunc(funcName, varName, varType , True, vAddress)
 
 def p_variable_fix(p):
     '''
@@ -141,9 +173,23 @@ def p_variable_fix(p):
     global varName
     global varType
     global funcDirec
+    global dirAddresses
+    global funcName
+
+    scope = "local"
+
+    if (funcName == "global"):
+      scope = "global"
 
     varName = p[1]
-    funcDirec.addLocalVariableToFunc(funcName, varName, varType, False)
+    addressTableKey = determineTypeAddressTable(scope,varType)
+    vAddress = dirAddresses[addressTableKey].getAnAddress()
+    result = funcDirec.addLocalVariableToFunc(funcName, varName, varType, False, vAddress)
+
+    if isinstance(result,str):
+      errorQueue.append("Error: " + result)
+      print("Error: ", result)
+
 
 
 
