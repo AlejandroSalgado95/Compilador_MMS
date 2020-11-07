@@ -28,6 +28,7 @@ errorQueue = []
 gotoList = []
 paramsCallCounter = 0
 funcCall = ""
+pendingReturnOperand = ""
 
 #Variables globales
 dirAddresses = {
@@ -218,9 +219,9 @@ def p_variable(p):
 
 def p_bloque(p):
     '''
-    BLOQUE : '{' LOOP_ESTATUTO return EXPRESION ';' '}' 
+    BLOQUE : '{' LOOP_ESTATUTO return EXPRESION SEM_VERIFY_RETURN_FUNC ';' '}' 
               | '{' LOOP_ESTATUTO '}' 
-              | '{' return EXPRESION ';' '}' 
+              | '{' return EXPRESION SEM_VERIFY_RETURN_FUNC ';' '}' 
               | '{' '}'
     '''
 
@@ -234,7 +235,7 @@ def p_expresion(p):
     '''
     EXPRESION :  EXPRESION SEM_PENDING_LOGIC_OP  and  SEM_ADD_AND  EXP_R  SEM_PENDING_LOGIC_OP
                 | EXPRESION SEM_PENDING_LOGIC_OP  or  SEM_ADD_OR   EXP_R  SEM_PENDING_LOGIC_OP
-                | EXP_R
+                | EXP_R 
     '''
 
 def p_exp_r(p):
@@ -243,21 +244,21 @@ def p_exp_r(p):
             | EXP_A '<' SEM_ADD_LESS_THAN   EXP_A   SEM_PENDING_REL_OP
             | EXP_A equals SEM_ADD_EQUALS_TO   EXP_A    SEM_PENDING_REL_OP
             | EXP_A not_equals SEM_ADD_NOT_EQUALS_TO   EXP_A   SEM_PENDING_REL_OP
-            | EXP_A
+            | EXP_A 
     '''
 
 def p_exp_a(p):
     '''
     EXP_A :  EXP_A SEM_PENDING_EXPA_OP '+' SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
             | EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
-            | TERMINO
+            | TERMINO 
     '''
 
 def p_termino(p):
     '''
     TERMINO : TERMINO SEM_PENDING_TERMINO_OP '*' SEM_ADD_TIMES  FACTOR  SEM_PENDING_TERMINO_OP
              | TERMINO SEM_PENDING_TERMINO_OP '/' SEM_ADD_DIVISION  FACTOR  SEM_PENDING_TERMINO_OP
-             | FACTOR
+             | FACTOR 
     '''
 
 def p_estatuto(p):
@@ -749,8 +750,31 @@ def p_sem_add_gosub(p):
     '''  
     global funcCall
     global quadruples
+    global operandsList
+    global funcDirec
     quadruples.addGosubFuncQuadruple(funcCall)
+    funcCallType = funcDirec.getFuncReturnType(funcCall)
+    operandsList.append( Operand(funcCall,None,funcCallType,funcCall) )
 
+
+def p_sem_verify_return_func(p):
+    '''
+    SEM_VERIFY_RETURN_FUNC :
+    '''  
+    global funcDirec
+    global operandsList
+    global funcName
+    global dirAddresses
+    global quadruples
+    global pendingReturnOperand
+
+    rOperand = operandsList.pop()
+    result = funcDirec.compareWithFuncReturnType(funcName,rOperand.type)
+    if isinstance(result,str):
+      errorQueue.append("Error: " + result)
+      print("Error: ", result)
+    else: 
+      resultOperand = quadruples.addReturnCuadruple(funcName,rOperand,dirAddresses)
 
 
 

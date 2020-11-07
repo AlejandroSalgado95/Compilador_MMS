@@ -4,22 +4,23 @@ var int : i, j, p;
 var float : valor, yepei ;
 
 
+
 int module fact (int j)
 var int : pop;
 {
-	pop = 1+2;
+	return  1+2;
 }
 
-void module letsee (int j)
+int  module letsee (int j)
 var float : dai;
 {
-	dai = 3*4*j;
+	return 3*4*j;
 }
 
 main ( )
 { 
 	
-	 letsee(3*2);
+	 i = letsee(3*2);
 
 	if (2>1) then {
 	 

@@ -62,6 +62,14 @@ class Quadruples():
     def addGosubFuncQuadruple(self, funcName):
         self.quadruples.append( ("gosub", funcName, None, None) )
 
+    def addReturnCuadruple(self,funcName, operand, dirAddresses):
+        #addressTableKey = determineTypeAddressTable("global",operand.type,None,None)
+        #vAddress = dirAddresses[addressTableKey].getAnAddress()
+        resultOperand = Operand(funcName, None, operand.type, funcName)
+        self.quadruples.append( ("return", operand, None, resultOperand) )
+        return resultOperand
+
+
 
     def printContents(self):
         quadrupleCounter = 1

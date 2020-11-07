@@ -188,6 +188,22 @@ class FuncDirec():
         else:
             return "Failed operation. Cannot get function firm, function" + funcName +" not found"
 
+    def compareWithFuncReturnType(self,funcName, varType):
+        if funcName in self.directory:
+            if  varType ==  self.directory[funcName]["funcType"]:
+                return True
+            else:
+                return "Failed operation. Return type missmatch in " +  funcName + ", " + self.directory[funcName]["funcType"] + " expected, " + varType + " received"
+        else:
+            return "Failed operation. Cannot get return type, function" + funcName +" not found"
+
+
+    def getFuncReturnType(self,funcName):
+        if funcName in self.directory:
+            return  self.directory[funcName]["funcType"]
+        else:
+            return "Failed operation. Cannot get return type, function" + funcName +" not found"
+
 
     def printContents(self, varTableToo):
         for funcName,content in self.directory.items():
