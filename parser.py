@@ -29,6 +29,7 @@ gotoList = []
 paramsCallCounter = 0
 funcCall = ""
 pendingReturnOperand = ""
+hasReturn = False
 
 #Variables globales
 dirAddresses = {
@@ -686,10 +687,19 @@ def p_sem_endfunc(p):
   '''
   global quadruples
   global dirAddresses
+  global hasReturn 
+
   quadruples.addEndFuncQuadrupple()
   for dirTableName in dirAddresses:
     if not "global" in dirTableName:
       dirAddresses[dirTableName].deleteAllContent()
+
+  if  (funcDirec.getFuncReturnType(funcName) != "void") and (hasReturn == False):
+      errorMessage = "Function " + funcName + " is expecting a return value of type " + funcType
+      errorQueue.append("Error: " + errorMessage)
+      print("Error: ", errorMessage)
+
+  hasReturn = False
 
 
 
@@ -767,7 +777,9 @@ def p_sem_verify_return_func(p):
     global dirAddresses
     global quadruples
     global pendingReturnOperand
+    global hasReturn 
 
+    hasReturn = True
     rOperand = operandsList.pop()
     result = funcDirec.compareWithFuncReturnType(funcName,rOperand.type)
     if isinstance(result,str):

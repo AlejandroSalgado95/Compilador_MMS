@@ -56,6 +56,19 @@ SC = {
             "-" :  "error",
             "/" :  "error",
             "*" :  "error"
+        },
+        "void":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "error",
+            "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
         }
     },
     "float":{
@@ -110,7 +123,21 @@ SC = {
             "-" :  "error",
             "/" :  "error",
             "*" :  "error"
+        },
+         "void":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "error",
+            "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
         }
+
     },
     "char":{
         "int":{
@@ -164,7 +191,21 @@ SC = {
             "-" :  "error",
             "/" :  "error",
             "*" :  "error"
+        },  
+        "void":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "error",
+            "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
         }
+
     },
     "bool":{
         "int":{
@@ -218,7 +259,93 @@ SC = {
             "-" :  "error",
             "/" :  "error",
             "*" :  "error"
+        },
+        "void":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "error",
+            "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
         }
-    }
+
+    },
+    "void":{
+        "int":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "error",
+            "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
+        },
+        "float":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "error",
+            "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
+        },
+        "char":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "error",
+            "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
+        },
+        "bool":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "error",
+            "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
+        },
+        "void":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "error",
+            "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
+        }
+
+    } 
+
 }
+
+
+
 

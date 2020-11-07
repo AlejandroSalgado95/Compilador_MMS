@@ -14,13 +14,13 @@ var int : pop;
 int  module letsee (int j)
 var float : dai;
 {
-	return 3*4*j;
+	 return  3*4*j;
 }
 
 main ( )
 { 
 	
-	 i =letsee(3*2);
+	 letsee(3*2);
 
 	if (2>1) then {
 	 

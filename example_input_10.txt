@@ -17,10 +17,16 @@ var float : dai;
 	return 3*4*j;
 }
 
+int module faceless ()
+{
+	return   j;
+}
+
 main ( )
 { 
-	
-	 i =letsee(3*2);
+	 i = faceless() + 2 ;
+
+	 faceless();
 
 	if (2>1) then {
 	 
