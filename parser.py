@@ -26,6 +26,8 @@ operatorsList = []
 quadruples = Quadruples()
 errorQueue = []
 gotoList = []
+paramsCallCounter = 0
+funcCall = ""
 
 #Variables globales
 dirAddresses = {
@@ -62,8 +64,8 @@ precedence = (
 ############################################SYNTACTIC RULES########################################
 def p_programa(p):
     '''
-     PROGRAMA : program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PROGRAMA_OPTS PRINCIPAL 
-               | program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PRINCIPAL 
+     PROGRAMA : SEM_ADD_GOTO_MAIN program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PROGRAMA_OPTS PRINCIPAL 
+               | SEM_ADD_GOTO_MAIN program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PRINCIPAL 
     '''
     global operandsList
     global errorQueue
@@ -90,7 +92,7 @@ def p_programa_opts(p):
 
 def p_principal(p):
     '''
-    PRINCIPAL : SEM_MAIN_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
+    PRINCIPAL :   SEM_FILL_GOTO_ANYKIND SEM_MAIN_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
     '''
 
 def p_dec_v(p):
@@ -120,14 +122,14 @@ def p_tipo_simple(p):
 
 def p_funcs(p):
     '''
-    FUNCS :  FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
-           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
-           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE 
-           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE
-           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
-           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
-           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE
-           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE
+    FUNCS :  FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC
+           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC
+           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE   SEM_ENDFUNC
+           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC
+           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC 
+           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC 
+           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC 
+           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC 
 
     '''
 
@@ -291,8 +293,6 @@ def p_cte(p):
     global funcName
 
 
-
-
     cteValue = p[1]
     if isinstance(p[1],int):
       cteType = "int"
@@ -310,18 +310,16 @@ def p_cte(p):
 
 
 
-
-
 def p_llamada(p):
     '''
-    LLAMADA : id '(' LLAMADA_OPTS ')' 
-             | id '(' ')'
+    LLAMADA :   SEM_VERIFY_FUNC_CALL '(' LLAMADA_OPTS SEM_RESET_PARAM_COUNT ')' SEM_ADD_GOSUB
+             |  SEM_VERIFY_FUNC_CALL '(' ')' SEM_ADD_GOSUB
     '''
 
 def p_llamada_opts(p):
     '''
-    LLAMADA_OPTS : LLAMADA_OPTS ',' EXPRESION 
-                 | EXPRESION 
+    LLAMADA_OPTS : LLAMADA_OPTS ',' EXPRESION SEM_VERIFY_PARAM
+                 | EXPRESION SEM_VERIFY_PARAM
     '''
 
 def p_asignacion(p):
@@ -667,6 +665,92 @@ def p_sem_add_gotov(p):
   else:
     gotoCuadrupleIndex = len(quadruples.quadruples) - 1
     gotoList.append(gotoCuadrupleIndex)
+
+
+
+def p_sem_add_goto_main(p):
+  '''
+  SEM_ADD_GOTO_MAIN : 
+  '''
+  global gotoList
+  global quadruples
+  quadruples.addGoToCuadruple(None,"goto")
+  gotoCuadrupleIndex = len(quadruples.quadruples) - 1
+  gotoList.append(gotoCuadrupleIndex)
+
+
+def p_sem_endfunc(p):
+  '''
+  SEM_ENDFUNC : 
+  '''
+  global quadruples
+  global dirAddresses
+  quadruples.addEndFuncQuadrupple()
+  for dirTableName in dirAddresses:
+    if not "global" in dirTableName:
+      dirAddresses[dirTableName].deleteAllContent()
+
+
+
+def p_sem_verify_func_call(p):
+    '''
+    SEM_VERIFY_FUNC_CALL : id 
+    '''
+    global funcDirec
+    global funcCall
+    global quadruples
+
+    result = funcDirec.verifyFuncCall(p[1])
+    if isinstance(result, str):
+        errorQueue.append("Error: " + result)
+        print("Error: ", result)
+    else:
+      funcCall = p[1]
+      quadruples.addEraFuncQuadruple(funcCall)
+
+
+def p_sem_verify_param(p):
+    '''
+    SEM_VERIFY_PARAM :
+    '''  
+    global funcDirec
+    global funcCall
+    global quadruples
+    global operandsList
+    global paramsCallCounter
+    global dirAddresses
+    
+    funcCallFirm = funcDirec.getFunctionFirm(funcCall)
+
+    if isinstance(funcCallFirm, str):
+        errorQueue.append("Error: " + result)
+        print("Error: ", result)
+    else:
+      param = operandsList.pop()
+      if param.type != funcCallFirm[paramsCallCounter]:
+        errorMessage =  "Type missmatch. Function " + funcCall + " requires " + funcCallFirm[paramsCallCounter] + " for argument " + str(paramsCallCounter) + ". Type provided was " + param.type
+        errorQueue.append("Error: "  + errorMessage)
+        print("Error: ", errorMessage)
+      else:
+        quadruples.addParamFuncQuadruple( param, paramsCallCounter)
+        paramsCallCounter += 1
+
+def p_sem_reset_param_count(p):
+    '''
+    SEM_RESET_PARAM_COUNT :
+    '''  
+    global paramsCallCounter
+    paramsCallCounter = 0
+
+  
+def p_sem_add_gosub(p):
+    '''
+    SEM_ADD_GOSUB :
+    '''  
+    global funcCall
+    global quadruples
+    quadruples.addGosubFuncQuadruple(funcCall)
+
 
 
 

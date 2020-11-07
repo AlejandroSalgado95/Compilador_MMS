@@ -174,7 +174,20 @@ class FuncDirec():
         else:
             return "Failed operation. Function " + funcName + " not found"
 
-        
+    
+    def verifyFuncCall(self,funcName):
+        if funcName in self.directory:
+            return True
+        else:
+            return "Failed operation. Cannot make a call to function " + funcName + ". Function not found"
+
+
+    def getFunctionFirm(self, funcName):
+        if funcName in self.directory:
+            return self.directory[funcName]["funcFirm"]
+        else:
+            return "Failed operation. Cannot get function firm, function" + funcName +" not found"
+
 
     def printContents(self, varTableToo):
         for funcName,content in self.directory.items():

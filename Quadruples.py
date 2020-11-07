@@ -44,7 +44,23 @@ class Quadruples():
         newGoto = (incompleteGoTo[0],incompleteGoTo[1],incompleteGoTo[2], directionIndex )
         #self.quadruples[gotoIndex][3] = directionIndex
         self.quadruples[gotoIndex] = newGoto
-        
+
+    def addEndFuncQuadrupple(self):
+        self.quadruples.append( ("endfunc", None, None, None) )
+
+    
+    def addParamFuncQuadruple(self, param, paramsCounter):
+        resultName = "param" + str(paramsCounter) 
+        resultOperand = Operand(resultName, None, param.type, param.vAddress)
+        self.quadruples.append( ("parameter", param, None, resultOperand) )
+
+
+    def addEraFuncQuadruple(self, funcName):
+        self.quadruples.append( ("era", funcName, None, None) )
+
+
+    def addGosubFuncQuadruple(self, funcName):
+        self.quadruples.append( ("gosub", funcName, None, None) )
 
 
     def printContents(self):
@@ -56,7 +72,9 @@ class Quadruples():
             tempName3 = None
 
             if not quadruple[1] == None:
-                if quadruple[1].name == None:
+                if isinstance(quadruple[1],str):
+                    tempName1 = quadruple[1]
+                elif quadruple[1].name == None:
                     tempName1 = str(quadruple[1].value) + "/" + str(quadruple[1].vAddress)
                 else: 
                     tempName1 = str(quadruple[1].name) + "/" + str(quadruple[1].vAddress)

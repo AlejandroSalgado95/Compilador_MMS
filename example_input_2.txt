@@ -4,6 +4,7 @@ var int : i, j, p, k, o;
 var float : valor ;
 
 int module fact ()
+var int : nou;
 {
 	return 1+2;
 }
