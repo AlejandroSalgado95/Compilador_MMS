@@ -38,8 +38,6 @@ main ( )
 
 	 /snip();
 
-	 j = snip();
-	 /faceless(2+2);
 
 	if (2>1) then {
 	 

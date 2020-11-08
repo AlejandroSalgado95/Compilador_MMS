@@ -175,9 +175,13 @@ class FuncDirec():
             return "Failed operation. Function " + funcName + " not found"
 
     
-    def verifyFuncCall(self,funcName):
+    def verifyFuncCall(self,funcName, mustBeVoidCall):
         if funcName in self.directory:
-            return True
+            funcType = self.directory[funcName]["funcType"]
+            if (mustBeVoidCall == True and funcType == "void") or ( mustBeVoidCall == False and funcType != "void") :
+                return True
+            else :
+                return "Failed operation. Cannot call " + funcName + " , non-void calls as statements and  void calls within expressions are prohibitted"
         else:
             return "Failed operation. Cannot make a call to function " + funcName + ". Function not found"
 

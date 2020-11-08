@@ -30,6 +30,7 @@ paramsCallCounter = 0
 funcCall = ""
 pendingReturnOperand = ""
 hasReturn = False
+mustBeVoidCall = False
 
 #Variables globales
 dirAddresses = {
@@ -268,7 +269,7 @@ def p_estatuto(p):
               | CONDICION 
               | WHILE 
               | FOR 
-              | LLAMADA ';' 
+              |  '/' SEM_MUST_BE_VOID_CALL LLAMADA ';' 
               | LECTURA ';'  
               | ESCRITURA ';' 
               | LLAMADA_BI ';'
@@ -710,14 +711,17 @@ def p_sem_verify_func_call(p):
     global funcDirec
     global funcCall
     global quadruples
+    global mustBeVoidCall
 
-    result = funcDirec.verifyFuncCall(p[1])
+    result = funcDirec.verifyFuncCall(p[1], mustBeVoidCall)
     if isinstance(result, str):
         errorQueue.append("Error: " + result)
         print("Error: ", result)
     else:
       funcCall = p[1]
       quadruples.addEraFuncQuadruple(funcCall)
+
+    mustBeVoidCall = False
 
 
 def p_sem_verify_param(p):
@@ -764,7 +768,9 @@ def p_sem_add_gosub(p):
     global funcDirec
     quadruples.addGosubFuncQuadruple(funcCall)
     funcCallType = funcDirec.getFuncReturnType(funcCall)
-    operandsList.append( Operand(funcCall,None,funcCallType,funcCall) )
+    
+    if not funcCallType =="void":
+      operandsList.append( Operand(funcCall,None,funcCallType,funcCall) )
 
 
 def p_sem_verify_return_func(p):
@@ -787,6 +793,16 @@ def p_sem_verify_return_func(p):
       print("Error: ", result)
     else: 
       resultOperand = quadruples.addReturnCuadruple(funcName,rOperand,dirAddresses)
+
+
+def p_sem_must_be_void_call(p):
+    '''
+    SEM_MUST_BE_VOID_CALL :
+    '''  
+    global mustBeVoidCall
+    mustBeVoidCall = True
+
+
 
 
 
