@@ -38,6 +38,7 @@ main ( )
 
 	 /snip();
 
+	 write("hola",3+3,"comostas",2+2);
 
 	if (2>1) then {
 	 

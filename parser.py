@@ -34,23 +34,23 @@ mustBeVoidCall = False
 
 #Variables globales
 dirAddresses = {
-"globalInt" : VirtualAdresses(15000, 15099),
-"globalFloat" : VirtualAdresses(15100, 15199),
-"globalChar" : VirtualAdresses(15200, 15299),
+"globalInt" : VirtualAdresses(15000, 15099,"globalInt"),
+"globalFloat" : VirtualAdresses(15100, 15199,"globalFloat"),
+"globalChar" : VirtualAdresses(15200, 15299,"globalChar"),
 #Variables locales
-"localInt" : VirtualAdresses(15300, 15399),
-"localFloat" : VirtualAdresses(15400, 15499),
-"localChar" : VirtualAdresses(15500, 15599),
+"localInt" : VirtualAdresses(15300, 15399,"localInt"),
+"localFloat" : VirtualAdresses(15400, 15499,"localFloat"),
+"localChar" : VirtualAdresses(15500, 15599,"localChar"),
 #Resultados temporales
-"tempInt" : VirtualAdresses(15600, 15699),
-"tempFloat" : VirtualAdresses(15700, 15799),
-"tempChar" : VirtualAdresses(15800, 15899),
-"tempBool" : VirtualAdresses(15900, 15998),
+"tempInt" : VirtualAdresses(15600, 15699,"tempInt"),
+"tempFloat" : VirtualAdresses(15700, 15799,"tempFloat"),
+"tempChar" : VirtualAdresses(15800, 15899,"tempChar"),
+"tempBool" : VirtualAdresses(15900, 15998,"tempBool"),
 #Constantes temporales
-"constInt" : VirtualAdresses(16000, 16099),
-"constFloat" : VirtualAdresses(16100, 16199),
-"constChar" : VirtualAdresses(16200, 16299),
-"constString" : VirtualAdresses(16300, 16399)
+"constInt" : VirtualAdresses(16000, 16099,"constInt"),
+"constFloat" : VirtualAdresses(16100, 16199,"constFloat"),
+"constChar" : VirtualAdresses(16200, 16299,"constChar"),
+"constString" : VirtualAdresses(16300, 16399,"constString")
 }
 
 
@@ -364,10 +364,10 @@ def p_escritura(p):
 
 def p_escritura_opts(p):
     '''
-    ESCRITURA_OPTS :   ESCRITURA_OPTS ',' cte_s
-                       | ESCRITURA_OPTS ',' EXPRESION 
-                       | cte_s 
-                       | EXPRESION
+    ESCRITURA_OPTS :   ESCRITURA_OPTS ',' SEM_ADD_PRINT_CTE_S
+                       | ESCRITURA_OPTS ',' EXPRESION SEM_ADD_PRINT
+                       | SEM_ADD_PRINT_CTE_S 
+                       | EXPRESION SEM_ADD_PRINT
     '''
 
 def p_llamada_bi(p):
@@ -692,7 +692,7 @@ def p_sem_endfunc(p):
 
   quadruples.addEndFuncQuadrupple()
   for dirTableName in dirAddresses:
-    if not "global" in dirTableName:
+    if not ( "global" in dirTableName) and not ("const" in dirTableName):
       dirAddresses[dirTableName].deleteAllContent()
 
   if  (funcDirec.getFuncReturnType(funcName) != "void") and (hasReturn == False):
@@ -803,6 +803,33 @@ def p_sem_must_be_void_call(p):
     mustBeVoidCall = True
 
 
+def p_sem_add_print(p):
+    '''
+    SEM_ADD_PRINT :
+    '''  
+    global operandsList
+    global quadruples
+
+    operand = operandsList.pop()
+    quadruples.addPrintCuadruple(operand)
+
+
+def p_sem_add_print_cte_s(p):
+    '''
+    SEM_ADD_PRINT_CTE_S : cte_s
+    '''  
+    global operandsList
+    global quadruples
+
+    global dirAddresses
+    global funcName
+
+    cteValue = p[1]
+    cteType = "string"
+    addressTableKey = determineTypeAddressTable(None,cteType,cteValue,None)
+    vAddress = dirAddresses[addressTableKey].getAnAddress()
+    consOperand = Operand(None, cteValue, cteType, vAddress)
+    quadruples.addPrintCuadruple(consOperand)
 
 
 

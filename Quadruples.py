@@ -70,6 +70,16 @@ class Quadruples():
         return resultOperand
 
 
+    def addPrintCuadruple(self,operand):
+        self.quadruples.append(("print",None,None,operand))
+
+
+
+    def getQuadruple(self,index):
+        if self.quadruples[index]:
+            return self.quadruples[index]
+
+
 
     def printContents(self):
         quadrupleCounter = 1
@@ -96,6 +106,8 @@ class Quadruples():
             if not quadruple[3] == None:
                 if isinstance(quadruple[3],int):
                     tempName3 = str(quadruple[3])
+                elif quadruple[3].name == None:
+                    tempName3 = str(quadruple[3].value) + "/" + str(quadruple[3].vAddress)
                 else:
                     tempName3 = str(quadruple[3].name) + "/" + str(quadruple[3].vAddress)
 
