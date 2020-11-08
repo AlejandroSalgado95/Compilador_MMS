@@ -11,22 +11,22 @@ class VirtualAdresses():
     def getAddressData(self,vAddress):
 
         if (vAddress >= self.start) and (vAddress <= self.final):
-            if vAddress in self.table:
-                return self.table[vAddress]
+            if str(vAddress) in self.table:
+                return self.table[str(vAddress)]
             else:
-                return "Failed operation. No data stored in vAddress " + vAddress + " inside of vaddress table " + self.tableName
+                return "Failed operation. No data stored in vAddress " + str(vAddress) + " inside of vaddress table " + self.tableName
         else: 
-            return "Failed operation. No vAddress " + vAddress + " available in the range of this vaddress table: " + self.tableName
+            return "Failed operation. No vAddress " + str(vAddress) + " available in the range of this vaddress table: " + self.tableName
 
     def saveAddressData(self, vAddress, varValue, varType):
         
         if (vAddress >= self.start) and (vAddress <= self.final):
-            self.table[vAddress] = {
+            self.table[str(vAddress)] = {
                 "value" : varValue,
                 "type" : varType 
              }
         else: 
-            return "Failed operation. No vAddress " + vAddress + " available in the range of this vaddress table: " + self.tableName
+            return "Failed operation. No vAddress " + str(vAddress) + " available in the range of this vaddress table: " + self.tableName
 
 
     def getAnAddress(self):

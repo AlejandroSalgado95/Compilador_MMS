@@ -82,7 +82,7 @@ class Quadruples():
 
 
     def printContents(self):
-        quadrupleCounter = 1
+        quadrupleCounter = 0
 
         for quadruple in self.quadruples:
             tempName1 = None

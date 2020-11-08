@@ -73,7 +73,7 @@ def p_programa(p):
     global operandsList
     global errorQueue
     print("ACCEPTED")
-    funcDirec.printContents(True)
+    #funcDirec.printContents(True)
     quadruples.printContents()
     print("amount of cuadruples: " + str( len(quadruples.quadruples) ) )
     for operand in operandsList:
@@ -95,7 +95,7 @@ def p_programa_opts(p):
 
 def p_principal(p):
     '''
-    PRINCIPAL :   SEM_FILL_GOTO_ANYKIND SEM_MAIN_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
+    PRINCIPAL :   SEM_FILL_MAIN_GOTO SEM_MAIN_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
     '''
 
 def p_dec_v(p):
@@ -306,7 +306,8 @@ def p_cte(p):
 
     addressTableKey = determineTypeAddressTable(None,cteType,cteValue,None)
     vAddress = dirAddresses[addressTableKey].getAnAddress()
-
+    dirAddresses[addressTableKey].saveAddressData(vAddress, cteValue, cteType)
+    #print (str(vAddress) + " : " + str(dirAddresses[addressTableKey].getAddressData(vAddress)["value"]))
     consOperand = Operand(None, cteValue, cteType, vAddress)
     operandsList.append( consOperand )
     
@@ -608,6 +609,21 @@ def p_sem_fill_goto_anykind(p):
   gotoIndex = gotoList.pop()
   directionIndex = len(quadruples.quadruples) +1 
   quadruples.fillGoToCuadruple(gotoIndex,directionIndex)
+
+
+def p_sem_fill_main_goto(p):
+  '''
+    SEM_FILL_MAIN_GOTO : 
+  '''
+  global gotoList
+  global quadruples
+
+  gotoIndex = gotoList.pop()
+  directionIndex = len(quadruples.quadruples) 
+  quadruples.fillGoToCuadruple(gotoIndex,directionIndex)
+
+
+
 
 #Rellena el cuadruplo gotof anteriormente guardado con destino a un index
 #mayor al index del cuadruplo goto que se va a insertar,

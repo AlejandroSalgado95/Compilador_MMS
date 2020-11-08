@@ -1,0 +1,19 @@
+program MeMyself;
+
+var int : i, j, p;
+var float : valor, yepei ;
+
+
+
+main ( )
+{ 
+	j= 3;
+	yepei = 3;
+	p = 4;
+	write(j/p);
+	write(yepei/p);
+	write(p > yepei);
+	write(p < yepei);
+
+
+}
