@@ -1,4 +1,4 @@
-# SPRINT 3
+# SPRINT 4
 
 ## Description
 This release performs: 
@@ -6,6 +6,8 @@ This release performs:
 * The semantical analysis and storage of the functions within a given input text, as well as its local and global variables
 * Semantical type checks between the operands of an expression, and the expression itself depending on the requiring statement
 * The quadruples generation for several statements, including: expressions (aritmetic,relational,logical), and non-linear statements (if-else, for, while)
+* Virtual addresses managing (storing, retrieving and deleting) and calculation of the memory size needed for the functions
+* The quadruples for functions and functions calling without return statements
 
 ## Installation 
 1.Install python3: brew install python3
@@ -28,14 +30,18 @@ This release performs:
 * Source code for the lexer and parser, written on python and runnable through the console. These are found at the “Codigo” folder
 * Source code for the semantic cube
 * Source code for the functions directory and the variables table every function includes
+* Source code for the quadruple generation of linear and non linear statements
+* Source code for the virtual memory managing and functions needed memory calculation
+* Source code for the quadruples of functions and functions calling without return statements
 
 ### Pending:
 * Everything related to the special functions ARC and LINE is pending (tokenization, rules, code,etc.)
-* Everything has yet to be checked by the professor (lexical rules, syntactical rules, etc.)
 * So far there is no unary operator ‘-‘, only its binary version is available (subtraction operation)
+* No semantics checking has been added for the return statement of a function
+* Return statements function semantics as well as return statements return value are pending
 
 ### Overdue:
-* Source code for the functions 
+* Source code for the virtual machine 
 
 ### Doubts:
 * Should the assignation precedence and association, which is right associative, also be written in code like the other operators?

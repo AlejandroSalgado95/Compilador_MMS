@@ -4,6 +4,7 @@ var int : i, j, p, k, o;
 var float : valor ;
 
 int module fact ()
+var int : nou;
 {
 	return 1+2;
 }
@@ -20,10 +21,5 @@ main ( )
 { read (p) ; j =p *2; Point( 0, 0);
   j = 123 - fact(p);
   i = fact ( p) - 12 ;
-  for i=0 to 9 do
-	{ pinta(i * j) ; }
-  while ( i < 10) do
-	{ write (“HelloWorld”, fact(i)) ;
-		i = i + 1;
-	}
+  
 }

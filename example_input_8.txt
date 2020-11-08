@@ -1,0 +1,61 @@
+program MeMyself;
+
+var int : i, j, p;
+var float : valor, yepei ;
+
+
+
+int module fact (int j)
+var int : pop;
+{
+	return  1+2;
+}
+
+int  module letsee (int j)
+var float : dai;
+{
+	return 3*4*j;
+}
+
+main ( )
+{ 
+	
+	 i =letsee(3*2);
+
+	if (2>1) then {
+	 
+	  valor = j + 7 * p + 12;
+	  
+	  while ( 3 > 2) do {
+
+		  j = 3;
+		  p = 4;
+	
+	  }
+
+
+	  if (3+2>4) then {
+
+	  } else {
+
+	   valor = 3 + 2 ;
+	  }
+
+
+	} else {
+
+	  j = 3;
+	  p = 4;
+
+	  if (j > i) then {
+
+	  	j = i;
+	  }
+
+	}
+
+	j = 2;
+
+
+
+}

@@ -9,6 +9,8 @@ from FunctionDirectory import FuncDirec
 from Quadruples import Quadruples
 from SemanticCube import SC
 from Operand import Operand
+from VirtualAddresses import VirtualAdresses
+from Tools import determineTypeAddressTable
 
 
 #python variables
@@ -24,6 +26,33 @@ operatorsList = []
 quadruples = Quadruples()
 errorQueue = []
 gotoList = []
+paramsCallCounter = 0
+funcCall = ""
+pendingReturnOperand = ""
+hasReturn = False
+mustBeVoidCall = False
+
+#Variables globales
+dirAddresses = {
+"globalInt" : VirtualAdresses(15000, 15099),
+"globalFloat" : VirtualAdresses(15100, 15199),
+"globalChar" : VirtualAdresses(15200, 15299),
+#Variables locales
+"localInt" : VirtualAdresses(15300, 15399),
+"localFloat" : VirtualAdresses(15400, 15499),
+"localChar" : VirtualAdresses(15500, 15599),
+#Resultados temporales
+"tempInt" : VirtualAdresses(15600, 15699),
+"tempFloat" : VirtualAdresses(15700, 15799),
+"tempChar" : VirtualAdresses(15800, 15899),
+"tempBool" : VirtualAdresses(15900, 15998),
+#Constantes temporales
+"constInt" : VirtualAdresses(16000, 16099),
+"constFloat" : VirtualAdresses(16100, 16199),
+"constChar" : VirtualAdresses(16200, 16299),
+"constString" : VirtualAdresses(16300, 16399)
+}
+
 
 
 
@@ -38,8 +67,8 @@ precedence = (
 ############################################SYNTACTIC RULES########################################
 def p_programa(p):
     '''
-     PROGRAMA : program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PROGRAMA_OPTS PRINCIPAL 
-               | program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PRINCIPAL 
+     PROGRAMA : SEM_ADD_GOTO_MAIN program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PROGRAMA_OPTS PRINCIPAL 
+               | SEM_ADD_GOTO_MAIN program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PRINCIPAL 
     '''
     global operandsList
     global errorQueue
@@ -66,7 +95,7 @@ def p_programa_opts(p):
 
 def p_principal(p):
     '''
-    PRINCIPAL : SEM_MAIN_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
+    PRINCIPAL :   SEM_FILL_GOTO_ANYKIND SEM_MAIN_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
     '''
 
 def p_dec_v(p):
@@ -74,6 +103,7 @@ def p_dec_v(p):
     DEC_V : DEC_V var  TIPO_SIMPLE ':' LISTA_VAR ';' 
             | var TIPO_SIMPLE ':' LISTA_VAR ';'
     '''
+ 
 
 
 def p_lista_var(p):
@@ -95,14 +125,14 @@ def p_tipo_simple(p):
 
 def p_funcs(p):
     '''
-    FUNCS :  FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
-           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
-           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE 
-           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE
-           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
-           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE
-           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE
-           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE
+    FUNCS :  FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC
+           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC
+           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE   SEM_ENDFUNC
+           | FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC
+           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC 
+           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC 
+           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' PARAMS ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC 
+           | FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC '(' ')' DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE  SEM_ENDFUNC 
 
     '''
 
@@ -129,9 +159,15 @@ def p_param_name(p):
   PARAM_NAME : id
   '''
   global varName
+  global funcDirec
+  global varType
+  global dirAddresses
 
+  scope = "local"
   varName = p[1]
-  funcDirec.addLocalVariableToFunc(funcName, varName, varType, True)
+  addressTableKey = determineTypeAddressTable(scope,varType,None,False)
+  vAddress = dirAddresses[addressTableKey].getAnAddress()
+  funcDirec.addLocalVariableToFunc(funcName, varName, varType , True, vAddress)
 
 def p_variable_fix(p):
     '''
@@ -141,9 +177,23 @@ def p_variable_fix(p):
     global varName
     global varType
     global funcDirec
+    global dirAddresses
+    global funcName
+
+    scope = "local"
+
+    if (funcName == "global"):
+      scope = "global"
 
     varName = p[1]
-    funcDirec.addLocalVariableToFunc(funcName, varName, varType, False)
+    addressTableKey = determineTypeAddressTable(scope,varType,None,False)
+    vAddress = dirAddresses[addressTableKey].getAnAddress()
+    result = funcDirec.addLocalVariableToFunc(funcName, varName, varType, False, vAddress)
+
+    if isinstance(result,str):
+      errorQueue.append("Error: " + result)
+      print("Error: ", result)
+
 
 
 
@@ -155,6 +205,10 @@ def p_variable(p):
     global varName
     global funcDirec
     global operandsList
+    global funcDirec
+    global dirAddresses
+    global funcName
+
 
     varName = p[1]
     retrievedVar = funcDirec.getVariableInFunc(funcName, varName)
@@ -162,14 +216,14 @@ def p_variable(p):
       errorQueue.append("Error: " + retrievedVar)
       print("Error: ", retrievedVar)
     else:
-      operandsList.append( Operand(varName, None, retrievedVar["varType"]) )
+      operandsList.append( Operand(varName, None, retrievedVar["varType"], retrievedVar["vAddress"]) )
       
 
 def p_bloque(p):
     '''
-    BLOQUE : '{' LOOP_ESTATUTO return EXPRESION ';' '}' 
+    BLOQUE : '{' LOOP_ESTATUTO return EXPRESION SEM_VERIFY_RETURN_FUNC ';' '}' 
               | '{' LOOP_ESTATUTO '}' 
-              | '{' return EXPRESION ';' '}' 
+              | '{' return EXPRESION SEM_VERIFY_RETURN_FUNC ';' '}' 
               | '{' '}'
     '''
 
@@ -183,7 +237,7 @@ def p_expresion(p):
     '''
     EXPRESION :  EXPRESION SEM_PENDING_LOGIC_OP  and  SEM_ADD_AND  EXP_R  SEM_PENDING_LOGIC_OP
                 | EXPRESION SEM_PENDING_LOGIC_OP  or  SEM_ADD_OR   EXP_R  SEM_PENDING_LOGIC_OP
-                | EXP_R
+                | EXP_R 
     '''
 
 def p_exp_r(p):
@@ -192,21 +246,21 @@ def p_exp_r(p):
             | EXP_A '<' SEM_ADD_LESS_THAN   EXP_A   SEM_PENDING_REL_OP
             | EXP_A equals SEM_ADD_EQUALS_TO   EXP_A    SEM_PENDING_REL_OP
             | EXP_A not_equals SEM_ADD_NOT_EQUALS_TO   EXP_A   SEM_PENDING_REL_OP
-            | EXP_A
+            | EXP_A 
     '''
 
 def p_exp_a(p):
     '''
     EXP_A :  EXP_A SEM_PENDING_EXPA_OP '+' SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
             | EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
-            | TERMINO
+            | TERMINO 
     '''
 
 def p_termino(p):
     '''
     TERMINO : TERMINO SEM_PENDING_TERMINO_OP '*' SEM_ADD_TIMES  FACTOR  SEM_PENDING_TERMINO_OP
              | TERMINO SEM_PENDING_TERMINO_OP '/' SEM_ADD_DIVISION  FACTOR  SEM_PENDING_TERMINO_OP
-             | FACTOR
+             | FACTOR 
     '''
 
 def p_estatuto(p):
@@ -215,7 +269,7 @@ def p_estatuto(p):
               | CONDICION 
               | WHILE 
               | FOR 
-              | LLAMADA ';' 
+              |  '/' SEM_MUST_BE_VOID_CALL LLAMADA ';' 
               | LECTURA ';'  
               | ESCRITURA ';' 
               | LLAMADA_BI ';'
@@ -238,6 +292,9 @@ def p_cte(p):
     global cteValue
     global cteType
     global operandsList
+    global dirAddresses
+    global funcName
+
 
     cteValue = p[1]
     if isinstance(p[1],int):
@@ -247,24 +304,25 @@ def p_cte(p):
     elif isinstance(p[1],str):
       cteType = "char"
 
-    consOperand = Operand(None, cteValue, cteType)
+    addressTableKey = determineTypeAddressTable(None,cteType,cteValue,None)
+    vAddress = dirAddresses[addressTableKey].getAnAddress()
+
+    consOperand = Operand(None, cteValue, cteType, vAddress)
     operandsList.append( consOperand )
     
 
 
 
-
-
 def p_llamada(p):
     '''
-    LLAMADA : id '(' LLAMADA_OPTS ')' 
-             | id '(' ')'
+    LLAMADA :   SEM_VERIFY_FUNC_CALL '(' LLAMADA_OPTS SEM_RESET_PARAM_COUNT ')' SEM_ADD_GOSUB
+             |  SEM_VERIFY_FUNC_CALL '(' ')' SEM_ADD_GOSUB
     '''
 
 def p_llamada_opts(p):
     '''
-    LLAMADA_OPTS : LLAMADA_OPTS ',' EXPRESION 
-                 | EXPRESION 
+    LLAMADA_OPTS : LLAMADA_OPTS ',' EXPRESION SEM_VERIFY_PARAM
+                 | EXPRESION SEM_VERIFY_PARAM
     '''
 
 def p_asignacion(p):
@@ -613,6 +671,141 @@ def p_sem_add_gotov(p):
 
 
 
+def p_sem_add_goto_main(p):
+  '''
+  SEM_ADD_GOTO_MAIN : 
+  '''
+  global gotoList
+  global quadruples
+  quadruples.addGoToCuadruple(None,"goto")
+  gotoCuadrupleIndex = len(quadruples.quadruples) - 1
+  gotoList.append(gotoCuadrupleIndex)
+
+
+def p_sem_endfunc(p):
+  '''
+  SEM_ENDFUNC : 
+  '''
+  global quadruples
+  global dirAddresses
+  global hasReturn 
+
+  quadruples.addEndFuncQuadrupple()
+  for dirTableName in dirAddresses:
+    if not "global" in dirTableName:
+      dirAddresses[dirTableName].deleteAllContent()
+
+  if  (funcDirec.getFuncReturnType(funcName) != "void") and (hasReturn == False):
+      errorMessage = "Function " + funcName + " is expecting a return value of type " + funcType
+      errorQueue.append("Error: " + errorMessage)
+      print("Error: ", errorMessage)
+
+  hasReturn = False
+
+
+
+def p_sem_verify_func_call(p):
+    '''
+    SEM_VERIFY_FUNC_CALL : id 
+    '''
+    global funcDirec
+    global funcCall
+    global quadruples
+    global mustBeVoidCall
+
+    result = funcDirec.verifyFuncCall(p[1], mustBeVoidCall)
+    if isinstance(result, str):
+        errorQueue.append("Error: " + result)
+        print("Error: ", result)
+    else:
+      funcCall = p[1]
+      quadruples.addEraFuncQuadruple(funcCall)
+
+    mustBeVoidCall = False
+
+
+def p_sem_verify_param(p):
+    '''
+    SEM_VERIFY_PARAM :
+    '''  
+    global funcDirec
+    global funcCall
+    global quadruples
+    global operandsList
+    global paramsCallCounter
+    global dirAddresses
+    
+    funcCallFirm = funcDirec.getFunctionFirm(funcCall)
+
+    if isinstance(funcCallFirm, str):
+        errorQueue.append("Error: " + result)
+        print("Error: ", result)
+    else:
+      param = operandsList.pop()
+      if param.type != funcCallFirm[paramsCallCounter]:
+        errorMessage =  "Type missmatch. Function " + funcCall + " requires " + funcCallFirm[paramsCallCounter] + " for argument " + str(paramsCallCounter) + ". Type provided was " + param.type
+        errorQueue.append("Error: "  + errorMessage)
+        print("Error: ", errorMessage)
+      else:
+        quadruples.addParamFuncQuadruple( param, paramsCallCounter)
+        paramsCallCounter += 1
+
+def p_sem_reset_param_count(p):
+    '''
+    SEM_RESET_PARAM_COUNT :
+    '''  
+    global paramsCallCounter
+    paramsCallCounter = 0
+
+  
+def p_sem_add_gosub(p):
+    '''
+    SEM_ADD_GOSUB :
+    '''  
+    global funcCall
+    global quadruples
+    global operandsList
+    global funcDirec
+    quadruples.addGosubFuncQuadruple(funcCall)
+    funcCallType = funcDirec.getFuncReturnType(funcCall)
+    
+    if not funcCallType =="void":
+      operandsList.append( Operand(funcCall,None,funcCallType,funcCall) )
+
+
+def p_sem_verify_return_func(p):
+    '''
+    SEM_VERIFY_RETURN_FUNC :
+    '''  
+    global funcDirec
+    global operandsList
+    global funcName
+    global dirAddresses
+    global quadruples
+    global pendingReturnOperand
+    global hasReturn 
+
+    hasReturn = True
+    rOperand = operandsList.pop()
+    result = funcDirec.compareWithFuncReturnType(funcName,rOperand.type)
+    if isinstance(result,str):
+      errorQueue.append("Error: " + result)
+      print("Error: ", result)
+    else: 
+      resultOperand = quadruples.addReturnCuadruple(funcName,rOperand,dirAddresses)
+
+
+def p_sem_must_be_void_call(p):
+    '''
+    SEM_MUST_BE_VOID_CALL :
+    '''  
+    global mustBeVoidCall
+    mustBeVoidCall = True
+
+
+
+
+
 
 
 
@@ -623,6 +816,9 @@ def p_sem_pending_expa_op(p):
   global operatorsList
   global operandsList
   global quadruples
+  global dirAddresses
+  global funcName
+  global funcDirec
 
   topOp = ""
 
@@ -632,12 +828,13 @@ def p_sem_pending_expa_op(p):
     topOp = operatorsList.pop()
     rOperand = operandsList.pop()
     lOperand = operandsList.pop()
-    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
+    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand,dirAddresses)
     if isinstance(resultOperand,str):
       errorQueue.append("Error: " + resultOperand)
       print("Error: ", resultOperand)
     else: 
       operandsList.append(resultOperand)
+      funcDirec.addTempVarCountInFunc(funcName,resultOperand.type)
 
 
 def p_sem_pending_termino_op(p):
@@ -647,6 +844,9 @@ def p_sem_pending_termino_op(p):
   global operatorsList
   global operandsList
   global quadruples
+  global dirAddresses
+  global funcName
+  global funcDirec
 
   topOp = ""
 
@@ -656,12 +856,14 @@ def p_sem_pending_termino_op(p):
     topOp = operatorsList.pop()
     rOperand = operandsList.pop()
     lOperand = operandsList.pop()
-    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
+    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand,dirAddresses)
     if isinstance(resultOperand,str):
       errorQueue.append("Error: " + resultOperand)
       print("Error: ", resultOperand)
     else: 
       operandsList.append(resultOperand)
+      funcDirec.addTempVarCountInFunc(funcName,resultOperand.type)
+
 
 
 def p_sem_pending_assignation_op(p):
@@ -694,6 +896,9 @@ def p_sem_pending_rel_op(p):
   global operandsList
   global quadruples
   global errorQueue
+  global dirAddresses
+  global funcName
+  global funcDirec
 
   topOp = ""
 
@@ -703,12 +908,14 @@ def p_sem_pending_rel_op(p):
     topOp = operatorsList.pop()
     rOperand = operandsList.pop()
     lOperand = operandsList.pop()
-    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
+    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand,dirAddresses )
     if isinstance(resultOperand,str):
       errorQueue.append("Error: " + resultOperand)
       print("Error: ", resultOperand)
     else: 
       operandsList.append(resultOperand)
+      funcDirec.addTempVarCountInFunc(funcName,resultOperand.type)
+
 
 
 def p_sem_pending_logic_op(p):
@@ -719,6 +926,9 @@ def p_sem_pending_logic_op(p):
   global operandsList
   global quadruples
   global errorQueue
+  global dirAddresses
+  global funcName
+  global funcDirec
 
   topOp = ""
 
@@ -728,12 +938,14 @@ def p_sem_pending_logic_op(p):
     topOp = operatorsList.pop()
     rOperand = operandsList.pop()
     lOperand = operandsList.pop()
-    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand)
+    resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand,dirAddresses)
     if isinstance(resultOperand,str):
       errorQueue.append("Error: " + resultOperand)
       print("Error: ", resultOperand)
     else: 
       operandsList.append(resultOperand)
+      funcDirec.addTempVarCountInFunc(funcName,resultOperand.type)
+
 
 
 
