@@ -95,7 +95,7 @@ class Quadruples():
      #   contiene toda la informacion necesaria del resultado de la funcion).
      #   El operando nuevo, a diferencia del recibido, se llamara igual
      #   la funcion a la que pertenece el return, y se le asignara una 
-     #   memoria global
+     #   memoria global (tambien con el mismo nombre de la funcion)
      #2. Se devuelve el operando creado para ser guardado en la pila de 
      #   operandos dentro del parser, pues el operando creado (el valor 
      #   de retorno de la funcion) sera utilizado por alguna otra operacion

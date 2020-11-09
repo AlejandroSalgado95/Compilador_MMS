@@ -85,6 +85,10 @@ class FuncDirec():
             return "Failed operation. Function name already stored"
 
 
+   # Añade una variable local (paramatro o variable local) a la tabla de variables de una funcion,
+   # e incrementa el contador respectivo de variables locales. Sin embargo, solo si se trata de la
+   # funcion global, entonces incrementa el contador respectivo de variables globales para la funcion global,
+   # y agrega a su tabla de variables dichas variables pero no como locales, sino como globales
     def addLocalVariableToFunc(self, funcName, varName, varType, isParam, vAddress):
         if funcName in self.directory:
             actualScope = "local"
@@ -153,14 +157,16 @@ class FuncDirec():
             return "Failed operation. Function " + funcName + " not found"
 
 
-
+    #Añade a una funcion el index cuadruplo en el cual empieza su ejecucion
     def addQuadrupleIndexInFunc(self, funcName, quadrupleIndex):
         if funcName in self.directory:
             self.directory[funcName]["quadrupleIndex"] = quadrupleIndex
         else:
             return "Failed operation. Function " + funcName + " not found"
 
-
+    #Al realizar cuadruplos dentro de una funcion activa, se generan variables temporales; estas
+    # no se guardan dentro de la tabla de variables de la funcion, pero sí deben contabilizarse
+    # en el directorio de la funcion activa segun el tipo de variable temporal generada
     def addTempVarCountInFunc(self,funcName, tempVarType):
         if funcName in self.directory:
             if (tempVarType == "int"):
@@ -174,7 +180,8 @@ class FuncDirec():
         else:
             return "Failed operation. Function " + funcName + " not found"
 
-    
+    #Verifica que la llamada a una funcion sea semanticamente correcta. No se puede llamar a una funcion
+    #void dentro de una expresion, ni tampoco se puede llamar a una funcion non-void como un statement aislado
     def verifyFuncCall(self,funcName, mustBeVoidCall):
         if funcName in self.directory:
             funcType = self.directory[funcName]["funcType"]
@@ -186,12 +193,14 @@ class FuncDirec():
             return "Failed operation. Cannot make a call to function " + funcName + ". Function not found"
 
 
+    #Devuelve el arreglo que contiene los tipos de datos que se espera que cada uno de los parametros de una funcion sean
     def getFunctionFirm(self, funcName):
         if funcName in self.directory:
             return self.directory[funcName]["funcFirm"]
         else:
             return "Failed operation. Cannot get function firm, function" + funcName +" not found"
 
+    #Compara si el tipo de dato de una variable es el mismo que el tipo de valor de retorno que una funcion. Esta llamada es util para verificar semanticamente el valor de retorno de una funcion (es decir, que haga match con el tipo de valor de retorno de la funcion)
     def compareWithFuncReturnType(self,funcName, varType):
         if funcName in self.directory:
             if  varType ==  self.directory[funcName]["funcType"]:
