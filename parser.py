@@ -65,6 +65,9 @@ precedence = (
 
 
 ############################################SYNTACTIC RULES########################################
+
+# Al finalizar la ejecucion del programa se hacen los prints necesarios para 
+# debuggear los contenidos de diferentes estructuras de datos, como: los quadruplos, la pila de operandos, la informacion completa de cada funcion (sus contadores y su tabla de variables), etc
 def p_programa(p):
     '''
      PROGRAMA : SEM_ADD_GOTO_MAIN program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PROGRAMA_OPTS PRINCIPAL 
@@ -153,7 +156,7 @@ def p_params(p):
     PARAMS : PARAMS ',' TIPO_SIMPLE PARAM_NAME
             | TIPO_SIMPLE PARAM_NAME
     '''
-    
+  
 def p_param_name(p):
   '''
   PARAM_NAME : id
@@ -168,6 +171,12 @@ def p_param_name(p):
   addressTableKey = determineTypeAddressTable(scope,varType,None,False)
   vAddress = dirAddresses[addressTableKey].getAnAddress()
   funcDirec.addLocalVariableToFunc(funcName, varName, varType , True, vAddress)
+
+
+#Se declaran variables locales o globales (NUNCA PARAMETROS NI OPERANDOS DENTRO EXPRESIONES) y se les asigna una direccion virtual, mas no se guarda nada en esa direccion virtual aun, pues las variables no tienen valor inicial
+#1. Si la funcion activa es la funcion global, a las variables se les asignara direcciones en tablas de memoria global; de lo contrario, se les asignaran direcciones en tablas de memoria local
+#3. La informacion relevante de la variable (nombre, tipo, direccion virtual asignada) es guardada en la tabla de variables de la funcion actual. Si la operacion es exitosa
+#   el contador de variables apropiado dentro de la funcion aumentara, y la informacion de la variable habra quedado guardada en la tabla de variables 
 
 def p_variable_fix(p):
     '''
@@ -196,7 +205,11 @@ def p_variable_fix(p):
 
 
 
-
+#Verifica que una variable/identificador usada en una expresion sea valida semanticamente
+#1. Se revisa que el id de la variable este declarada en la tabla de variables 
+#   de la funcion activa (sea como variable local o global). Si la variable es valida
+#   en ese sentido semantico, se recupera la informacion de la variable y se crea un operando con sus datos, y este operando
+#   se agrega a la pila de operandos para que futuras expresiones trabajen con el (generando cuadruplos por ejemplo)
 def p_variable(p):
     '''
     VARIABLE : id '[' EXPRESION ']' 
@@ -219,6 +232,10 @@ def p_variable(p):
       operandsList.append( Operand(varName, None, retrievedVar["varType"], retrievedVar["vAddress"]) )
       
 
+#Un bloque puede venir con estatuto de return o no
+#1. Si el bloque viene con return, debe verificarse que haya un operando guardado
+#   en la lista de operandos cuyo tipo sea igual al valor de retorno de la funcion
+#   en la que se encuentra el return
 def p_bloque(p):
     '''
     BLOQUE : '{' LOOP_ESTATUTO return EXPRESION SEM_VERIFY_RETURN_FUNC ';' '}' 
@@ -283,6 +300,13 @@ def p_factor(p):
             | '(' SEM_ADD_FONDO_FALSO EXPRESION ')' SEM_REMOVE_FONDO_FALSO
     '''
 
+
+#Para la constante leida, se crea un operando que guarde su informacion relevante, le asigna una memoria
+# Y GUARDA SU VALOR EN MEMORIA (a diferencia de cuando se crea un operando para un id)
+#1. En base a la informacion disponible, se revisa a que tabla de direcciones debe ir el operando
+#2. Conocida la tabla de direcciones correcta, se solicita una direccion virtual a la tabla para que se le sea asignada al  operando
+#3. Se crea el operando de la constante leida con toda su informacion
+#4. Se guarda en la memoria asignada al operando la informacion relevante de este, PARTICULARMENTE SU VALOR
 def p_cte(p):
     '''
     CTE : cte_i 
@@ -433,6 +457,8 @@ def p_error(p):
 
 ###########################################SEMANTIC RULES#########################################
 
+# Hace que la funcion activa actual sea la funcion global, lo cual permite que las primeras declaraciones de variables
+# se guarden en direcciones de tablas de memoria global
 def p_sem_global_name(p):
   '''
     SEM_GLOBAL_NAME : id
@@ -442,6 +468,8 @@ def p_sem_global_name(p):
   funcName = "global"
   funcType = "void"
 
+# Hace que la funcion activa actual sea la funcion main, lo cual permite conocer a que cuadruplo debe hacer el salto
+# el goto inicial de la lista de cuadruplos
 def p_sem_main_name(p):
   '''
     SEM_MAIN_NAME : main
@@ -452,7 +480,7 @@ def p_sem_main_name(p):
   funcType = "void"
 
 
-
+# Cambia el nombre de la funcion activa actual por el del id encontrado
 def p_sem_func_name(p):
   '''
     SEM_FUNC_NAME : id
@@ -460,21 +488,22 @@ def p_sem_func_name(p):
   global funcName
   funcName = p[1]
 
-
+#Añade la función activa actual al directorio de funciones
 def p_sem_add_func(p):
   '''
   SEM_ADD_FUNC : 
   '''
   funcDirec.addFunc(funcName, funcType)
 
-
+# Al terminar de compilar una funcion, añade a su tabla de variables todas las variables globales guardadas, lo
+# cual es simplemente copiar la tabla de variables de la funcion global a la tabla de variables de la funcion actual
 def p_sem_add_global_variables(p):
   '''
   SEM_ADD_GLOBAL_VARIABLES : 
   '''
   funcDirec.addGlobalVariablesToFunc(funcName)
 
-
+#LAS SIGUIENTES REGLAS SOLO AÑADEN EL OPERADOR CORRESPONDIENTE A LA LISTA DE OPERADORES (NO DE OPERANDOS)
 def p_sem_add_plus(p):
   '''
   SEM_ADD_PLUS : 
@@ -597,7 +626,7 @@ def p_sem_add_gotof(p):
     gotoCuadrupleIndex = len(quadruples.quadruples) - 1
     gotoList.append(gotoCuadrupleIndex)
 
-#Rellena ya sea un cuadruplo goto o un cuadruplo gotof con el index del 
+#Rellena ya sea un cuadruplo goto o un cuadruplo gotof que estaba pendiente (para ello sacando un index de la pila de saltos, el cual es el index del cuadruplo goto o gotof pendiente), con el index del 
 #cuadruplo siguiente
 def p_sem_fill_goto_anykind(p):
   '''
@@ -611,6 +640,8 @@ def p_sem_fill_goto_anykind(p):
   quadruples.fillGoToCuadruple(gotoIndex,directionIndex)
 
 
+#Rellena el cuadruplo goto que hace salto al main, con la informacion que le falta:
+#el index del cuadruplo donde empieza el main
 def p_sem_fill_main_goto(p):
   '''
     SEM_FILL_MAIN_GOTO : 
@@ -628,7 +659,7 @@ def p_sem_fill_main_goto(p):
 #Rellena el cuadruplo gotof anteriormente guardado con destino a un index
 #mayor al index del cuadruplo goto que se va a insertar,
 #y luego se inserta el cuadruplo goto, guardando en la pila de saltos
-#el index del goto incompleto al cual le falta su direccion de ida
+#el index de este goto incompleto al cual le falta su direccion de ida
 def p_sem_add_goto_simple(p):
   '''
   SEM_ADD_GOTO_SIMPLE : 
@@ -646,7 +677,7 @@ def p_sem_add_goto_simple(p):
 
 
 
-#Añade index del cuadruplo donde ira la condicion del loop
+#Añade a la pila de saltos el index del cuadruplo donde empieza la condicion del loop
 def p_sem_add_cond_index(p):
   '''
   SEM_ADD_COND_INDEX : 
@@ -669,7 +700,11 @@ def p_sem_fill_goto_cond_index(p):
   condIndex  = gotoList.pop()
   quadruples.fillGoToCuadruple(goToIndex,condIndex)
 
-
+#Añade un cuadruplo gotoV a la lista de cuadruplos junto con el operando que va a evaluar, pero sin incluir en el cuadruplo la direccion del salto
+#1. Se recibe un operando, y si el operando es bool, se crea el cuadruplo gotoV
+#   pues sera el valor de ese operando (true o false) el que se utilizara para determinar si se realiza o no el salto gotoV.
+#   De otra manera, si el operando no es bool, el quadruplo no se crea
+#2. Se añade el cuadruplo creado a la lista de saltos para posteriormente rellenarlo con la direccion de su salto
 def p_sem_add_gotov(p):
   '''
   SEM_ADD_GOTOV : 
@@ -686,7 +721,9 @@ def p_sem_add_gotov(p):
     gotoList.append(gotoCuadrupleIndex)
 
 
-
+#Crea un primer cuadruplo goto y añadelo a la lista de quadruplos.
+#Este cuadruplo goto espera ser rellenado con el index del cuadruplo
+#donde empieza el main 
 def p_sem_add_goto_main(p):
   '''
   SEM_ADD_GOTO_MAIN : 
@@ -697,7 +734,9 @@ def p_sem_add_goto_main(p):
   gotoCuadrupleIndex = len(quadruples.quadruples) - 1
   gotoList.append(gotoCuadrupleIndex)
 
-
+#Al terminar de compilar una funcion, destruye el contenido de todas las tablas de memoria,
+#menos las tablas de memoria para constantes y las tablas de memoria global.
+#Ademas, verifica que si la funcion no es void, haya habido efectivamente un return statement 
 def p_sem_endfunc(p):
   '''
   SEM_ENDFUNC : 
@@ -788,7 +827,13 @@ def p_sem_add_gosub(p):
     if not funcCallType =="void":
       operandsList.append( Operand(funcCall,None,funcCallType,funcCall) )
 
-
+#Verifica que al haber un return statement, el ultimo operando sacado de la pila
+# sea del mismo tipo que el tipo de retorno de la funcion activa; si lo es, se guarda
+# el cuadruplo del return, y no es necesario guardar el operando resultante (el resultado de la funcion)
+# en la lista de operandos, pues esta no es una llamada a una funcion (donde si seria necesario el operando resultante o valor de retorno),
+# sino la compilacion de una funcion. Lo que se hace es simplemente, dejar en memoria global 
+# la direccion donde deberia de estar el operando de retorno (valor de retorno) al sí hacer la llamada
+# a la funcion. Nota: también habra type missmatch si la funcion es tipo void, sea cual sea el tipo de valor del operando sacado de la pila
 def p_sem_verify_return_func(p):
     '''
     SEM_VERIFY_RETURN_FUNC :
@@ -810,7 +855,9 @@ def p_sem_verify_return_func(p):
     else: 
       resultOperand = quadruples.addReturnCuadruple(funcName,rOperand,dirAddresses)
 
-
+#Bandera que se usa para verificar semanticamente las llamadas a funciones como estatuto, y las
+# llamadas a funciones como expresion. Las llamadas a funciones como estatuto deben ser void, y las
+# llamadas a funciones como expresion, NO deben ser void
 def p_sem_must_be_void_call(p):
     '''
     SEM_MUST_BE_VOID_CALL :
@@ -829,7 +876,12 @@ def p_sem_add_print(p):
     operand = operandsList.pop()
     quadruples.addPrintCuadruple(operand)
 
-
+#Se crea un operando (valor,tipo,direccion) para una constante string recibida como parametro EN EL METODO WRITE
+#1.Se consigue la tabla de direcciones de donde debe obtenerse una direccion libre
+#2.Se consigue una direccion de la tabla de direcciones correcta (en este caso, constantes string)
+#3.Se crea el operando para la constante string con la información necesaria
+#4.Se crea el cuadruplo print incluyendo el operando creado
+#5.Como es una constante (hay un valor), se guarda en la memoria asignada el valor del operando
 def p_sem_add_print_cte_s(p):
     '''
     SEM_ADD_PRINT_CTE_S : cte_s
@@ -851,7 +903,12 @@ def p_sem_add_print_cte_s(p):
 
 
 
-
+# LAS SIGUIENTES REGLAS SON PARA REALIZAR OPERACIONES BINARIAS, LAS CUALES
+# EXTRAEN DOS OPERADORES, VERIFICA SEMANTICAMENTE QUE LA OPERACION ENTRE AMBOS PUEDA
+# HACERSE; SI SE PUEDE HACER, SE GUARDA EL CUADRUPLO. AL CREAR EL CUADRUPLO, FUE DEVUELTO 
+# UN RESULTADO TEMPORAL, ESTE GUARDADO EN UN OPERANDO, EL CUAL ES AGREGADO A LA PILA DE OPERADORES
+# PARA SU FUTURO USO INMEDIATO. ADEMAS, DE ACUERDO AL TIPO DE TEMPORAL CREADO, SE AUNMENTA EL CONTADOR
+# CORRECTO DE VARIABLES TEMPORALES EN LA FUNCION ACTIVA
 
 def p_sem_pending_expa_op(p):
   '''
