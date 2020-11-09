@@ -190,6 +190,20 @@ while IP < len(quadruples.quadruples):
 		op1Val = dirAddresses[op1TA].getAddressData(op1VA)["value"]
 		print (str(op1Val)) 
 
+	elif (actualQuadruple[0] == "read"):
+		op1VA = actualQuadruple[1].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		Op1Type = actualQuadruple[1].type
+		newValue = input('Enter your input for variable ' + actualQuadruple[1].name + ": ")
+		if (Op1Type == "int"):
+			newValue = int(newValue)
+		elif (Op1Type == "float"):
+			newValue = float(newValue)
+		elif (Op1Type == "char"):
+			newValue = char(newValue)
+		dirAddresses[op1TA].saveAddressData(op1VA, newValue, Op1Type) 
+
+
 	IP += 1
 
 

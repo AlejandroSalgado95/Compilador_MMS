@@ -378,8 +378,8 @@ def p_lectura(p):
 
 def p_lectura_opts(p):
     '''
-    LECTURA_OPTS : LECTURA_OPTS ',' id 
-                  | id
+    LECTURA_OPTS : LECTURA_OPTS ',' SEM_ADD_READ
+                  |  SEM_ADD_READ
     '''
 
 def p_escritura(p):
@@ -899,6 +899,27 @@ def p_sem_add_print_cte_s(p):
     consOperand = Operand(None, cteValue, cteType, vAddress)
     dirAddresses[addressTableKey].saveAddressData(vAddress, cteValue, cteType)
     quadruples.addPrintCuadruple(consOperand)
+
+
+def p_sem_add_read(p):
+    '''
+    SEM_ADD_READ : id
+    '''  
+    global varName
+    global funcDirec
+    global dirAddresses
+    global funcName
+    global quadruples
+
+    varName = p[1]
+    retrievedVar = funcDirec.getVariableInFunc(funcName, varName)
+    if isinstance(retrievedVar, str):
+      errorQueue.append("Error: " + retrievedVar)
+      print("Error: ", retrievedVar)
+    else: 
+      operand = Operand(varName, None, retrievedVar["varType"], retrievedVar["vAddress"]) 
+      quadruples.addReadQuadruple(operand)
+
 
 
 

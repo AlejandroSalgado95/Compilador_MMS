@@ -84,8 +84,8 @@ Rule 74    CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF then BLOQUE else SEM_ADD_
 Rule 75    WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION ) SEM_ADD_GOTOF do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
 Rule 76    FOR -> for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION SEM_ADD_GOTOV do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
 Rule 77    LECTURA -> read ( LECTURA_OPTS )
-Rule 78    LECTURA_OPTS -> LECTURA_OPTS , id
-Rule 79    LECTURA_OPTS -> id
+Rule 78    LECTURA_OPTS -> LECTURA_OPTS , SEM_ADD_READ
+Rule 79    LECTURA_OPTS -> SEM_ADD_READ
 Rule 80    ESCRITURA -> write ( ESCRITURA_OPTS )
 Rule 81    ESCRITURA_OPTS -> ESCRITURA_OPTS , SEM_ADD_PRINT_CTE_S
 Rule 82    ESCRITURA_OPTS -> ESCRITURA_OPTS , EXPRESION SEM_ADD_PRINT
@@ -140,11 +140,12 @@ Rule 130   SEM_VERIFY_RETURN_FUNC -> <empty>
 Rule 131   SEM_MUST_BE_VOID_CALL -> <empty>
 Rule 132   SEM_ADD_PRINT -> <empty>
 Rule 133   SEM_ADD_PRINT_CTE_S -> cte_s
-Rule 134   SEM_PENDING_EXPA_OP -> <empty>
-Rule 135   SEM_PENDING_TERMINO_OP -> <empty>
-Rule 136   SEM_PENDING_ASSIGNATION_OP -> <empty>
-Rule 137   SEM_PENDING_REL_OP -> <empty>
-Rule 138   SEM_PENDING_LOGIC_OP -> <empty>
+Rule 134   SEM_ADD_READ -> id
+Rule 135   SEM_PENDING_EXPA_OP -> <empty>
+Rule 136   SEM_PENDING_TERMINO_OP -> <empty>
+Rule 137   SEM_PENDING_ASSIGNATION_OP -> <empty>
+Rule 138   SEM_PENDING_REL_OP -> <empty>
+Rule 139   SEM_PENDING_LOGIC_OP -> <empty>
 
 Terminals, with rules where they appear
 
@@ -177,7 +178,7 @@ error                :
 float                : 12 23
 for                  : 76
 global               : 
-id                   : 28 29 30 31 32 78 79 99 101 126
+id                   : 28 29 30 31 32 99 101 126 134
 if                   : 73 74
 int                  : 11 24
 main                 : 100
@@ -257,6 +258,7 @@ SEM_ADD_OR           : 40
 SEM_ADD_PLUS         : 47
 SEM_ADD_PRINT        : 82 84
 SEM_ADD_PRINT_CTE_S  : 81 83
+SEM_ADD_READ         : 78 79
 SEM_ADD_TIMES        : 50
 SEM_ENDFUNC          : 14 15 16 17 18 19 20 21
 SEM_FILL_GOTO_ANYKIND : 73 74
@@ -1770,11 +1772,11 @@ state 117
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
     (130) SEM_VERIFY_RETURN_FUNC -> .
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
     ;               reduce using rule 130 (SEM_VERIFY_RETURN_FUNC -> .)
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
     SEM_VERIFY_RETURN_FUNC         shift and go to state 160
     SEM_PENDING_LOGIC_OP           shift and go to state 161
@@ -1802,7 +1804,7 @@ state 119
     (46) EXP_R -> EXP_A .
     (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
     (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
-    (134) SEM_PENDING_EXPA_OP -> .
+    (135) SEM_PENDING_EXPA_OP -> .
 
     >               shift and go to state 162
     <               shift and go to state 163
@@ -1816,8 +1818,8 @@ state 119
     ]               reduce using rule 46 (EXP_R -> EXP_A .)
     to              reduce using rule 46 (EXP_R -> EXP_A .)
     do              reduce using rule 46 (EXP_R -> EXP_A .)
-    +               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    minus           reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
+    +               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
 
     SEM_PENDING_EXPA_OP            shift and go to state 166
 
@@ -1826,7 +1828,7 @@ state 120
     (49) EXP_A -> TERMINO .
     (50) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
     (51) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
-    (135) SEM_PENDING_TERMINO_OP -> .
+    (136) SEM_PENDING_TERMINO_OP -> .
 
     >               reduce using rule 49 (EXP_A -> TERMINO .)
     <               reduce using rule 49 (EXP_A -> TERMINO .)
@@ -1842,8 +1844,8 @@ state 120
     ]               reduce using rule 49 (EXP_A -> TERMINO .)
     to              reduce using rule 49 (EXP_A -> TERMINO .)
     do              reduce using rule 49 (EXP_A -> TERMINO .)
-    *               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    /               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
+    *               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    /               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
 
     SEM_PENDING_TERMINO_OP         shift and go to state 167
 
@@ -2225,12 +2227,14 @@ state 139
 state 140
 
     (77) LECTURA -> read ( . LECTURA_OPTS )
-    (78) LECTURA_OPTS -> . LECTURA_OPTS , id
-    (79) LECTURA_OPTS -> . id
+    (78) LECTURA_OPTS -> . LECTURA_OPTS , SEM_ADD_READ
+    (79) LECTURA_OPTS -> . SEM_ADD_READ
+    (134) SEM_ADD_READ -> . id
 
-    id              shift and go to state 177
+    id              shift and go to state 178
 
     LECTURA_OPTS                   shift and go to state 176
+    SEM_ADD_READ                   shift and go to state 177
 
 state 141
 
@@ -2267,16 +2271,16 @@ state 141
     (32) VARIABLE -> . id
     (126) SEM_VERIFY_FUNC_CALL -> . id
 
-    cte_s           shift and go to state 181
+    cte_s           shift and go to state 182
     (               shift and go to state 125
     cte_i           shift and go to state 127
     cte_f           shift and go to state 128
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    ESCRITURA_OPTS                 shift and go to state 178
-    SEM_ADD_PRINT_CTE_S            shift and go to state 179
-    EXPRESION                      shift and go to state 180
+    ESCRITURA_OPTS                 shift and go to state 179
+    SEM_ADD_PRINT_CTE_S            shift and go to state 180
+    EXPRESION                      shift and go to state 181
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -2322,7 +2326,7 @@ state 142
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    EXPRESION                      shift and go to state 182
+    EXPRESION                      shift and go to state 183
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -2368,7 +2372,7 @@ state 143
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    EXPRESION                      shift and go to state 183
+    EXPRESION                      shift and go to state 184
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -2414,7 +2418,7 @@ state 144
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    EXPRESION                      shift and go to state 184
+    EXPRESION                      shift and go to state 185
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -2428,21 +2432,21 @@ state 145
 
     (95) PENUP -> penup ( . )
 
-    )               shift and go to state 185
+    )               shift and go to state 186
 
 
 state 146
 
     (96) PENDOWN -> pendown ( . )
 
-    )               shift and go to state 186
+    )               shift and go to state 187
 
 
 state 147
 
     (97) COLOR -> color ( . cte_s )
 
-    cte_s           shift and go to state 187
+    cte_s           shift and go to state 188
 
 
 state 148
@@ -2481,7 +2485,7 @@ state 148
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    EXPRESION                      shift and go to state 188
+    EXPRESION                      shift and go to state 189
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -2495,7 +2499,7 @@ state 149
 
     (92) CLEAR -> clear ( . )
 
-    )               shift and go to state 189
+    )               shift and go to state 190
 
 
 state 150
@@ -2520,7 +2524,7 @@ state 151
     void            reduce using rule 125 (SEM_ENDFUNC -> .)
     main            reduce using rule 125 (SEM_ENDFUNC -> .)
 
-    SEM_ENDFUNC                    shift and go to state 190
+    SEM_ENDFUNC                    shift and go to state 191
 
 state 152
 
@@ -2533,7 +2537,7 @@ state 152
     void            reduce using rule 125 (SEM_ENDFUNC -> .)
     main            reduce using rule 125 (SEM_ENDFUNC -> .)
 
-    SEM_ENDFUNC                    shift and go to state 191
+    SEM_ENDFUNC                    shift and go to state 192
 
 state 153
 
@@ -2545,7 +2549,7 @@ state 153
 
     {               shift and go to state 61
 
-    BLOQUE                         shift and go to state 192
+    BLOQUE                         shift and go to state 193
 
 state 154
 
@@ -2577,7 +2581,7 @@ state 156
     void            reduce using rule 125 (SEM_ENDFUNC -> .)
     main            reduce using rule 125 (SEM_ENDFUNC -> .)
 
-    SEM_ENDFUNC                    shift and go to state 193
+    SEM_ENDFUNC                    shift and go to state 194
 
 state 157
 
@@ -2590,7 +2594,7 @@ state 157
     void            reduce using rule 125 (SEM_ENDFUNC -> .)
     main            reduce using rule 125 (SEM_ENDFUNC -> .)
 
-    SEM_ENDFUNC                    shift and go to state 194
+    SEM_ENDFUNC                    shift and go to state 195
 
 state 158
 
@@ -2602,7 +2606,7 @@ state 158
 
     {               shift and go to state 61
 
-    BLOQUE                         shift and go to state 195
+    BLOQUE                         shift and go to state 196
 
 state 159
 
@@ -2610,20 +2614,20 @@ state 159
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
     (130) SEM_VERIFY_RETURN_FUNC -> .
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
     ;               reduce using rule 130 (SEM_VERIFY_RETURN_FUNC -> .)
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
-    SEM_VERIFY_RETURN_FUNC         shift and go to state 196
+    SEM_VERIFY_RETURN_FUNC         shift and go to state 197
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
 state 160
 
     (35) BLOQUE -> { return EXPRESION SEM_VERIFY_RETURN_FUNC . ; }
 
-    ;               shift and go to state 197
+    ;               shift and go to state 198
 
 
 state 161
@@ -2631,8 +2635,8 @@ state 161
     (39) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP . and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP . or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
 
-    and             shift and go to state 198
-    or              shift and go to state 199
+    and             shift and go to state 199
+    or              shift and go to state 200
 
 
 state 162
@@ -2646,7 +2650,7 @@ state 162
     cte_c           reduce using rule 111 (SEM_ADD_GREATER_THAN -> .)
     id              reduce using rule 111 (SEM_ADD_GREATER_THAN -> .)
 
-    SEM_ADD_GREATER_THAN           shift and go to state 200
+    SEM_ADD_GREATER_THAN           shift and go to state 201
 
 state 163
 
@@ -2659,7 +2663,7 @@ state 163
     cte_c           reduce using rule 112 (SEM_ADD_LESS_THAN -> .)
     id              reduce using rule 112 (SEM_ADD_LESS_THAN -> .)
 
-    SEM_ADD_LESS_THAN              shift and go to state 201
+    SEM_ADD_LESS_THAN              shift and go to state 202
 
 state 164
 
@@ -2672,7 +2676,7 @@ state 164
     cte_c           reduce using rule 113 (SEM_ADD_EQUALS_TO -> .)
     id              reduce using rule 113 (SEM_ADD_EQUALS_TO -> .)
 
-    SEM_ADD_EQUALS_TO              shift and go to state 202
+    SEM_ADD_EQUALS_TO              shift and go to state 203
 
 state 165
 
@@ -2685,15 +2689,15 @@ state 165
     cte_c           reduce using rule 114 (SEM_ADD_NOT_EQUALS_TO -> .)
     id              reduce using rule 114 (SEM_ADD_NOT_EQUALS_TO -> .)
 
-    SEM_ADD_NOT_EQUALS_TO          shift and go to state 203
+    SEM_ADD_NOT_EQUALS_TO          shift and go to state 204
 
 state 166
 
     (47) EXP_A -> EXP_A SEM_PENDING_EXPA_OP . + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
     (48) EXP_A -> EXP_A SEM_PENDING_EXPA_OP . minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
 
-    +               shift and go to state 204
-    minus           shift and go to state 205
+    +               shift and go to state 205
+    minus           shift and go to state 206
 
 
 state 167
@@ -2701,8 +2705,8 @@ state 167
     (50) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP . * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
     (51) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP . / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
 
-    *               shift and go to state 206
-    /               shift and go to state 207
+    *               shift and go to state 207
+    /               shift and go to state 208
 
 
 state 168
@@ -2741,7 +2745,7 @@ state 168
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    EXPRESION                      shift and go to state 208
+    EXPRESION                      shift and go to state 209
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -2784,7 +2788,7 @@ state 169
     (32) VARIABLE -> . id
     (126) SEM_VERIFY_FUNC_CALL -> . id
 
-    )               shift and go to state 210
+    )               shift and go to state 211
     (               shift and go to state 125
     cte_i           shift and go to state 127
     cte_f           shift and go to state 128
@@ -2792,8 +2796,8 @@ state 169
     id              shift and go to state 130
 
     SEM_VERIFY_FUNC_CALL           shift and go to state 126
-    LLAMADA_OPTS                   shift and go to state 209
-    EXPRESION                      shift and go to state 211
+    LLAMADA_OPTS                   shift and go to state 210
+    EXPRESION                      shift and go to state 212
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -2806,7 +2810,7 @@ state 170
 
     (57) ESTATUTO -> / SEM_MUST_BE_VOID_CALL LLAMADA . ;
 
-    ;               shift and go to state 212
+    ;               shift and go to state 213
 
 
 state 171
@@ -2853,7 +2857,7 @@ state 172
     id              shift and go to state 130
 
     VARIABLE                       shift and go to state 124
-    EXPRESION                      shift and go to state 213
+    EXPRESION                      shift and go to state 214
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -2868,11 +2872,11 @@ state 173
     (74) CONDICION -> if ( EXPRESION . ) SEM_ADD_GOTOF then BLOQUE else SEM_ADD_GOTO_SIMPLE BLOQUE SEM_FILL_GOTO_ANYKIND
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
-    )               shift and go to state 214
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    )               shift and go to state 215
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
@@ -2912,7 +2916,7 @@ state 174
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    EXPRESION                      shift and go to state 215
+    EXPRESION                      shift and go to state 216
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -2933,36 +2937,44 @@ state 175
     cte_c           reduce using rule 121 (SEM_ADD_COND_INDEX -> .)
     id              reduce using rule 121 (SEM_ADD_COND_INDEX -> .)
 
-    SEM_ADD_COND_INDEX             shift and go to state 216
+    SEM_ADD_COND_INDEX             shift and go to state 217
 
 state 176
 
     (77) LECTURA -> read ( LECTURA_OPTS . )
-    (78) LECTURA_OPTS -> LECTURA_OPTS . , id
+    (78) LECTURA_OPTS -> LECTURA_OPTS . , SEM_ADD_READ
 
-    )               shift and go to state 217
-    ,               shift and go to state 218
+    )               shift and go to state 218
+    ,               shift and go to state 219
 
 
 state 177
 
-    (79) LECTURA_OPTS -> id .
+    (79) LECTURA_OPTS -> SEM_ADD_READ .
 
-    )               reduce using rule 79 (LECTURA_OPTS -> id .)
-    ,               reduce using rule 79 (LECTURA_OPTS -> id .)
+    )               reduce using rule 79 (LECTURA_OPTS -> SEM_ADD_READ .)
+    ,               reduce using rule 79 (LECTURA_OPTS -> SEM_ADD_READ .)
 
 
 state 178
+
+    (134) SEM_ADD_READ -> id .
+
+    )               reduce using rule 134 (SEM_ADD_READ -> id .)
+    ,               reduce using rule 134 (SEM_ADD_READ -> id .)
+
+
+state 179
 
     (80) ESCRITURA -> write ( ESCRITURA_OPTS . )
     (81) ESCRITURA_OPTS -> ESCRITURA_OPTS . , SEM_ADD_PRINT_CTE_S
     (82) ESCRITURA_OPTS -> ESCRITURA_OPTS . , EXPRESION SEM_ADD_PRINT
 
-    )               shift and go to state 219
-    ,               shift and go to state 220
+    )               shift and go to state 220
+    ,               shift and go to state 221
 
 
-state 179
+state 180
 
     (83) ESCRITURA_OPTS -> SEM_ADD_PRINT_CTE_S .
 
@@ -2970,23 +2982,23 @@ state 179
     ,               reduce using rule 83 (ESCRITURA_OPTS -> SEM_ADD_PRINT_CTE_S .)
 
 
-state 180
+state 181
 
     (84) ESCRITURA_OPTS -> EXPRESION . SEM_ADD_PRINT
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
     (132) SEM_ADD_PRINT -> .
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
     )               reduce using rule 132 (SEM_ADD_PRINT -> .)
     ,               reduce using rule 132 (SEM_ADD_PRINT -> .)
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
-    SEM_ADD_PRINT                  shift and go to state 221
+    SEM_ADD_PRINT                  shift and go to state 222
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
-state 181
+state 182
 
     (133) SEM_ADD_PRINT_CTE_S -> cte_s .
 
@@ -2994,87 +3006,87 @@ state 181
     ,               reduce using rule 133 (SEM_ADD_PRINT_CTE_S -> cte_s .)
 
 
-state 182
+state 183
 
     (31) VARIABLE -> id [ EXPRESION . ]
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
-    ]               shift and go to state 222
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-
-    SEM_PENDING_LOGIC_OP           shift and go to state 161
-
-state 183
-
-    (93) POINT -> point ( EXPRESION . , EXPRESION )
-    (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
-    (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
-    (138) SEM_PENDING_LOGIC_OP -> .
-
-    ,               shift and go to state 223
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    ]               shift and go to state 223
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
 state 184
 
-    (94) CIRCLE -> circle ( EXPRESION . )
+    (93) POINT -> point ( EXPRESION . , EXPRESION )
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
-    )               shift and go to state 224
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    ,               shift and go to state 224
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
 state 185
+
+    (94) CIRCLE -> circle ( EXPRESION . )
+    (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
+    (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
+    (139) SEM_PENDING_LOGIC_OP -> .
+
+    )               shift and go to state 225
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+
+    SEM_PENDING_LOGIC_OP           shift and go to state 161
+
+state 186
 
     (95) PENUP -> penup ( ) .
 
     ;               reduce using rule 95 (PENUP -> penup ( ) .)
 
 
-state 186
+state 187
 
     (96) PENDOWN -> pendown ( ) .
 
     ;               reduce using rule 96 (PENDOWN -> pendown ( ) .)
 
 
-state 187
+state 188
 
     (97) COLOR -> color ( cte_s . )
 
-    )               shift and go to state 225
+    )               shift and go to state 226
 
 
-state 188
+state 189
 
     (98) SIZE -> size ( EXPRESION . )
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
-    )               shift and go to state 226
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    )               shift and go to state 227
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
-state 189
+state 190
 
     (92) CLEAR -> clear ( ) .
 
     ;               reduce using rule 92 (CLEAR -> clear ( ) .)
 
 
-state 190
+state 191
 
     (21) FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE SEM_ENDFUNC .
 
@@ -3085,7 +3097,7 @@ state 190
     main            reduce using rule 21 (FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE SEM_ENDFUNC .)
 
 
-state 191
+state 192
 
     (19) FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) SEM_ADD_GLOBAL_VARIABLES BLOQUE SEM_ENDFUNC .
 
@@ -3096,7 +3108,7 @@ state 191
     main            reduce using rule 19 (FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) SEM_ADD_GLOBAL_VARIABLES BLOQUE SEM_ENDFUNC .)
 
 
-state 192
+state 193
 
     (20) FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE . SEM_ENDFUNC
     (125) SEM_ENDFUNC -> .
@@ -3107,9 +3119,9 @@ state 192
     void            reduce using rule 125 (SEM_ENDFUNC -> .)
     main            reduce using rule 125 (SEM_ENDFUNC -> .)
 
-    SEM_ENDFUNC                    shift and go to state 227
+    SEM_ENDFUNC                    shift and go to state 228
 
-state 193
+state 194
 
     (17) FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE SEM_ENDFUNC .
 
@@ -3120,7 +3132,7 @@ state 193
     main            reduce using rule 17 (FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE SEM_ENDFUNC .)
 
 
-state 194
+state 195
 
     (15) FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) SEM_ADD_GLOBAL_VARIABLES BLOQUE SEM_ENDFUNC .
 
@@ -3131,7 +3143,7 @@ state 194
     main            reduce using rule 15 (FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) SEM_ADD_GLOBAL_VARIABLES BLOQUE SEM_ENDFUNC .)
 
 
-state 195
+state 196
 
     (16) FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE . SEM_ENDFUNC
     (125) SEM_ENDFUNC -> .
@@ -3142,23 +3154,23 @@ state 195
     void            reduce using rule 125 (SEM_ENDFUNC -> .)
     main            reduce using rule 125 (SEM_ENDFUNC -> .)
 
-    SEM_ENDFUNC                    shift and go to state 228
-
-state 196
-
-    (33) BLOQUE -> { LOOP_ESTATUTO return EXPRESION SEM_VERIFY_RETURN_FUNC . ; }
-
-    ;               shift and go to state 229
-
+    SEM_ENDFUNC                    shift and go to state 229
 
 state 197
 
-    (35) BLOQUE -> { return EXPRESION SEM_VERIFY_RETURN_FUNC ; . }
+    (33) BLOQUE -> { LOOP_ESTATUTO return EXPRESION SEM_VERIFY_RETURN_FUNC . ; }
 
-    }               shift and go to state 230
+    ;               shift and go to state 230
 
 
 state 198
+
+    (35) BLOQUE -> { return EXPRESION SEM_VERIFY_RETURN_FUNC ; . }
+
+    }               shift and go to state 231
+
+
+state 199
 
     (39) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP and . SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (115) SEM_ADD_AND -> .
@@ -3169,9 +3181,9 @@ state 198
     cte_c           reduce using rule 115 (SEM_ADD_AND -> .)
     id              reduce using rule 115 (SEM_ADD_AND -> .)
 
-    SEM_ADD_AND                    shift and go to state 231
+    SEM_ADD_AND                    shift and go to state 232
 
-state 199
+state 200
 
     (40) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP or . SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
     (116) SEM_ADD_OR -> .
@@ -3182,47 +3194,11 @@ state 199
     cte_c           reduce using rule 116 (SEM_ADD_OR -> .)
     id              reduce using rule 116 (SEM_ADD_OR -> .)
 
-    SEM_ADD_OR                     shift and go to state 232
-
-state 200
-
-    (42) EXP_R -> EXP_A > SEM_ADD_GREATER_THAN . EXP_A SEM_PENDING_REL_OP
-    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
-    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
-    (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
-    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
-    (52) TERMINO -> . FACTOR
-    (61) FACTOR -> . LLAMADA
-    (62) FACTOR -> . CTE
-    (63) FACTOR -> . VARIABLE
-    (64) FACTOR -> . ( SEM_ADD_FONDO_FALSO EXPRESION ) SEM_REMOVE_FONDO_FALSO
-    (68) LLAMADA -> . SEM_VERIFY_FUNC_CALL ( LLAMADA_OPTS SEM_RESET_PARAM_COUNT ) SEM_ADD_GOSUB
-    (69) LLAMADA -> . SEM_VERIFY_FUNC_CALL ( ) SEM_ADD_GOSUB
-    (65) CTE -> . cte_i
-    (66) CTE -> . cte_f
-    (67) CTE -> . cte_c
-    (31) VARIABLE -> . id [ EXPRESION ]
-    (32) VARIABLE -> . id
-    (126) SEM_VERIFY_FUNC_CALL -> . id
-
-    (               shift and go to state 125
-    cte_i           shift and go to state 127
-    cte_f           shift and go to state 128
-    cte_c           shift and go to state 129
-    id              shift and go to state 130
-
-    EXP_A                          shift and go to state 233
-    TERMINO                        shift and go to state 120
-    FACTOR                         shift and go to state 121
-    LLAMADA                        shift and go to state 122
-    CTE                            shift and go to state 123
-    VARIABLE                       shift and go to state 124
-    SEM_VERIFY_FUNC_CALL           shift and go to state 126
+    SEM_ADD_OR                     shift and go to state 233
 
 state 201
 
-    (43) EXP_R -> EXP_A < SEM_ADD_LESS_THAN . EXP_A SEM_PENDING_REL_OP
+    (42) EXP_R -> EXP_A > SEM_ADD_GREATER_THAN . EXP_A SEM_PENDING_REL_OP
     (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
     (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
@@ -3258,7 +3234,7 @@ state 201
 
 state 202
 
-    (44) EXP_R -> EXP_A equals SEM_ADD_EQUALS_TO . EXP_A SEM_PENDING_REL_OP
+    (43) EXP_R -> EXP_A < SEM_ADD_LESS_THAN . EXP_A SEM_PENDING_REL_OP
     (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
     (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
@@ -3294,7 +3270,7 @@ state 202
 
 state 203
 
-    (45) EXP_R -> EXP_A not_equals SEM_ADD_NOT_EQUALS_TO . EXP_A SEM_PENDING_REL_OP
+    (44) EXP_R -> EXP_A equals SEM_ADD_EQUALS_TO . EXP_A SEM_PENDING_REL_OP
     (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
     (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (49) EXP_A -> . TERMINO
@@ -3330,6 +3306,42 @@ state 203
 
 state 204
 
+    (45) EXP_R -> EXP_A not_equals SEM_ADD_NOT_EQUALS_TO . EXP_A SEM_PENDING_REL_OP
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (49) EXP_A -> . TERMINO
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (52) TERMINO -> . FACTOR
+    (61) FACTOR -> . LLAMADA
+    (62) FACTOR -> . CTE
+    (63) FACTOR -> . VARIABLE
+    (64) FACTOR -> . ( SEM_ADD_FONDO_FALSO EXPRESION ) SEM_REMOVE_FONDO_FALSO
+    (68) LLAMADA -> . SEM_VERIFY_FUNC_CALL ( LLAMADA_OPTS SEM_RESET_PARAM_COUNT ) SEM_ADD_GOSUB
+    (69) LLAMADA -> . SEM_VERIFY_FUNC_CALL ( ) SEM_ADD_GOSUB
+    (65) CTE -> . cte_i
+    (66) CTE -> . cte_f
+    (67) CTE -> . cte_c
+    (31) VARIABLE -> . id [ EXPRESION ]
+    (32) VARIABLE -> . id
+    (126) SEM_VERIFY_FUNC_CALL -> . id
+
+    (               shift and go to state 125
+    cte_i           shift and go to state 127
+    cte_f           shift and go to state 128
+    cte_c           shift and go to state 129
+    id              shift and go to state 130
+
+    EXP_A                          shift and go to state 237
+    TERMINO                        shift and go to state 120
+    FACTOR                         shift and go to state 121
+    LLAMADA                        shift and go to state 122
+    CTE                            shift and go to state 123
+    VARIABLE                       shift and go to state 124
+    SEM_VERIFY_FUNC_CALL           shift and go to state 126
+
+state 205
+
     (47) EXP_A -> EXP_A SEM_PENDING_EXPA_OP + . SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
     (104) SEM_ADD_PLUS -> .
 
@@ -3339,9 +3351,9 @@ state 204
     cte_c           reduce using rule 104 (SEM_ADD_PLUS -> .)
     id              reduce using rule 104 (SEM_ADD_PLUS -> .)
 
-    SEM_ADD_PLUS                   shift and go to state 237
+    SEM_ADD_PLUS                   shift and go to state 238
 
-state 205
+state 206
 
     (48) EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus . SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
     (105) SEM_ADD_MINUS -> .
@@ -3352,9 +3364,9 @@ state 205
     cte_c           reduce using rule 105 (SEM_ADD_MINUS -> .)
     id              reduce using rule 105 (SEM_ADD_MINUS -> .)
 
-    SEM_ADD_MINUS                  shift and go to state 238
+    SEM_ADD_MINUS                  shift and go to state 239
 
-state 206
+state 207
 
     (50) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * . SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
     (106) SEM_ADD_TIMES -> .
@@ -3365,9 +3377,9 @@ state 206
     cte_c           reduce using rule 106 (SEM_ADD_TIMES -> .)
     id              reduce using rule 106 (SEM_ADD_TIMES -> .)
 
-    SEM_ADD_TIMES                  shift and go to state 239
+    SEM_ADD_TIMES                  shift and go to state 240
 
-state 207
+state 208
 
     (51) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / . SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (107) SEM_ADD_DIVISION -> .
@@ -3378,33 +3390,33 @@ state 207
     cte_c           reduce using rule 107 (SEM_ADD_DIVISION -> .)
     id              reduce using rule 107 (SEM_ADD_DIVISION -> .)
 
-    SEM_ADD_DIVISION               shift and go to state 240
+    SEM_ADD_DIVISION               shift and go to state 241
 
-state 208
+state 209
 
     (64) FACTOR -> ( SEM_ADD_FONDO_FALSO EXPRESION . ) SEM_REMOVE_FONDO_FALSO
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
-    )               shift and go to state 241
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    )               shift and go to state 242
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
-state 209
+state 210
 
     (68) LLAMADA -> SEM_VERIFY_FUNC_CALL ( LLAMADA_OPTS . SEM_RESET_PARAM_COUNT ) SEM_ADD_GOSUB
     (70) LLAMADA_OPTS -> LLAMADA_OPTS . , EXPRESION SEM_VERIFY_PARAM
     (128) SEM_RESET_PARAM_COUNT -> .
 
-    ,               shift and go to state 243
+    ,               shift and go to state 244
     )               reduce using rule 128 (SEM_RESET_PARAM_COUNT -> .)
 
-    SEM_RESET_PARAM_COUNT          shift and go to state 242
+    SEM_RESET_PARAM_COUNT          shift and go to state 243
 
-state 210
+state 211
 
     (69) LLAMADA -> SEM_VERIFY_FUNC_CALL ( ) . SEM_ADD_GOSUB
     (129) SEM_ADD_GOSUB -> .
@@ -3426,25 +3438,25 @@ state 210
     to              reduce using rule 129 (SEM_ADD_GOSUB -> .)
     do              reduce using rule 129 (SEM_ADD_GOSUB -> .)
 
-    SEM_ADD_GOSUB                  shift and go to state 244
+    SEM_ADD_GOSUB                  shift and go to state 245
 
-state 211
+state 212
 
     (71) LLAMADA_OPTS -> EXPRESION . SEM_VERIFY_PARAM
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
     (127) SEM_VERIFY_PARAM -> .
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
     ,               reduce using rule 127 (SEM_VERIFY_PARAM -> .)
     )               reduce using rule 127 (SEM_VERIFY_PARAM -> .)
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
-    SEM_VERIFY_PARAM               shift and go to state 245
+    SEM_VERIFY_PARAM               shift and go to state 246
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
-state 212
+state 213
 
     (57) ESTATUTO -> / SEM_MUST_BE_VOID_CALL LLAMADA ; .
 
@@ -3466,23 +3478,23 @@ state 212
     clear           reduce using rule 57 (ESTATUTO -> / SEM_MUST_BE_VOID_CALL LLAMADA ; .)
 
 
-state 213
+state 214
 
     (72) ASIGNACION -> VARIABLE = SEM_ADD_EQUALS EXPRESION . SEM_PENDING_ASSIGNATION_OP
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
-    (136) SEM_PENDING_ASSIGNATION_OP -> .
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (137) SEM_PENDING_ASSIGNATION_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
-    ;               reduce using rule 136 (SEM_PENDING_ASSIGNATION_OP -> .)
-    to              reduce using rule 136 (SEM_PENDING_ASSIGNATION_OP -> .)
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    ;               reduce using rule 137 (SEM_PENDING_ASSIGNATION_OP -> .)
+    to              reduce using rule 137 (SEM_PENDING_ASSIGNATION_OP -> .)
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
-    SEM_PENDING_ASSIGNATION_OP     shift and go to state 246
+    SEM_PENDING_ASSIGNATION_OP     shift and go to state 247
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
-state 214
+state 215
 
     (73) CONDICION -> if ( EXPRESION ) . SEM_ADD_GOTOF then BLOQUE SEM_FILL_GOTO_ANYKIND
     (74) CONDICION -> if ( EXPRESION ) . SEM_ADD_GOTOF then BLOQUE else SEM_ADD_GOTO_SIMPLE BLOQUE SEM_FILL_GOTO_ANYKIND
@@ -3490,22 +3502,22 @@ state 214
 
     then            reduce using rule 117 (SEM_ADD_GOTOF -> .)
 
-    SEM_ADD_GOTOF                  shift and go to state 247
+    SEM_ADD_GOTOF                  shift and go to state 248
 
-state 215
+state 216
 
     (75) WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION . ) SEM_ADD_GOTOF do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
-    )               shift and go to state 248
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    )               shift and go to state 249
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
-state 216
+state 217
 
     (76) FOR -> for ASIGNACION to SEM_ADD_COND_INDEX . EXPRESION SEM_ADD_GOTOV do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
     (39) EXPRESION -> . EXPRESION SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
@@ -3541,7 +3553,7 @@ state 216
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    EXPRESION                      shift and go to state 249
+    EXPRESION                      shift and go to state 250
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -3551,28 +3563,30 @@ state 216
     VARIABLE                       shift and go to state 124
     SEM_VERIFY_FUNC_CALL           shift and go to state 126
 
-state 217
+state 218
 
     (77) LECTURA -> read ( LECTURA_OPTS ) .
 
     ;               reduce using rule 77 (LECTURA -> read ( LECTURA_OPTS ) .)
 
 
-state 218
-
-    (78) LECTURA_OPTS -> LECTURA_OPTS , . id
-
-    id              shift and go to state 250
-
-
 state 219
+
+    (78) LECTURA_OPTS -> LECTURA_OPTS , . SEM_ADD_READ
+    (134) SEM_ADD_READ -> . id
+
+    id              shift and go to state 178
+
+    SEM_ADD_READ                   shift and go to state 251
+
+state 220
 
     (80) ESCRITURA -> write ( ESCRITURA_OPTS ) .
 
     ;               reduce using rule 80 (ESCRITURA -> write ( ESCRITURA_OPTS ) .)
 
 
-state 220
+state 221
 
     (81) ESCRITURA_OPTS -> ESCRITURA_OPTS , . SEM_ADD_PRINT_CTE_S
     (82) ESCRITURA_OPTS -> ESCRITURA_OPTS , . EXPRESION SEM_ADD_PRINT
@@ -3604,15 +3618,15 @@ state 220
     (32) VARIABLE -> . id
     (126) SEM_VERIFY_FUNC_CALL -> . id
 
-    cte_s           shift and go to state 181
+    cte_s           shift and go to state 182
     (               shift and go to state 125
     cte_i           shift and go to state 127
     cte_f           shift and go to state 128
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    SEM_ADD_PRINT_CTE_S            shift and go to state 251
-    EXPRESION                      shift and go to state 252
+    SEM_ADD_PRINT_CTE_S            shift and go to state 252
+    EXPRESION                      shift and go to state 253
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -3622,7 +3636,7 @@ state 220
     VARIABLE                       shift and go to state 124
     SEM_VERIFY_FUNC_CALL           shift and go to state 126
 
-state 221
+state 222
 
     (84) ESCRITURA_OPTS -> EXPRESION SEM_ADD_PRINT .
 
@@ -3630,7 +3644,7 @@ state 221
     ,               reduce using rule 84 (ESCRITURA_OPTS -> EXPRESION SEM_ADD_PRINT .)
 
 
-state 222
+state 223
 
     (31) VARIABLE -> id [ EXPRESION ] .
 
@@ -3653,7 +3667,7 @@ state 222
     do              reduce using rule 31 (VARIABLE -> id [ EXPRESION ] .)
 
 
-state 223
+state 224
 
     (93) POINT -> point ( EXPRESION , . EXPRESION )
     (39) EXPRESION -> . EXPRESION SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
@@ -3689,7 +3703,7 @@ state 223
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    EXPRESION                      shift and go to state 253
+    EXPRESION                      shift and go to state 254
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -3699,28 +3713,28 @@ state 223
     VARIABLE                       shift and go to state 124
     SEM_VERIFY_FUNC_CALL           shift and go to state 126
 
-state 224
+state 225
 
     (94) CIRCLE -> circle ( EXPRESION ) .
 
     ;               reduce using rule 94 (CIRCLE -> circle ( EXPRESION ) .)
 
 
-state 225
+state 226
 
     (97) COLOR -> color ( cte_s ) .
 
     ;               reduce using rule 97 (COLOR -> color ( cte_s ) .)
 
 
-state 226
+state 227
 
     (98) SIZE -> size ( EXPRESION ) .
 
     ;               reduce using rule 98 (SIZE -> size ( EXPRESION ) .)
 
 
-state 227
+state 228
 
     (20) FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE SEM_ENDFUNC .
 
@@ -3731,7 +3745,7 @@ state 227
     main            reduce using rule 20 (FUNCS -> FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE SEM_ENDFUNC .)
 
 
-state 228
+state 229
 
     (16) FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE SEM_ENDFUNC .
 
@@ -3742,14 +3756,14 @@ state 228
     main            reduce using rule 16 (FUNCS -> FUNCS FUNC_TYPES module SEM_FUNC_NAME SEM_ADD_FUNC ( PARAMS ) DEC_V SEM_ADD_GLOBAL_VARIABLES BLOQUE SEM_ENDFUNC .)
 
 
-state 229
+state 230
 
     (33) BLOQUE -> { LOOP_ESTATUTO return EXPRESION SEM_VERIFY_RETURN_FUNC ; . }
 
-    }               shift and go to state 254
+    }               shift and go to state 255
 
 
-state 230
+state 231
 
     (35) BLOQUE -> { return EXPRESION SEM_VERIFY_RETURN_FUNC ; } .
 
@@ -3778,51 +3792,9 @@ state 230
     clear           reduce using rule 35 (BLOQUE -> { return EXPRESION SEM_VERIFY_RETURN_FUNC ; } .)
 
 
-state 231
-
-    (39) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP and SEM_ADD_AND . EXP_R SEM_PENDING_LOGIC_OP
-    (42) EXP_R -> . EXP_A > SEM_ADD_GREATER_THAN EXP_A SEM_PENDING_REL_OP
-    (43) EXP_R -> . EXP_A < SEM_ADD_LESS_THAN EXP_A SEM_PENDING_REL_OP
-    (44) EXP_R -> . EXP_A equals SEM_ADD_EQUALS_TO EXP_A SEM_PENDING_REL_OP
-    (45) EXP_R -> . EXP_A not_equals SEM_ADD_NOT_EQUALS_TO EXP_A SEM_PENDING_REL_OP
-    (46) EXP_R -> . EXP_A
-    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
-    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
-    (49) EXP_A -> . TERMINO
-    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
-    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
-    (52) TERMINO -> . FACTOR
-    (61) FACTOR -> . LLAMADA
-    (62) FACTOR -> . CTE
-    (63) FACTOR -> . VARIABLE
-    (64) FACTOR -> . ( SEM_ADD_FONDO_FALSO EXPRESION ) SEM_REMOVE_FONDO_FALSO
-    (68) LLAMADA -> . SEM_VERIFY_FUNC_CALL ( LLAMADA_OPTS SEM_RESET_PARAM_COUNT ) SEM_ADD_GOSUB
-    (69) LLAMADA -> . SEM_VERIFY_FUNC_CALL ( ) SEM_ADD_GOSUB
-    (65) CTE -> . cte_i
-    (66) CTE -> . cte_f
-    (67) CTE -> . cte_c
-    (31) VARIABLE -> . id [ EXPRESION ]
-    (32) VARIABLE -> . id
-    (126) SEM_VERIFY_FUNC_CALL -> . id
-
-    (               shift and go to state 125
-    cte_i           shift and go to state 127
-    cte_f           shift and go to state 128
-    cte_c           shift and go to state 129
-    id              shift and go to state 130
-
-    EXP_R                          shift and go to state 255
-    EXP_A                          shift and go to state 119
-    TERMINO                        shift and go to state 120
-    FACTOR                         shift and go to state 121
-    LLAMADA                        shift and go to state 122
-    CTE                            shift and go to state 123
-    VARIABLE                       shift and go to state 124
-    SEM_VERIFY_FUNC_CALL           shift and go to state 126
-
 state 232
 
-    (40) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP or SEM_ADD_OR . EXP_R SEM_PENDING_LOGIC_OP
+    (39) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP and SEM_ADD_AND . EXP_R SEM_PENDING_LOGIC_OP
     (42) EXP_R -> . EXP_A > SEM_ADD_GREATER_THAN EXP_A SEM_PENDING_REL_OP
     (43) EXP_R -> . EXP_A < SEM_ADD_LESS_THAN EXP_A SEM_PENDING_REL_OP
     (44) EXP_R -> . EXP_A equals SEM_ADD_EQUALS_TO EXP_A SEM_PENDING_REL_OP
@@ -3864,95 +3836,15 @@ state 232
 
 state 233
 
-    (42) EXP_R -> EXP_A > SEM_ADD_GREATER_THAN EXP_A . SEM_PENDING_REL_OP
-    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
-    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
-    (137) SEM_PENDING_REL_OP -> .
-    (134) SEM_PENDING_EXPA_OP -> .
-
-    ;               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    and             reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    or              reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    )               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    ,               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    ]               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    to              reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    do              reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    +               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    minus           reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-
-    SEM_PENDING_REL_OP             shift and go to state 257
-    SEM_PENDING_EXPA_OP            shift and go to state 166
-
-state 234
-
-    (43) EXP_R -> EXP_A < SEM_ADD_LESS_THAN EXP_A . SEM_PENDING_REL_OP
-    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
-    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
-    (137) SEM_PENDING_REL_OP -> .
-    (134) SEM_PENDING_EXPA_OP -> .
-
-    ;               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    and             reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    or              reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    )               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    ,               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    ]               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    to              reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    do              reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    +               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    minus           reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-
-    SEM_PENDING_REL_OP             shift and go to state 258
-    SEM_PENDING_EXPA_OP            shift and go to state 166
-
-state 235
-
-    (44) EXP_R -> EXP_A equals SEM_ADD_EQUALS_TO EXP_A . SEM_PENDING_REL_OP
-    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
-    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
-    (137) SEM_PENDING_REL_OP -> .
-    (134) SEM_PENDING_EXPA_OP -> .
-
-    ;               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    and             reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    or              reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    )               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    ,               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    ]               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    to              reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    do              reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    +               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    minus           reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-
-    SEM_PENDING_REL_OP             shift and go to state 259
-    SEM_PENDING_EXPA_OP            shift and go to state 166
-
-state 236
-
-    (45) EXP_R -> EXP_A not_equals SEM_ADD_NOT_EQUALS_TO EXP_A . SEM_PENDING_REL_OP
-    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
-    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
-    (137) SEM_PENDING_REL_OP -> .
-    (134) SEM_PENDING_EXPA_OP -> .
-
-    ;               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    and             reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    or              reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    )               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    ,               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    ]               reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    to              reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    do              reduce using rule 137 (SEM_PENDING_REL_OP -> .)
-    +               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    minus           reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-
-    SEM_PENDING_REL_OP             shift and go to state 260
-    SEM_PENDING_EXPA_OP            shift and go to state 166
-
-state 237
-
-    (47) EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS . TERMINO SEM_PENDING_EXPA_OP
+    (40) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP or SEM_ADD_OR . EXP_R SEM_PENDING_LOGIC_OP
+    (42) EXP_R -> . EXP_A > SEM_ADD_GREATER_THAN EXP_A SEM_PENDING_REL_OP
+    (43) EXP_R -> . EXP_A < SEM_ADD_LESS_THAN EXP_A SEM_PENDING_REL_OP
+    (44) EXP_R -> . EXP_A equals SEM_ADD_EQUALS_TO EXP_A SEM_PENDING_REL_OP
+    (45) EXP_R -> . EXP_A not_equals SEM_ADD_NOT_EQUALS_TO EXP_A SEM_PENDING_REL_OP
+    (46) EXP_R -> . EXP_A
+    (47) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> . EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (49) EXP_A -> . TERMINO
     (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
     (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
@@ -3975,16 +3867,106 @@ state 237
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    TERMINO                        shift and go to state 261
+    EXP_R                          shift and go to state 257
+    EXP_A                          shift and go to state 119
+    TERMINO                        shift and go to state 120
     FACTOR                         shift and go to state 121
     LLAMADA                        shift and go to state 122
     CTE                            shift and go to state 123
     VARIABLE                       shift and go to state 124
     SEM_VERIFY_FUNC_CALL           shift and go to state 126
 
+state 234
+
+    (42) EXP_R -> EXP_A > SEM_ADD_GREATER_THAN EXP_A . SEM_PENDING_REL_OP
+    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (138) SEM_PENDING_REL_OP -> .
+    (135) SEM_PENDING_EXPA_OP -> .
+
+    ;               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    and             reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    or              reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    )               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    ,               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    ]               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    to              reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    do              reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    +               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+
+    SEM_PENDING_REL_OP             shift and go to state 258
+    SEM_PENDING_EXPA_OP            shift and go to state 166
+
+state 235
+
+    (43) EXP_R -> EXP_A < SEM_ADD_LESS_THAN EXP_A . SEM_PENDING_REL_OP
+    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (138) SEM_PENDING_REL_OP -> .
+    (135) SEM_PENDING_EXPA_OP -> .
+
+    ;               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    and             reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    or              reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    )               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    ,               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    ]               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    to              reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    do              reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    +               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+
+    SEM_PENDING_REL_OP             shift and go to state 259
+    SEM_PENDING_EXPA_OP            shift and go to state 166
+
+state 236
+
+    (44) EXP_R -> EXP_A equals SEM_ADD_EQUALS_TO EXP_A . SEM_PENDING_REL_OP
+    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (138) SEM_PENDING_REL_OP -> .
+    (135) SEM_PENDING_EXPA_OP -> .
+
+    ;               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    and             reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    or              reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    )               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    ,               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    ]               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    to              reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    do              reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    +               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+
+    SEM_PENDING_REL_OP             shift and go to state 260
+    SEM_PENDING_EXPA_OP            shift and go to state 166
+
+state 237
+
+    (45) EXP_R -> EXP_A not_equals SEM_ADD_NOT_EQUALS_TO EXP_A . SEM_PENDING_REL_OP
+    (47) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP
+    (48) EXP_A -> EXP_A . SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP
+    (138) SEM_PENDING_REL_OP -> .
+    (135) SEM_PENDING_EXPA_OP -> .
+
+    ;               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    and             reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    or              reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    )               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    ,               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    ]               reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    to              reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    do              reduce using rule 138 (SEM_PENDING_REL_OP -> .)
+    +               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+
+    SEM_PENDING_REL_OP             shift and go to state 261
+    SEM_PENDING_EXPA_OP            shift and go to state 166
+
 state 238
 
-    (48) EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS . TERMINO SEM_PENDING_EXPA_OP
+    (47) EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS . TERMINO SEM_PENDING_EXPA_OP
     (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
     (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
     (52) TERMINO -> . FACTOR
@@ -4016,7 +3998,10 @@ state 238
 
 state 239
 
-    (50) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES . FACTOR SEM_PENDING_TERMINO_OP
+    (48) EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS . TERMINO SEM_PENDING_EXPA_OP
+    (50) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> . TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (52) TERMINO -> . FACTOR
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
     (63) FACTOR -> . VARIABLE
@@ -4036,7 +4021,8 @@ state 239
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    FACTOR                         shift and go to state 263
+    TERMINO                        shift and go to state 263
+    FACTOR                         shift and go to state 121
     LLAMADA                        shift and go to state 122
     CTE                            shift and go to state 123
     VARIABLE                       shift and go to state 124
@@ -4044,7 +4030,7 @@ state 239
 
 state 240
 
-    (51) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION . FACTOR SEM_PENDING_TERMINO_OP
+    (50) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES . FACTOR SEM_PENDING_TERMINO_OP
     (61) FACTOR -> . LLAMADA
     (62) FACTOR -> . CTE
     (63) FACTOR -> . VARIABLE
@@ -4072,6 +4058,34 @@ state 240
 
 state 241
 
+    (51) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION . FACTOR SEM_PENDING_TERMINO_OP
+    (61) FACTOR -> . LLAMADA
+    (62) FACTOR -> . CTE
+    (63) FACTOR -> . VARIABLE
+    (64) FACTOR -> . ( SEM_ADD_FONDO_FALSO EXPRESION ) SEM_REMOVE_FONDO_FALSO
+    (68) LLAMADA -> . SEM_VERIFY_FUNC_CALL ( LLAMADA_OPTS SEM_RESET_PARAM_COUNT ) SEM_ADD_GOSUB
+    (69) LLAMADA -> . SEM_VERIFY_FUNC_CALL ( ) SEM_ADD_GOSUB
+    (65) CTE -> . cte_i
+    (66) CTE -> . cte_f
+    (67) CTE -> . cte_c
+    (31) VARIABLE -> . id [ EXPRESION ]
+    (32) VARIABLE -> . id
+    (126) SEM_VERIFY_FUNC_CALL -> . id
+
+    (               shift and go to state 125
+    cte_i           shift and go to state 127
+    cte_f           shift and go to state 128
+    cte_c           shift and go to state 129
+    id              shift and go to state 130
+
+    FACTOR                         shift and go to state 265
+    LLAMADA                        shift and go to state 122
+    CTE                            shift and go to state 123
+    VARIABLE                       shift and go to state 124
+    SEM_VERIFY_FUNC_CALL           shift and go to state 126
+
+state 242
+
     (64) FACTOR -> ( SEM_ADD_FONDO_FALSO EXPRESION ) . SEM_REMOVE_FONDO_FALSO
     (110) SEM_REMOVE_FONDO_FALSO -> .
 
@@ -4092,16 +4106,16 @@ state 241
     to              reduce using rule 110 (SEM_REMOVE_FONDO_FALSO -> .)
     do              reduce using rule 110 (SEM_REMOVE_FONDO_FALSO -> .)
 
-    SEM_REMOVE_FONDO_FALSO         shift and go to state 265
+    SEM_REMOVE_FONDO_FALSO         shift and go to state 266
 
-state 242
+state 243
 
     (68) LLAMADA -> SEM_VERIFY_FUNC_CALL ( LLAMADA_OPTS SEM_RESET_PARAM_COUNT . ) SEM_ADD_GOSUB
 
-    )               shift and go to state 266
+    )               shift and go to state 267
 
 
-state 243
+state 244
 
     (70) LLAMADA_OPTS -> LLAMADA_OPTS , . EXPRESION SEM_VERIFY_PARAM
     (39) EXPRESION -> . EXPRESION SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
@@ -4137,7 +4151,7 @@ state 243
     cte_c           shift and go to state 129
     id              shift and go to state 130
 
-    EXPRESION                      shift and go to state 267
+    EXPRESION                      shift and go to state 268
     EXP_R                          shift and go to state 118
     EXP_A                          shift and go to state 119
     TERMINO                        shift and go to state 120
@@ -4147,7 +4161,7 @@ state 243
     VARIABLE                       shift and go to state 124
     SEM_VERIFY_FUNC_CALL           shift and go to state 126
 
-state 244
+state 245
 
     (69) LLAMADA -> SEM_VERIFY_FUNC_CALL ( ) SEM_ADD_GOSUB .
 
@@ -4169,7 +4183,7 @@ state 244
     do              reduce using rule 69 (LLAMADA -> SEM_VERIFY_FUNC_CALL ( ) SEM_ADD_GOSUB .)
 
 
-state 245
+state 246
 
     (71) LLAMADA_OPTS -> EXPRESION SEM_VERIFY_PARAM .
 
@@ -4177,7 +4191,7 @@ state 245
     )               reduce using rule 71 (LLAMADA_OPTS -> EXPRESION SEM_VERIFY_PARAM .)
 
 
-state 246
+state 247
 
     (72) ASIGNACION -> VARIABLE = SEM_ADD_EQUALS EXPRESION SEM_PENDING_ASSIGNATION_OP .
 
@@ -4185,47 +4199,47 @@ state 246
     to              reduce using rule 72 (ASIGNACION -> VARIABLE = SEM_ADD_EQUALS EXPRESION SEM_PENDING_ASSIGNATION_OP .)
 
 
-state 247
+state 248
 
     (73) CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF . then BLOQUE SEM_FILL_GOTO_ANYKIND
     (74) CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF . then BLOQUE else SEM_ADD_GOTO_SIMPLE BLOQUE SEM_FILL_GOTO_ANYKIND
 
-    then            shift and go to state 268
+    then            shift and go to state 269
 
 
-state 248
+state 249
 
     (75) WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION ) . SEM_ADD_GOTOF do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
     (117) SEM_ADD_GOTOF -> .
 
     do              reduce using rule 117 (SEM_ADD_GOTOF -> .)
 
-    SEM_ADD_GOTOF                  shift and go to state 269
+    SEM_ADD_GOTOF                  shift and go to state 270
 
-state 249
+state 250
 
     (76) FOR -> for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION . SEM_ADD_GOTOV do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
     (123) SEM_ADD_GOTOV -> .
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
     do              reduce using rule 123 (SEM_ADD_GOTOV -> .)
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
-    SEM_ADD_GOTOV                  shift and go to state 270
+    SEM_ADD_GOTOV                  shift and go to state 271
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
-state 250
-
-    (78) LECTURA_OPTS -> LECTURA_OPTS , id .
-
-    )               reduce using rule 78 (LECTURA_OPTS -> LECTURA_OPTS , id .)
-    ,               reduce using rule 78 (LECTURA_OPTS -> LECTURA_OPTS , id .)
-
-
 state 251
+
+    (78) LECTURA_OPTS -> LECTURA_OPTS , SEM_ADD_READ .
+
+    )               reduce using rule 78 (LECTURA_OPTS -> LECTURA_OPTS , SEM_ADD_READ .)
+    ,               reduce using rule 78 (LECTURA_OPTS -> LECTURA_OPTS , SEM_ADD_READ .)
+
+
+state 252
 
     (81) ESCRITURA_OPTS -> ESCRITURA_OPTS , SEM_ADD_PRINT_CTE_S .
 
@@ -4233,36 +4247,36 @@ state 251
     ,               reduce using rule 81 (ESCRITURA_OPTS -> ESCRITURA_OPTS , SEM_ADD_PRINT_CTE_S .)
 
 
-state 252
+state 253
 
     (82) ESCRITURA_OPTS -> ESCRITURA_OPTS , EXPRESION . SEM_ADD_PRINT
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
     (132) SEM_ADD_PRINT -> .
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
     )               reduce using rule 132 (SEM_ADD_PRINT -> .)
     ,               reduce using rule 132 (SEM_ADD_PRINT -> .)
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
-    SEM_ADD_PRINT                  shift and go to state 271
+    SEM_ADD_PRINT                  shift and go to state 272
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
-state 253
+state 254
 
     (93) POINT -> point ( EXPRESION , EXPRESION . )
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
-    )               shift and go to state 272
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    )               shift and go to state 273
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
-state 254
+state 255
 
     (33) BLOQUE -> { LOOP_ESTATUTO return EXPRESION SEM_VERIFY_RETURN_FUNC ; } .
 
@@ -4291,39 +4305,39 @@ state 254
     clear           reduce using rule 33 (BLOQUE -> { LOOP_ESTATUTO return EXPRESION SEM_VERIFY_RETURN_FUNC ; } .)
 
 
-state 255
-
-    (39) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R . SEM_PENDING_LOGIC_OP
-    (138) SEM_PENDING_LOGIC_OP -> .
-
-    ;               reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    )               reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    ,               reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    ]               reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    to              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    do              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-
-    SEM_PENDING_LOGIC_OP           shift and go to state 273
-
 state 256
 
-    (40) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R . SEM_PENDING_LOGIC_OP
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (39) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R . SEM_PENDING_LOGIC_OP
+    (139) SEM_PENDING_LOGIC_OP -> .
 
-    ;               reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    )               reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    ,               reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    ]               reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    to              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    do              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    ;               reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    )               reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    ,               reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    ]               reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    to              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    do              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
     SEM_PENDING_LOGIC_OP           shift and go to state 274
 
 state 257
+
+    (40) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R . SEM_PENDING_LOGIC_OP
+    (139) SEM_PENDING_LOGIC_OP -> .
+
+    ;               reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    )               reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    ,               reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    ]               reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    to              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    do              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+
+    SEM_PENDING_LOGIC_OP           shift and go to state 275
+
+state 258
 
     (42) EXP_R -> EXP_A > SEM_ADD_GREATER_THAN EXP_A SEM_PENDING_REL_OP .
 
@@ -4337,7 +4351,7 @@ state 257
     do              reduce using rule 42 (EXP_R -> EXP_A > SEM_ADD_GREATER_THAN EXP_A SEM_PENDING_REL_OP .)
 
 
-state 258
+state 259
 
     (43) EXP_R -> EXP_A < SEM_ADD_LESS_THAN EXP_A SEM_PENDING_REL_OP .
 
@@ -4351,7 +4365,7 @@ state 258
     do              reduce using rule 43 (EXP_R -> EXP_A < SEM_ADD_LESS_THAN EXP_A SEM_PENDING_REL_OP .)
 
 
-state 259
+state 260
 
     (44) EXP_R -> EXP_A equals SEM_ADD_EQUALS_TO EXP_A SEM_PENDING_REL_OP .
 
@@ -4365,7 +4379,7 @@ state 259
     do              reduce using rule 44 (EXP_R -> EXP_A equals SEM_ADD_EQUALS_TO EXP_A SEM_PENDING_REL_OP .)
 
 
-state 260
+state 261
 
     (45) EXP_R -> EXP_A not_equals SEM_ADD_NOT_EQUALS_TO EXP_A SEM_PENDING_REL_OP .
 
@@ -4379,111 +4393,111 @@ state 260
     do              reduce using rule 45 (EXP_R -> EXP_A not_equals SEM_ADD_NOT_EQUALS_TO EXP_A SEM_PENDING_REL_OP .)
 
 
-state 261
+state 262
 
     (47) EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO . SEM_PENDING_EXPA_OP
     (50) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
     (51) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
-    (134) SEM_PENDING_EXPA_OP -> .
-    (135) SEM_PENDING_TERMINO_OP -> .
+    (135) SEM_PENDING_EXPA_OP -> .
+    (136) SEM_PENDING_TERMINO_OP -> .
 
-    >               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    <               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    equals          reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    not_equals      reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    +               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    minus           reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    ;               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    and             reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    or              reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    )               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    ,               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    ]               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    to              reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    do              reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    *               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    /               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-
-    SEM_PENDING_EXPA_OP            shift and go to state 275
-    SEM_PENDING_TERMINO_OP         shift and go to state 167
-
-state 262
-
-    (48) EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO . SEM_PENDING_EXPA_OP
-    (50) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
-    (51) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
-    (134) SEM_PENDING_EXPA_OP -> .
-    (135) SEM_PENDING_TERMINO_OP -> .
-
-    >               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    <               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    equals          reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    not_equals      reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    +               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    minus           reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    ;               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    and             reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    or              reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    )               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    ,               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    ]               reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    to              reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    do              reduce using rule 134 (SEM_PENDING_EXPA_OP -> .)
-    *               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    /               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
+    >               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    <               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    equals          reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    not_equals      reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    +               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    ;               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    and             reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    or              reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    )               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    ,               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    ]               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    to              reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    do              reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    *               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    /               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
 
     SEM_PENDING_EXPA_OP            shift and go to state 276
     SEM_PENDING_TERMINO_OP         shift and go to state 167
 
 state 263
 
-    (50) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR . SEM_PENDING_TERMINO_OP
-    (135) SEM_PENDING_TERMINO_OP -> .
+    (48) EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO . SEM_PENDING_EXPA_OP
+    (50) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP
+    (51) TERMINO -> TERMINO . SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP
+    (135) SEM_PENDING_EXPA_OP -> .
+    (136) SEM_PENDING_TERMINO_OP -> .
 
-    *               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    /               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    >               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    <               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    equals          reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    not_equals      reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    +               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    minus           reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    ;               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    and             reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    or              reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    )               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    ,               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    ]               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    to              reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    do              reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
+    >               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    <               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    equals          reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    not_equals      reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    +               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    minus           reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    ;               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    and             reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    or              reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    )               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    ,               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    ]               reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    to              reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    do              reduce using rule 135 (SEM_PENDING_EXPA_OP -> .)
+    *               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    /               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
 
-    SEM_PENDING_TERMINO_OP         shift and go to state 277
+    SEM_PENDING_EXPA_OP            shift and go to state 277
+    SEM_PENDING_TERMINO_OP         shift and go to state 167
 
 state 264
 
-    (51) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR . SEM_PENDING_TERMINO_OP
-    (135) SEM_PENDING_TERMINO_OP -> .
+    (50) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR . SEM_PENDING_TERMINO_OP
+    (136) SEM_PENDING_TERMINO_OP -> .
 
-    *               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    /               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    >               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    <               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    equals          reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    not_equals      reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    +               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    minus           reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    ;               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    and             reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    or              reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    )               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    ,               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    ]               reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    to              reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
-    do              reduce using rule 135 (SEM_PENDING_TERMINO_OP -> .)
+    *               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    /               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    >               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    <               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    equals          reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    not_equals      reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    +               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    minus           reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    ;               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    and             reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    or              reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    )               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    ,               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    ]               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    to              reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    do              reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
 
     SEM_PENDING_TERMINO_OP         shift and go to state 278
 
 state 265
+
+    (51) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR . SEM_PENDING_TERMINO_OP
+    (136) SEM_PENDING_TERMINO_OP -> .
+
+    *               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    /               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    >               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    <               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    equals          reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    not_equals      reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    +               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    minus           reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    ;               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    and             reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    or              reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    )               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    ,               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    ]               reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    to              reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+    do              reduce using rule 136 (SEM_PENDING_TERMINO_OP -> .)
+
+    SEM_PENDING_TERMINO_OP         shift and go to state 279
+
+state 266
 
     (64) FACTOR -> ( SEM_ADD_FONDO_FALSO EXPRESION ) SEM_REMOVE_FONDO_FALSO .
 
@@ -4505,7 +4519,7 @@ state 265
     do              reduce using rule 64 (FACTOR -> ( SEM_ADD_FONDO_FALSO EXPRESION ) SEM_REMOVE_FONDO_FALSO .)
 
 
-state 266
+state 267
 
     (68) LLAMADA -> SEM_VERIFY_FUNC_CALL ( LLAMADA_OPTS SEM_RESET_PARAM_COUNT ) . SEM_ADD_GOSUB
     (129) SEM_ADD_GOSUB -> .
@@ -4527,25 +4541,25 @@ state 266
     to              reduce using rule 129 (SEM_ADD_GOSUB -> .)
     do              reduce using rule 129 (SEM_ADD_GOSUB -> .)
 
-    SEM_ADD_GOSUB                  shift and go to state 279
+    SEM_ADD_GOSUB                  shift and go to state 280
 
-state 267
+state 268
 
     (70) LLAMADA_OPTS -> LLAMADA_OPTS , EXPRESION . SEM_VERIFY_PARAM
     (39) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP
     (40) EXPRESION -> EXPRESION . SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP
     (127) SEM_VERIFY_PARAM -> .
-    (138) SEM_PENDING_LOGIC_OP -> .
+    (139) SEM_PENDING_LOGIC_OP -> .
 
     ,               reduce using rule 127 (SEM_VERIFY_PARAM -> .)
     )               reduce using rule 127 (SEM_VERIFY_PARAM -> .)
-    and             reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
-    or              reduce using rule 138 (SEM_PENDING_LOGIC_OP -> .)
+    and             reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
+    or              reduce using rule 139 (SEM_PENDING_LOGIC_OP -> .)
 
-    SEM_VERIFY_PARAM               shift and go to state 280
+    SEM_VERIFY_PARAM               shift and go to state 281
     SEM_PENDING_LOGIC_OP           shift and go to state 161
 
-state 268
+state 269
 
     (73) CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF then . BLOQUE SEM_FILL_GOTO_ANYKIND
     (74) CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF then . BLOQUE else SEM_ADD_GOTO_SIMPLE BLOQUE SEM_FILL_GOTO_ANYKIND
@@ -4556,23 +4570,23 @@ state 268
 
     {               shift and go to state 61
 
-    BLOQUE                         shift and go to state 281
-
-state 269
-
-    (75) WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION ) SEM_ADD_GOTOF . do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
-
-    do              shift and go to state 282
-
+    BLOQUE                         shift and go to state 282
 
 state 270
 
-    (76) FOR -> for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION SEM_ADD_GOTOV . do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
+    (75) WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION ) SEM_ADD_GOTOF . do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
 
     do              shift and go to state 283
 
 
 state 271
+
+    (76) FOR -> for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION SEM_ADD_GOTOV . do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
+
+    do              shift and go to state 284
+
+
+state 272
 
     (82) ESCRITURA_OPTS -> ESCRITURA_OPTS , EXPRESION SEM_ADD_PRINT .
 
@@ -4580,14 +4594,14 @@ state 271
     ,               reduce using rule 82 (ESCRITURA_OPTS -> ESCRITURA_OPTS , EXPRESION SEM_ADD_PRINT .)
 
 
-state 272
+state 273
 
     (93) POINT -> point ( EXPRESION , EXPRESION ) .
 
     ;               reduce using rule 93 (POINT -> point ( EXPRESION , EXPRESION ) .)
 
 
-state 273
+state 274
 
     (39) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP .
 
@@ -4601,7 +4615,7 @@ state 273
     do              reduce using rule 39 (EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP and SEM_ADD_AND EXP_R SEM_PENDING_LOGIC_OP .)
 
 
-state 274
+state 275
 
     (40) EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP .
 
@@ -4615,7 +4629,7 @@ state 274
     do              reduce using rule 40 (EXPRESION -> EXPRESION SEM_PENDING_LOGIC_OP or SEM_ADD_OR EXP_R SEM_PENDING_LOGIC_OP .)
 
 
-state 275
+state 276
 
     (47) EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .
 
@@ -4635,7 +4649,7 @@ state 275
     do              reduce using rule 47 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP + SEM_ADD_PLUS TERMINO SEM_PENDING_EXPA_OP .)
 
 
-state 276
+state 277
 
     (48) EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .
 
@@ -4655,7 +4669,7 @@ state 276
     do              reduce using rule 48 (EXP_A -> EXP_A SEM_PENDING_EXPA_OP minus SEM_ADD_MINUS TERMINO SEM_PENDING_EXPA_OP .)
 
 
-state 277
+state 278
 
     (50) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .
 
@@ -4677,7 +4691,7 @@ state 277
     do              reduce using rule 50 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP * SEM_ADD_TIMES FACTOR SEM_PENDING_TERMINO_OP .)
 
 
-state 278
+state 279
 
     (51) TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .
 
@@ -4699,7 +4713,7 @@ state 278
     do              reduce using rule 51 (TERMINO -> TERMINO SEM_PENDING_TERMINO_OP / SEM_ADD_DIVISION FACTOR SEM_PENDING_TERMINO_OP .)
 
 
-state 279
+state 280
 
     (68) LLAMADA -> SEM_VERIFY_FUNC_CALL ( LLAMADA_OPTS SEM_RESET_PARAM_COUNT ) SEM_ADD_GOSUB .
 
@@ -4721,7 +4735,7 @@ state 279
     do              reduce using rule 68 (LLAMADA -> SEM_VERIFY_FUNC_CALL ( LLAMADA_OPTS SEM_RESET_PARAM_COUNT ) SEM_ADD_GOSUB .)
 
 
-state 280
+state 281
 
     (70) LLAMADA_OPTS -> LLAMADA_OPTS , EXPRESION SEM_VERIFY_PARAM .
 
@@ -4729,13 +4743,13 @@ state 280
     )               reduce using rule 70 (LLAMADA_OPTS -> LLAMADA_OPTS , EXPRESION SEM_VERIFY_PARAM .)
 
 
-state 281
+state 282
 
     (73) CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF then BLOQUE . SEM_FILL_GOTO_ANYKIND
     (74) CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF then BLOQUE . else SEM_ADD_GOTO_SIMPLE BLOQUE SEM_FILL_GOTO_ANYKIND
     (118) SEM_FILL_GOTO_ANYKIND -> .
 
-    else            shift and go to state 285
+    else            shift and go to state 286
     return          reduce using rule 118 (SEM_FILL_GOTO_ANYKIND -> .)
     }               reduce using rule 118 (SEM_FILL_GOTO_ANYKIND -> .)
     /               reduce using rule 118 (SEM_FILL_GOTO_ANYKIND -> .)
@@ -4753,23 +4767,11 @@ state 281
     size            reduce using rule 118 (SEM_FILL_GOTO_ANYKIND -> .)
     clear           reduce using rule 118 (SEM_FILL_GOTO_ANYKIND -> .)
 
-    SEM_FILL_GOTO_ANYKIND          shift and go to state 284
-
-state 282
-
-    (75) WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION ) SEM_ADD_GOTOF do . BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
-    (33) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION SEM_VERIFY_RETURN_FUNC ; }
-    (34) BLOQUE -> . { LOOP_ESTATUTO }
-    (35) BLOQUE -> . { return EXPRESION SEM_VERIFY_RETURN_FUNC ; }
-    (36) BLOQUE -> . { }
-
-    {               shift and go to state 61
-
-    BLOQUE                         shift and go to state 286
+    SEM_FILL_GOTO_ANYKIND          shift and go to state 285
 
 state 283
 
-    (76) FOR -> for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION SEM_ADD_GOTOV do . BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
+    (75) WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION ) SEM_ADD_GOTOF do . BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
     (33) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION SEM_VERIFY_RETURN_FUNC ; }
     (34) BLOQUE -> . { LOOP_ESTATUTO }
     (35) BLOQUE -> . { return EXPRESION SEM_VERIFY_RETURN_FUNC ; }
@@ -4780,6 +4782,18 @@ state 283
     BLOQUE                         shift and go to state 287
 
 state 284
+
+    (76) FOR -> for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION SEM_ADD_GOTOV do . BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
+    (33) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION SEM_VERIFY_RETURN_FUNC ; }
+    (34) BLOQUE -> . { LOOP_ESTATUTO }
+    (35) BLOQUE -> . { return EXPRESION SEM_VERIFY_RETURN_FUNC ; }
+    (36) BLOQUE -> . { }
+
+    {               shift and go to state 61
+
+    BLOQUE                         shift and go to state 288
+
+state 285
 
     (73) CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF then BLOQUE SEM_FILL_GOTO_ANYKIND .
 
@@ -4801,42 +4815,18 @@ state 284
     clear           reduce using rule 73 (CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF then BLOQUE SEM_FILL_GOTO_ANYKIND .)
 
 
-state 285
+state 286
 
     (74) CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF then BLOQUE else . SEM_ADD_GOTO_SIMPLE BLOQUE SEM_FILL_GOTO_ANYKIND
     (120) SEM_ADD_GOTO_SIMPLE -> .
 
     {               reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
 
-    SEM_ADD_GOTO_SIMPLE            shift and go to state 288
-
-state 286
-
-    (75) WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION ) SEM_ADD_GOTOF do BLOQUE . SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
-    (120) SEM_ADD_GOTO_SIMPLE -> .
-
-    return          reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    }               reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    /               reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    if              reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    while           reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    for             reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    read            reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    write           reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    id              reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    point           reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    circle          reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    penup           reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    pendown         reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    color           reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    size            reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-    clear           reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
-
     SEM_ADD_GOTO_SIMPLE            shift and go to state 289
 
 state 287
 
-    (76) FOR -> for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION SEM_ADD_GOTOV do BLOQUE . SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
+    (75) WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION ) SEM_ADD_GOTOF do BLOQUE . SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
     (120) SEM_ADD_GOTO_SIMPLE -> .
 
     return          reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
@@ -4860,6 +4850,30 @@ state 287
 
 state 288
 
+    (76) FOR -> for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION SEM_ADD_GOTOV do BLOQUE . SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX
+    (120) SEM_ADD_GOTO_SIMPLE -> .
+
+    return          reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    }               reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    /               reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    if              reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    while           reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    for             reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    read            reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    write           reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    id              reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    point           reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    circle          reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    penup           reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    pendown         reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    color           reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    size            reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+    clear           reduce using rule 120 (SEM_ADD_GOTO_SIMPLE -> .)
+
+    SEM_ADD_GOTO_SIMPLE            shift and go to state 291
+
+state 289
+
     (74) CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF then BLOQUE else SEM_ADD_GOTO_SIMPLE . BLOQUE SEM_FILL_GOTO_ANYKIND
     (33) BLOQUE -> . { LOOP_ESTATUTO return EXPRESION SEM_VERIFY_RETURN_FUNC ; }
     (34) BLOQUE -> . { LOOP_ESTATUTO }
@@ -4868,35 +4882,11 @@ state 288
 
     {               shift and go to state 61
 
-    BLOQUE                         shift and go to state 291
-
-state 289
-
-    (75) WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION ) SEM_ADD_GOTOF do BLOQUE SEM_ADD_GOTO_SIMPLE . SEM_FILL_GOTO_COND_INDEX
-    (122) SEM_FILL_GOTO_COND_INDEX -> .
-
-    return          reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    }               reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    /               reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    if              reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    while           reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    for             reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    read            reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    write           reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    id              reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    point           reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    circle          reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    penup           reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    pendown         reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    color           reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    size            reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-    clear           reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
-
-    SEM_FILL_GOTO_COND_INDEX       shift and go to state 292
+    BLOQUE                         shift and go to state 292
 
 state 290
 
-    (76) FOR -> for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION SEM_ADD_GOTOV do BLOQUE SEM_ADD_GOTO_SIMPLE . SEM_FILL_GOTO_COND_INDEX
+    (75) WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION ) SEM_ADD_GOTOF do BLOQUE SEM_ADD_GOTO_SIMPLE . SEM_FILL_GOTO_COND_INDEX
     (122) SEM_FILL_GOTO_COND_INDEX -> .
 
     return          reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
@@ -4920,6 +4910,30 @@ state 290
 
 state 291
 
+    (76) FOR -> for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION SEM_ADD_GOTOV do BLOQUE SEM_ADD_GOTO_SIMPLE . SEM_FILL_GOTO_COND_INDEX
+    (122) SEM_FILL_GOTO_COND_INDEX -> .
+
+    return          reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    }               reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    /               reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    if              reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    while           reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    for             reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    read            reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    write           reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    id              reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    point           reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    circle          reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    penup           reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    pendown         reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    color           reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    size            reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+    clear           reduce using rule 122 (SEM_FILL_GOTO_COND_INDEX -> .)
+
+    SEM_FILL_GOTO_COND_INDEX       shift and go to state 294
+
+state 292
+
     (74) CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF then BLOQUE else SEM_ADD_GOTO_SIMPLE BLOQUE . SEM_FILL_GOTO_ANYKIND
     (118) SEM_FILL_GOTO_ANYKIND -> .
 
@@ -4940,9 +4954,9 @@ state 291
     size            reduce using rule 118 (SEM_FILL_GOTO_ANYKIND -> .)
     clear           reduce using rule 118 (SEM_FILL_GOTO_ANYKIND -> .)
 
-    SEM_FILL_GOTO_ANYKIND          shift and go to state 294
+    SEM_FILL_GOTO_ANYKIND          shift and go to state 295
 
-state 292
+state 293
 
     (75) WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION ) SEM_ADD_GOTOF do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX .
 
@@ -4964,7 +4978,7 @@ state 292
     clear           reduce using rule 75 (WHILE -> while SEM_ADD_COND_INDEX ( EXPRESION ) SEM_ADD_GOTOF do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX .)
 
 
-state 293
+state 294
 
     (76) FOR -> for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION SEM_ADD_GOTOV do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX .
 
@@ -4986,7 +5000,7 @@ state 293
     clear           reduce using rule 76 (FOR -> for ASIGNACION to SEM_ADD_COND_INDEX EXPRESION SEM_ADD_GOTOV do BLOQUE SEM_ADD_GOTO_SIMPLE SEM_FILL_GOTO_COND_INDEX .)
 
 
-state 294
+state 295
 
     (74) CONDICION -> if ( EXPRESION ) SEM_ADD_GOTOF then BLOQUE else SEM_ADD_GOTO_SIMPLE BLOQUE SEM_FILL_GOTO_ANYKIND .
 

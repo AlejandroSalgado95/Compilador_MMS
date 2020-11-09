@@ -117,6 +117,9 @@ class Quadruples():
         if self.quadruples[index]:
             return self.quadruples[index]
 
+    def addReadQuadruple(self,operand):
+        self.quadruples.append( ("read", operand, None, None) )
+
 
 
     def printContents(self):
