@@ -607,7 +607,7 @@ def p_sem_fill_goto_anykind(p):
   global quadruples
 
   gotoIndex = gotoList.pop()
-  directionIndex = len(quadruples.quadruples) +1 
+  directionIndex = len(quadruples.quadruples) + 0 
   quadruples.fillGoToCuadruple(gotoIndex,directionIndex)
 
 
@@ -637,7 +637,7 @@ def p_sem_add_goto_simple(p):
   global quadruples
 
   gotoIndex = gotoList.pop()
-  directionIndex = len(quadruples.quadruples) + 2
+  directionIndex = len(quadruples.quadruples) + 1
   quadruples.fillGoToCuadruple(gotoIndex,directionIndex)
 
   quadruples.addGoToCuadruple(None,"goto")
@@ -653,7 +653,7 @@ def p_sem_add_cond_index(p):
   '''
   global gotoList
 
-  condIndex = len(quadruples.quadruples) + 1
+  condIndex = len(quadruples.quadruples) 
   gotoList.append(condIndex)
 
 
@@ -845,6 +845,7 @@ def p_sem_add_print_cte_s(p):
     addressTableKey = determineTypeAddressTable(None,cteType,cteValue,None)
     vAddress = dirAddresses[addressTableKey].getAnAddress()
     consOperand = Operand(None, cteValue, cteType, vAddress)
+    dirAddresses[addressTableKey].saveAddressData(vAddress, cteValue, cteType)
     quadruples.addPrintCuadruple(consOperand)
 
 

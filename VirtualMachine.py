@@ -8,7 +8,9 @@ from Tools import determineAddressTableBasedOnVAdress
 IP = quadruples.getQuadruple(0)[3]
 lastIP = len(quadruples.quadruples)
 
-for IP in range(IP, lastIP):
+
+
+while IP < len(quadruples.quadruples):
 	actualQuadruple = quadruples.getQuadruple(IP)
 	if (actualQuadruple[0] == '='):
 		op1VA = actualQuadruple[1].vAddress
@@ -108,7 +110,77 @@ for IP in range(IP, lastIP):
 		tempOpAddressTable = determineAddressTableBasedOnVAdress(tempOperandVA)
 		dirAddresses[tempOpAddressTable].saveAddressData(tempOperandVA, resultValue, tempOpType)
 
+	elif (actualQuadruple[0] == '=='):
+		op1VA = actualQuadruple[1].vAddress
+		op2VA = actualQuadruple[2].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		op2TA = determineAddressTableBasedOnVAdress(op2VA)
+		op1Val = dirAddresses[op1TA].getAddressData(op1VA)["value"]  
+		op2Val = dirAddresses[op2TA].getAddressData(op2VA)["value"]
+		resultValue = op1Val == op2Val
 
+		tempOperandVA = actualQuadruple[3].vAddress
+		tempOpType = actualQuadruple[3].type
+		tempOpAddressTable = determineAddressTableBasedOnVAdress(tempOperandVA)
+		dirAddresses[tempOpAddressTable].saveAddressData(tempOperandVA, resultValue, tempOpType)
+
+	elif (actualQuadruple[0] == '!='):
+		op1VA = actualQuadruple[1].vAddress
+		op2VA = actualQuadruple[2].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		op2TA = determineAddressTableBasedOnVAdress(op2VA)
+		op1Val = dirAddresses[op1TA].getAddressData(op1VA)["value"]  
+		op2Val = dirAddresses[op2TA].getAddressData(op2VA)["value"]
+		resultValue = op1Val != op2Val
+
+		tempOperandVA = actualQuadruple[3].vAddress
+		tempOpType = actualQuadruple[3].type
+		tempOpAddressTable = determineAddressTableBasedOnVAdress(tempOperandVA)
+		dirAddresses[tempOpAddressTable].saveAddressData(tempOperandVA, resultValue, tempOpType)
+
+
+	elif (actualQuadruple[0] == '&&'):
+		op1VA = actualQuadruple[1].vAddress
+		op2VA = actualQuadruple[2].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		op2TA = determineAddressTableBasedOnVAdress(op2VA)
+		op1Val = dirAddresses[op1TA].getAddressData(op1VA)["value"]  
+		op2Val = dirAddresses[op2TA].getAddressData(op2VA)["value"]
+		resultValue = op1Val and op2Val
+
+		tempOperandVA = actualQuadruple[3].vAddress
+		tempOpType = actualQuadruple[3].type
+		tempOpAddressTable = determineAddressTableBasedOnVAdress(tempOperandVA)
+		dirAddresses[tempOpAddressTable].saveAddressData(tempOperandVA, resultValue, tempOpType)
+
+	elif (actualQuadruple[0] == '||'):
+		op1VA = actualQuadruple[1].vAddress
+		op2VA = actualQuadruple[2].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		op2TA = determineAddressTableBasedOnVAdress(op2VA)
+		op1Val = dirAddresses[op1TA].getAddressData(op1VA)["value"]  
+		op2Val = dirAddresses[op2TA].getAddressData(op2VA)["value"]
+		resultValue = op1Val or op2Val
+
+		tempOperandVA = actualQuadruple[3].vAddress
+		tempOpType = actualQuadruple[3].type
+		tempOpAddressTable = determineAddressTableBasedOnVAdress(tempOperandVA)
+		dirAddresses[tempOpAddressTable].saveAddressData(tempOperandVA, resultValue, tempOpType)
+
+	elif (actualQuadruple[0] == "gotoF"):
+		newIP = actualQuadruple[3]
+		op1VA = actualQuadruple[1].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		#print ("OP1TA: " + op1TA)
+		op1Val = dirAddresses[op1TA].getAddressData(op1VA)["value"]
+
+		if (op1Val == False):
+			IP = newIP -1
+
+
+	elif (actualQuadruple[0] == "goto"):
+		newIP = actualQuadruple[3]
+		IP = newIP -1
 
 
 	elif (actualQuadruple[0] == "print"):
@@ -117,6 +189,8 @@ for IP in range(IP, lastIP):
 		#print ("OP1TA: " + op1TA)
 		op1Val = dirAddresses[op1TA].getAddressData(op1VA)["value"]
 		print (str(op1Val)) 
+
+	IP += 1
 
 
 
