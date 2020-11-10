@@ -7,6 +7,14 @@ var float : valor, yepei ;
 
 main ( )
 { 
+	penup();
+	size(15);
+	point(30.5,30.5);
+	pendown();
+	color("red");
+	circle(40.5);
+	clear();
+
 	j[2] = 320;
 
 	write(j[2]);

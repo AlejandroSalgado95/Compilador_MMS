@@ -465,37 +465,37 @@ def p_llamada_bi(p):
 
 def p_clear(p):
     '''
-    CLEAR : clear '(' ')'
+    CLEAR : clear '(' ')' DO_CLEAR
     '''
 
 def p_point(p):
     '''
-    POINT : point '(' EXPRESION ',' EXPRESION ')'
+    POINT : point '(' EXPRESION ',' EXPRESION ')' DRAW_POINT
     '''
 
 def p_circle(p):
     '''
-    CIRCLE : circle '(' EXPRESION ')' 
+    CIRCLE : circle '(' EXPRESION ')' DRAW_CIRCLE
     '''
 
 def p_penup(p):
     '''
-    PENUP : penup '(' ')'
+    PENUP : penup '(' ')' DO_PENUP
     '''
 
 def p_pendown(p):
     '''
-    PENDOWN : pendown '(' ')'
+    PENDOWN : pendown '(' ')' DO_PENDOWN
     '''
 
 def p_color(p):
     '''
-    COLOR : color '(' cte_s ')' 
+    COLOR : color '(' DO_COLOR ')' 
     '''
 
 def p_size(p):
     '''
-    SIZE : size '(' EXPRESION ')' 
+    SIZE : size '(' EXPRESION ')' DO_SIZE
     '''
 
 
@@ -1121,6 +1121,91 @@ def p_sem_pending_logic_op(p):
       funcDirec.addTempVarCountInFunc(funcName,resultOperand.type)
 
 
+
+
+#LAS SIGUIENTES SON REGLAS QUE TIENEN QUE VER CON EL MANEJO DE INPUTS GRAFICOS 
+
+def p_draw_point(p):
+  '''
+  DRAW_POINT :
+  '''
+  global operandsList
+  global quadruples
+  yOperand = operandsList.pop()
+  xOperand = operandsList.pop()
+  
+  if ((yOperand.type != "int") and (yOperand.type != "float")) or ((xOperand.type != "int") and (xOperand.type != "float")):
+    errorQueue.append("Error: " + "Failed operation, int or float type parameters expected. " + xOperand.type + " and " +  yOperand.type + " were provided.")
+    print("Error: " + "Failed operation, int or float type parameters expected. " + xOperand.type + " and " +  yOperand.type + " were provided.")
+  else:
+    quadruples.addDrawPointQuadruple(xOperand,yOperand)
+
+
+def p_draw_circle(p):
+  '''
+  DRAW_CIRCLE :
+  '''
+  global operandsList
+  global quadruples
+  radiusOperand = operandsList.pop()
+  if (radiusOperand.type != "int") and (radiusOperand.type != "float"):
+    errorQueue.append("Error: " + "Failed operation, int or float type parameter expected. " + radiusOperand.type + " was provided.")
+    print("Error: " + "Failed operation, int or float type parameter expected. " + radiusOperand.type + " was provided.")
+  else:
+    quadruples.addDrawCircleQuadruple(radiusOperand)
+
+def p_do_penup(p):
+  '''
+  DO_PENUP :
+  '''
+  global quadruples
+  quadruples.addPenupQuadruple()
+
+def p_do_pendown(p):
+  '''
+  DO_PENDOWN :
+  '''
+  global quadruples
+  quadruples.addPendownQuadruple()
+
+def p_do_color(p):
+  '''
+  DO_COLOR : cte_s
+  '''
+
+  global dirAddresses
+  global operandsList
+  global quadruples
+
+  cteValue = p[1]
+  cteType = "string"
+  addressTableKey = determineTypeAddressTable(None,cteType,cteValue,None)
+  vAddress = dirAddresses[addressTableKey].getAnAddress()
+  colorOperand = Operand(None, cteValue, cteType, vAddress)
+  dirAddresses[addressTableKey].saveAddressData(vAddress, cteValue, cteType)
+  quadruples.addColorQuadruple(colorOperand)
+
+def p_do_clear(p):
+  '''
+  DO_CLEAR :
+  '''
+  global quadruples
+  quadruples.addClearQuadruple()
+
+
+
+def p_do_size(p):
+  '''
+  DO_SIZE :
+  '''
+  global operandsList
+  global quadruples
+  sizeOperand = operandsList.pop()
+  if (sizeOperand.type != "int") and (sizeOperand.type != "float"):
+    errorQueue.append("Error: " + "Failed operation, int or float type parameter expected. " + sizeOperand.type + " was provided.")
+    print("Error: " + "Failed operation, int or float type parameter expected. " + sizeOperand.type + " was provided.")
+  else:
+    quadruples.addSizeQuadruple(sizeOperand)
 
 
 

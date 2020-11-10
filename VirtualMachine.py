@@ -4,10 +4,12 @@ from parser import funcDirec
 from parser import quadruples
 from parser import dirAddresses
 from Tools import determineAddressTableBasedOnVAdress
+import turtle
+
 
 IP = quadruples.getQuadruple(0)[3]
 lastIP = len(quadruples.quadruples)
-
+pen = turtle.Turtle() 
 
 
 while IP < len(quadruples.quadruples):
@@ -202,6 +204,46 @@ while IP < len(quadruples.quadruples):
 		elif (Op1Type == "char"):
 			newValue = char(newValue)
 		dirAddresses[op1TA].saveAddressData(op1VA, newValue, Op1Type) 
+
+
+	elif (actualQuadruple[0] == "point"):
+		op1VA = actualQuadruple[1].vAddress
+		op2VA = actualQuadruple[2].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		op2TA = determineAddressTableBasedOnVAdress(op2VA)
+		xCor = dirAddresses[op1TA].getAddressData(op1VA)["value"]  
+		yCor = dirAddresses[op2TA].getAddressData(op2VA)["value"]
+		pen.home()
+		pen.goto(xCor,yCor)
+		pen.dot()
+
+
+	elif (actualQuadruple[0] == "circle"):
+		op1VA = actualQuadruple[1].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		radius = dirAddresses[op1TA].getAddressData(op1VA)["value"]  
+		pen.circle(radius)
+
+	elif (actualQuadruple[0] == "penup"):
+		pen.penup()
+
+	elif (actualQuadruple[0] == "pendown"):
+		pen.pendown()
+
+	elif (actualQuadruple[0] == "color"):
+		op1VA = actualQuadruple[1].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		color = dirAddresses[op1TA].getAddressData(op1VA)["value"]  
+		pen.pencolor(color.strip('"'))
+
+	elif (actualQuadruple[0] == "clear"):
+		pen.clear()
+
+	elif (actualQuadruple[0] == "size"):
+		op1VA = actualQuadruple[1].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		size = dirAddresses[op1TA].getAddressData(op1VA)["value"]  
+		pen.pensize(size)
 
 
 	IP += 1

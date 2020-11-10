@@ -120,7 +120,27 @@ class Quadruples():
     def addReadQuadruple(self,operand):
         self.quadruples.append( ("read", operand, None, None) )
 
+    def addDrawPointQuadruple(self,xOperand,yOperand):
+        self.quadruples.append(("point",xOperand,yOperand,None))
 
+
+    def addDrawCircleQuadruple(self,radiusOperand):
+        self.quadruples.append(("circle",radiusOperand,None,None))
+
+    def addPenupQuadruple(self):
+        self.quadruples.append(("penup",None,None,None))
+
+    def addPendownQuadruple(self):
+        self.quadruples.append(("pendown",None,None,None))
+
+    def addColorQuadruple(self,colorOperand):
+        self.quadruples.append(("color",colorOperand,None,None))
+
+    def addClearQuadruple(self):
+        self.quadruples.append(("clear",None,None,None))
+
+    def addSizeQuadruple(self, sizeOperand):
+        self.quadruples.append(("size",sizeOperand,None,None))
 
     def printContents(self):
         quadrupleCounter = 0
