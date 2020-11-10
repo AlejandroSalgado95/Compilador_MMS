@@ -33,6 +33,11 @@ class VirtualAdresses():
         self.actualVAddress += 1
         return self.actualVAddress - 1
 
+    def getAnAdressForArray(self,arraySize):
+        availableAddress = self.actualVAddress
+        self.actualVAddress += arraySize
+        return availableAddress
+
 
     def deleteAllContent(self):
     	self.table = {}

@@ -194,15 +194,32 @@ def p_variable_fix(p):
     if (funcName == "global"):
       scope = "global"
 
-    varName = p[1]
-    addressTableKey = determineTypeAddressTable(scope,varType,None,False)
-    vAddress = dirAddresses[addressTableKey].getAnAddress()
-    result = funcDirec.addLocalVariableToFunc(funcName, varName, varType, False, vAddress)
+    #es un arreglo
+    if len(p) > 2:
+      
+      varName = p[1]
+      arraySize = p[3]
+      addressTableKey = determineTypeAddressTable(scope,varType,None,False)
+      vAddress = dirAddresses[addressTableKey].getAnAdressForArray(arraySize)
+      result = funcDirec.addLocalArrayToFunc(funcName, varName, varType, vAddress, arraySize)
+     
+      if isinstance(result,str):
+        errorQueue.append("Error: " + result)
+        print("Error: ", result)
 
-    if isinstance(result,str):
-      errorQueue.append("Error: " + result)
-      print("Error: ", result)
+     
+    #es un id
+    else:
 
+      varName = p[1]
+      addressTableKey = determineTypeAddressTable(scope,varType,None,False)
+      vAddress = dirAddresses[addressTableKey].getAnAddress()
+      result = funcDirec.addLocalVariableToFunc(funcName, varName, varType, False, vAddress)
+
+      if isinstance(result,str):
+        errorQueue.append("Error: " + result)
+        print("Error: ", result)
+    
 
 
 #Verifica que una variable/identificador usada en una expresion sea valida semanticamente
@@ -212,7 +229,7 @@ def p_variable_fix(p):
 #   se agrega a la pila de operandos para que futuras expresiones trabajen con el (generando cuadruplos por ejemplo)
 def p_variable(p):
     '''
-    VARIABLE : id '[' EXPRESION ']' 
+    VARIABLE : SEM_ID_FOR_ARRAY '[' EXPRESION SEM_CHECK_ARRAY ']' 
               | id
     '''
     global varName
@@ -222,15 +239,55 @@ def p_variable(p):
     global dirAddresses
     global funcName
 
+    #es una variable en una expresion, no un arreglo
+    if len(p) < 3:
+      varName = p[1]
+      retrievedVar = funcDirec.getVariableInFunc(funcName, varName)
+      if isinstance(retrievedVar, str):
+        errorQueue.append("Error: " + retrievedVar)
+        print("Error: ", retrievedVar)
+      else:
+        operandsList.append( Operand(varName, None, retrievedVar["varType"], retrievedVar["vAddress"]) )
 
-    varName = p[1]
-    retrievedVar = funcDirec.getVariableInFunc(funcName, varName)
-    if isinstance(retrievedVar, str):
-      errorQueue.append("Error: " + retrievedVar)
+def p_sem_id_for_array(p):
+  '''
+  SEM_ID_FOR_ARRAY : id
+  '''
+  global varName
+  varName = p[1]
+
+
+def p_sem_check_array(p):
+  '''  
+  SEM_CHECK_ARRAY : 
+  '''
+  global varName
+  global funcDirec
+  global operandsList
+  global funcDirec
+  global dirAddresses
+  global funcName
+  
+  #checa si existe el arreglo
+  retrievedArrayData = funcDirec.getVariableInFunc(funcName, varName)
+  if isinstance(retrievedArrayData, str):
+      errorQueue.append("Error: " + retrievedArrayData)
+      print("Error: ", retrievedArrayData)
+  else:
+    arrayIndexExpression = operandsList.pop()
+    actualAddress = retrievedArrayData["vAddress"] + arrayIndexExpression.value
+    #checa que el index del arreglo sea tipo int
+    if arrayIndexExpression.type != "int":
+      errorQueue.append("Error: Failed operation. Int type index expected for array " + varName + ". " + arrayIndexExpression.type + "type was received instead.")
+      print("Error: ", retrievedVar)
+    #checa que el index tipo int del arreglo se encuentre en el rango de direcciones validas para el arreglo
+    elif (actualAddress < retrievedArrayData["vAddress"]) or (actualAddress > retrievedArrayData["sLimit"]):  
+      errorQueue.append("Error: Failed operation. Index " + arrayIndexExpression.value + " is out of bounds for array " + varname  )
       print("Error: ", retrievedVar)
     else:
-      operandsList.append( Operand(varName, None, retrievedVar["varType"], retrievedVar["vAddress"]) )
-      
+      operandsList.append( Operand(varName, None, retrievedArrayData["varType"], actualAddress) )
+
+
 
 #Un bloque puede venir con estatuto de return o no
 #1. Si el bloque viene con return, debe verificarse que haya un operando guardado
@@ -378,8 +435,8 @@ def p_lectura(p):
 
 def p_lectura_opts(p):
     '''
-    LECTURA_OPTS : LECTURA_OPTS ',' SEM_ADD_READ
-                  |  SEM_ADD_READ
+    LECTURA_OPTS : LECTURA_OPTS ',' VARIABLE SEM_ADD_READ
+                  |  VARIABLE SEM_ADD_READ
     '''
 
 def p_escritura(p):
@@ -903,22 +960,17 @@ def p_sem_add_print_cte_s(p):
 
 def p_sem_add_read(p):
     '''
-    SEM_ADD_READ : id
+    SEM_ADD_READ : 
     '''  
     global varName
     global funcDirec
     global dirAddresses
     global funcName
     global quadruples
+    global operandsList
 
-    varName = p[1]
-    retrievedVar = funcDirec.getVariableInFunc(funcName, varName)
-    if isinstance(retrievedVar, str):
-      errorQueue.append("Error: " + retrievedVar)
-      print("Error: ", retrievedVar)
-    else: 
-      operand = Operand(varName, None, retrievedVar["varType"], retrievedVar["vAddress"]) 
-      quadruples.addReadQuadruple(operand)
+    operand = operandsList.pop()
+    quadruples.addReadQuadruple(operand)
 
 
 

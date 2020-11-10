@@ -10,11 +10,31 @@ class VarTable():
                 "varType": varType ,
                 "scope": actualScope,
                 "isParam": isParam,
-                "vAddress": vAddress
+                "vAddress": vAddress,
+                "isArray": False,
+                "arraySize": None,
+                "sLimit" : None
             }
             return True
         else:
             return False
+
+
+    def addLocalArray(self, varName, varType, actualScope, vAddress, arraySize):
+        if not varName in self.table:
+            self.table[varName] = {
+                "varType": varType ,
+                "scope": actualScope,
+                "isParam": False,
+                "vAddress": vAddress,
+                "isArray": True,
+                "arraySize": arraySize,
+                "sLimit" : vAddress + arraySize - 1
+            }
+            return True
+        else:
+            return False
+
 
     def getVariable(self, varName):
         if varName in self.table:
@@ -29,7 +49,10 @@ class VarTable():
                 "varType": globalVarContent["varType"] ,
                 "scope": "global",
                 "isParam": False,
-                "vAddress": globalVarContent["vAddress"]
+                "vAddress": globalVarContent["vAddress"],
+                "isArray": globalVarContent["isArray"],
+                "arraySize": globalVarContent["arraySize"],
+                "sLimit" : globalVarContent["sLimit"]
             }
             return True
         else:
@@ -122,18 +145,59 @@ class FuncDirec():
             return "Failed operation. Function name not found"
 
 
+    def addLocalArrayToFunc(self, funcName, varName, varType, vAddress, arraySize):
+        if funcName in self.directory:
+            actualScope = "local"
+            if funcName == "global":
+                actualScope = "global"
+            result = self.directory[funcName]["varTable"].addLocalArray(varName, varType, actualScope, vAddress, arraySize)
+            if (result):
+                if not funcName == "global":
+                    if (varType == "int"):
+                        self.directory[funcName]["LIntQ"] += arraySize
+                    elif (varType == "float"):
+                        self.directory[funcName]["LFloatQ"] += arraySize
+                    elif (varType == "char"):
+                        self.directory[funcName]["LCharQ"] += arraySize
+                elif funcName == "global":
+                    if (varType == "int"):
+                        self.directory[funcName]["GIntQ"] += arraySize
+                    elif (varType == "float"):
+                        self.directory[funcName]["GFloatQ"] += arraySize
+                    elif (varType == "char"):
+                        self.directory[funcName]["GCharQ"] += arraySize
+
+                return True
+            else:
+                return "Failed operation. Array name " +  varName + " already exists"
+
+        else:
+            return "Failed operation. Function name not found"
+
+
+
     def addGlobalVariablesToFunc(self, funcName):
         globalVariables = self.directory["global"]["varTable"].table
         if funcName in self.directory:
             for globalVarName, globalVarContent in globalVariables.items():
                 result = self.directory[funcName]["varTable"].addGlobalVariable(globalVarName,globalVarContent)
                 if (result):
-                    if (globalVarContent["varType"] == "int"):
-                        self.directory[funcName]["GIntQ"] += 1
-                    elif (globalVarContent["varType"] == "float"):
-                        self.directory[funcName]["GFloatQ"] += 1
-                    elif (globalVarContent["varType"] == "char"): 
-                        self.directory[funcName]["GCharQ"] += 1
+                    if not globalVarContent["isArray"]:
+                        if (globalVarContent["varType"] == "int"):
+                            self.directory[funcName]["GIntQ"] += 1
+                        elif (globalVarContent["varType"] == "float"):
+                            self.directory[funcName]["GFloatQ"] += 1
+                        elif (globalVarContent["varType"] == "char"): 
+                            self.directory[funcName]["GCharQ"] += 1
+                    else:
+                        if (globalVarContent["varType"] == "int"):
+                            self.directory[funcName]["GIntQ"] += globalVarContent["arraySize"]
+                        elif (globalVarContent["varType"] == "float"):
+                            self.directory[funcName]["GFloatQ"] += globalVarContent["arraySize"]
+                        elif (globalVarContent["varType"] == "char"): 
+                            self.directory[funcName]["GCharQ"] += globalVarContent["arraySize"]
+
+
 
         else:
             return "Failed operation. Function name not found"
@@ -145,7 +209,7 @@ class FuncDirec():
             if result != False:
                 return result
             else:
-                return "Failed operation. Var " + varName + " not found " + " in scope of " + funcName
+                return "Failed operation. var or array " + varName + " not found " + " in scope of " + funcName
         else:
             return "Failed operation. Function " + funcName + " not found"
 
