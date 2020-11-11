@@ -91,6 +91,7 @@ class FuncDirec():
                 "varTable": VarTable(),
                 "quadrupleIndex" : None,
                 "funcFirm" : [],
+                "paramsValuesStored": [],
                 "ParamsQ" : 0, 
                 "LIntQ" : 0,   
                 "LFloatQ" : 0, 
@@ -287,6 +288,25 @@ class FuncDirec():
             return  self.directory[funcName]["varTable"]
         else:
             return "Failed operation. Cannot get variables table, function" + funcName +" not found"
+
+    def addParamValueOfFunc(self, funcName, paramValue):
+        if funcName in self.directory:
+            self.directory[funcName]["paramsValuesStored"].append(paramValue)
+        else:
+            return "Failed operation. Cannot add the param value, function" + funcName +" not found"
+
+
+    def getParamValuesOfFunc(self,funcName):
+        if funcName in self.directory:
+            return  self.directory[funcName]["paramsValuesStored"]
+        else:
+            return "Failed operation. Cannot retrieve the params values, function" + funcName +" not found"
+
+    def addQuadrupleIndexToFunc(self,funcName,quadrupleIndex):
+        if funcName in self.directory:
+            self.directory[funcName]["quadrupleIndex"] = quadrupleIndex
+        else:
+            return "Failed operation. Cannot add quadruple index, function" + funcName +" not found"
 
 
 

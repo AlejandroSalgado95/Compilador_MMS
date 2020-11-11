@@ -32,6 +32,7 @@ funcCall = ""
 pendingReturnOperand = ""
 hasReturn = False
 mustBeVoidCall = False
+paramValueCounter = 0;
 
 #Variables globales
 dirAddresses = {
@@ -107,6 +108,9 @@ def p_dec_v(p):
     DEC_V : DEC_V var  TIPO_SIMPLE ':' LISTA_VAR ';' 
             | var TIPO_SIMPLE ':' LISTA_VAR ';'
     '''
+    global paramValueCounter
+    paramValueCounter = 0;
+
  
 
 
@@ -166,12 +170,20 @@ def p_param_name(p):
   global funcDirec
   global varType
   global dirAddresses
+  global paramValueCounter
 
   scope = "local"
   varName = p[1]
   addressTableKey = determineTypeAddressTable(scope,varType,None,False)
   vAddress = dirAddresses[addressTableKey].getAnAddress()
   funcDirec.addLocalVariableToFunc(funcName, varName, varType , True, vAddress)
+
+  paramValues = funcDirec.getParamValuesOfFunc(funcName)
+  if (len(paramValues) > 0):
+    dirAddresses[addressTableKey].saveAddressData(vAddress, paramValues[paramValueCounter], varType)
+    paramValueCounter += 1
+
+
 
 
 #Se declaran variables locales o globales (NUNCA PARAMETROS NI OPERANDOS DENTRO EXPRESIONES) y se les asigna una direccion virtual, mas no se guarda nada en esa direccion virtual aun, pues las variables no tienen valor inicial
@@ -551,7 +563,11 @@ def p_sem_add_func(p):
   '''
   SEM_ADD_FUNC : 
   '''
+  global funcName
+  global quadruples
+  quadruplesIndex = len(quadruples.quadruples)
   funcDirec.addFunc(funcName, funcType)
+  funcDirec.addQuadrupleIndexToFunc(funcName,quadruplesIndex)
 
 # Al terminar de compilar una funcion, añade a su tabla de variables todas las variables globales guardadas, lo
 # cual es simplemente copiar la tabla de variables de la funcion global a la tabla de variables de la funcion actual
@@ -559,6 +575,8 @@ def p_sem_add_global_variables(p):
   '''
   SEM_ADD_GLOBAL_VARIABLES : 
   '''
+  global paramValueCounter
+  paramValueCounter = 0;
   funcDirec.addGlobalVariablesToFunc(funcName)
 
 #LAS SIGUIENTES REGLAS SOLO AÑADEN EL OPERADOR CORRESPONDIENTE A LA LISTA DE OPERADORES (NO DE OPERANDOS)
@@ -850,6 +868,7 @@ def p_sem_verify_param(p):
     global operandsList
     global paramsCallCounter
     global dirAddresses
+    global funcName
     
     funcCallFirm = funcDirec.getFunctionFirm(funcCall)
 
@@ -864,6 +883,7 @@ def p_sem_verify_param(p):
         print("Error: ", errorMessage)
       else:
         quadruples.addParamFuncQuadruple( param, paramsCallCounter)
+        funcDirec.addParamValueOfFunc(funcName, param.value)
         paramsCallCounter += 1
 
 def p_sem_reset_param_count(p):
