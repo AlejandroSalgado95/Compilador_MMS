@@ -282,6 +282,14 @@ class FuncDirec():
             return "Failed operation. Cannot get return type, function" + funcName +" not found"
 
 
+    def getVariablesTableOfFunc(self, funcName):
+        if funcName in self.directory:
+            return  self.directory[funcName]["varTable"]
+        else:
+            return "Failed operation. Cannot get variables table, function" + funcName +" not found"
+
+
+
     def printContents(self, varTableToo):
         for funcName,content in self.directory.items():
             print("Function name: " + funcName + ". Function type: " + content["funcType"])

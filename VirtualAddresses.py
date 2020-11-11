@@ -1,4 +1,4 @@
-
+from FunctionDirectory import VarTable
 class VirtualAdresses():
     def __init__(self,startVAddress,finalVAddress, tableName):
         self.table = {}
@@ -42,3 +42,17 @@ class VirtualAdresses():
     def deleteAllContent(self):
     	self.table = {}
     	self.actualVAddress = self.start
+
+    def deleteDataFromAddress(self,vAddress, arraySize):
+
+        if (arraySize == None):
+            self.table.pop( str(vAddress), None )
+            self.actualVAddress -= 1
+        else:
+            vAddressCounter = vAddress
+            while vAddressCounter < (vAddress + arraySize - 1 ):
+                self.table.pop(str(vAddressCounter), None)
+                vAddressCounter += 1
+            self.actualVAddress -= arraySize
+
+

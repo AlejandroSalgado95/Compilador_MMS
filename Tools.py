@@ -63,3 +63,20 @@ def determineAddressTableBasedOnVAdress(vAddress):
 		return "constChar"
 	elif (vAddress >= 16300 ) and (vAddress <= 16399):
 		return "constString"
+
+
+def deleteAddressesOfFunc(funcName, varTable, dirAddresses):
+	
+	for varName, contents in reversed(varTable.table.items()):
+		if (contents["scope"] != "global"):
+			vAddress = contents["vAddress"]
+			arraySize = None
+			if (contents["isArray"]):
+				arraySize =  contents["arraySize"]
+			ATname = determineAddressTableBasedOnVAdress(vAddress)
+			dirAddresses[ATname].deleteDataFromAddress(vAddress,arraySize);
+
+
+
+
+

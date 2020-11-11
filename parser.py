@@ -11,6 +11,7 @@ from SemanticCube import SC
 from Operand import Operand
 from VirtualAddresses import VirtualAdresses
 from Tools import determineTypeAddressTable
+from Tools import deleteAddressesOfFunc
 
 
 #python variables
@@ -76,7 +77,7 @@ def p_programa(p):
     global operandsList
     global errorQueue
     print("ACCEPTED")
-    #funcDirec.printContents(True)
+    funcDirec.printContents(True)
     quadruples.printContents()
     print("amount of cuadruples: " + str( len(quadruples.quadruples) ) )
     for operand in operandsList:
@@ -801,11 +802,14 @@ def p_sem_endfunc(p):
   global quadruples
   global dirAddresses
   global hasReturn 
+  global funcName
+  global funcDirec
 
   quadruples.addEndFuncQuadrupple()
-  for dirTableName in dirAddresses:
-    if not ( "global" in dirTableName) and not ("const" in dirTableName):
-      dirAddresses[dirTableName].deleteAllContent()
+
+  varsTable = funcDirec.getVariablesTableOfFunc(funcName)
+  deleteAddressesOfFunc(funcName,varsTable, dirAddresses)
+  #funcDirec.printContents(True)
 
   if  (funcDirec.getFuncReturnType(funcName) != "void") and (hasReturn == False):
       errorMessage = "Function " + funcName + " is expecting a return value of type " + funcType
