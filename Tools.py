@@ -76,7 +76,14 @@ def deleteAddressesOfFunc(funcName, varTable, dirAddresses):
 			ATname = determineAddressTableBasedOnVAdress(vAddress)
 			dirAddresses[ATname].deleteDataFromAddress(vAddress,arraySize);
 
-
-
+def determineMemoryChunkBasedOnName(ATname,constMemory,globalMemory,tempMemory):
+	if ("const" in ATname):
+		return constMemory
+	elif ("global" in ATname):
+		return globalMemory
+	elif ("temp" in ATname):
+		return tempMemory
+	elif ("local" in ATname):
+		return tempMemory
 
 

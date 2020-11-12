@@ -4,39 +4,80 @@ from parser import funcDirec
 from parser import quadruples
 from parser import dirAddresses
 from Tools import determineAddressTableBasedOnVAdress
+from Tools import determineMemoryChunkBasedOnName
+from EmptyTempMemoryInstantiator import EmptyTempMemoryInstantiator
 import turtle
 
 
 IP = quadruples.getQuadruple(0)[3]
+PendingIP = IP
 lastIP = len(quadruples.quadruples)
 pen = turtle.Turtle() 
 
+funcCalled = ""
+funcCalledIndexQuadruple = ""
+
+globalMemory = { 
+"globalInt" : dirAddresses["globalInt"],
+"globalFloat" : dirAddresses["globalFloat"],
+"globalChar" : dirAddresses["globalChar"]
+}
+
+constMemory = {
+"constInt" : dirAddresses["constInt"],
+"constFloat" : dirAddresses["constFloat"],
+"constChar" : dirAddresses["constChar"],
+"constString" : dirAddresses["constString"]
+}
+
+tempMemory = {
+#Variables locales
+"localInt" : dirAddresses["localInt"],
+"localFloat" : dirAddresses["localFloat"],
+"localChar" : dirAddresses["localChar"],
+#Resultados temporales
+"tempInt" : dirAddresses["tempInt"],
+"tempFloat" : dirAddresses["tempFloat"],
+"tempChar" : dirAddresses["tempChar"],
+"tempBool" : dirAddresses["tempBool"]
+}
+
+
+
+tempMemoryStack = []
+
+actualtempMemory = tempMemory
 
 while IP < len(quadruples.quadruples):
 	actualQuadruple = quadruples.getQuadruple(IP)
 	if (actualQuadruple[0] == '='):
 		op1VA = actualQuadruple[1].vAddress
 		op1TA = determineAddressTableBasedOnVAdress(op1VA)
-		op1Val = dirAddresses[op1TA].getAddressData(op1VA)["value"]  
+		memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
+		op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
 
 		asignOpVA = actualQuadruple[3].vAddress
 		asignOpType = actualQuadruple[3].type
 		asignOpTA = determineAddressTableBasedOnVAdress(asignOpVA)
-		dirAddresses[asignOpTA].saveAddressData(asignOpVA, op1Val, asignOpType)
+		memoryChunk2 =  determineMemoryChunkBasedOnName(asignOpTA,constMemory,globalMemory,actualtempMemory)
+		memoryChunk2[asignOpTA].saveAddressData(asignOpVA, op1Val, asignOpType)
 
 	elif (actualQuadruple[0] == '+'):
 		op1VA = actualQuadruple[1].vAddress
 		op2VA = actualQuadruple[2].vAddress
 		op1TA = determineAddressTableBasedOnVAdress(op1VA)
 		op2TA = determineAddressTableBasedOnVAdress(op2VA)
-		op1Val = dirAddresses[op1TA].getAddressData(op1VA)["value"]  
-		op2Val = dirAddresses[op2TA].getAddressData(op2VA)["value"]
+		memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
+		memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
+		op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+		op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]
 		resultValue = op1Val + op2Val
 
 		tempOperandVA = actualQuadruple[3].vAddress
 		tempOpType = actualQuadruple[3].type
 		tempOpAddressTable = determineAddressTableBasedOnVAdress(tempOperandVA)
-		dirAddresses[tempOpAddressTable].saveAddressData(tempOperandVA, resultValue, tempOpType)
+		memoryChunk3 = determineMemoryChunkBasedOnName(tempOpAddressTable,constMemory,globalMemory,actualtempMemory)
+		memoryChunk3[tempOpAddressTable].saveAddressData(tempOperandVA, resultValue, tempOpType)
 
 	elif (actualQuadruple[0] == '-'):
 		op1VA = actualQuadruple[1].vAddress
@@ -188,8 +229,10 @@ while IP < len(quadruples.quadruples):
 	elif (actualQuadruple[0] == "print"):
 		op1VA = actualQuadruple[3].vAddress
 		op1TA = determineAddressTableBasedOnVAdress(op1VA)
-		#print ("OP1TA: " + op1TA)
-		op1Val = dirAddresses[op1TA].getAddressData(op1VA)["value"]
+		memoryChunk1 = determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
+		#print(memoryChunk1)
+		op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
+		#op1Val = memoryChunk1[op1TA].getAddressData(op1VA)
 		print (str(op1Val)) 
 
 	elif (actualQuadruple[0] == "read"):
@@ -244,6 +287,43 @@ while IP < len(quadruples.quadruples):
 		op1TA = determineAddressTableBasedOnVAdress(op1VA)
 		size = dirAddresses[op1TA].getAddressData(op1VA)["value"]  
 		pen.pensize(size)
+
+	elif (actualQuadruple[0] == "era"):
+		funcCalled = actualQuadruple[1]
+		funcCalledIndexQuadruple = funcDirec.getQuadrupleIndexOfFunc(funcCalled)
+		tempMemoryStack.append(actualtempMemory)
+		actualtempMemory = EmptyTempMemoryInstantiator().InstateEmptyTempMemory()
+
+	elif (actualQuadruple[0] == "parameter"):
+		#Saca el address donde esta registrado el parametro como variable local de la funcion
+		paramName = actualQuadruple[3].name
+		paramNum = int(paramName[len(paramName)-1])
+		print("param num: " + str(paramNum))
+		paramAddressesList = funcDirec.getParamAddressesOfFunc(funcCalled)
+		print("param list: " + str(paramAddressesList))
+		actualParamAddress = paramAddressesList[paramNum]
+
+		#Saca el valor del parametro del operando
+		op2VA = actualQuadruple[3].vAddress
+		op2TA = determineAddressTableBasedOnVAdress(op2VA)
+		memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
+		paramNewValue = memoryChunk2[op2TA].getAddressData(op2VA)["value"]  
+
+		#Mete el valor dentro del address real del parametro 
+		op1TA = determineAddressTableBasedOnVAdress(actualParamAddress)
+		memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
+		memoryChunk1[op1TA].saveAddressData(actualParamAddress, paramNewValue, actualQuadruple[3].type)
+		print("Saving " + str(paramNewValue) + "in address " + str(actualParamAddress) )
+		print("Address saved in " + str(actualParamAddress) + " : " + str(memoryChunk1[op1TA].getAddressData(actualParamAddress)["value"]) )
+
+	elif (actualQuadruple[0] == "endfunc"):
+		retrievedTempMemoryChunk = tempMemoryStack.pop()
+		actualtempMemory = retrievedTempMemoryChunk
+		IP = PendingIP
+
+	elif (actualQuadruple[0] == "gosub"):
+		PendingIP = IP 
+		IP = funcCalledIndexQuadruple - 1
 
 
 	IP += 1

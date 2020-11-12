@@ -32,7 +32,6 @@ funcCall = ""
 pendingReturnOperand = ""
 hasReturn = False
 mustBeVoidCall = False
-paramValueCounter = 0;
 
 #Variables globales
 dirAddresses = {
@@ -108,8 +107,6 @@ def p_dec_v(p):
     DEC_V : DEC_V var  TIPO_SIMPLE ':' LISTA_VAR ';' 
             | var TIPO_SIMPLE ':' LISTA_VAR ';'
     '''
-    global paramValueCounter
-    paramValueCounter = 0;
 
  
 
@@ -170,18 +167,13 @@ def p_param_name(p):
   global funcDirec
   global varType
   global dirAddresses
-  global paramValueCounter
 
   scope = "local"
   varName = p[1]
   addressTableKey = determineTypeAddressTable(scope,varType,None,False)
   vAddress = dirAddresses[addressTableKey].getAnAddress()
   funcDirec.addLocalVariableToFunc(funcName, varName, varType , True, vAddress)
-
-  paramValues = funcDirec.getParamValuesOfFunc(funcName)
-  if (len(paramValues) > 0):
-    dirAddresses[addressTableKey].saveAddressData(vAddress, paramValues[paramValueCounter], varType)
-    paramValueCounter += 1
+  funcDirec.addParamAddressOfFunc(funcName, vAddress)
 
 
 
@@ -575,8 +567,6 @@ def p_sem_add_global_variables(p):
   '''
   SEM_ADD_GLOBAL_VARIABLES : 
   '''
-  global paramValueCounter
-  paramValueCounter = 0;
   funcDirec.addGlobalVariablesToFunc(funcName)
 
 #LAS SIGUIENTES REGLAS SOLO AÑADEN EL OPERADOR CORRESPONDIENTE A LA LISTA DE OPERADORES (NO DE OPERANDOS)
@@ -883,7 +873,7 @@ def p_sem_verify_param(p):
         print("Error: ", errorMessage)
       else:
         quadruples.addParamFuncQuadruple( param, paramsCallCounter)
-        funcDirec.addParamValueOfFunc(funcName, param.value)
+        funcDirec.addParamAddressOfFunc(funcCall, param.vAddress)
         paramsCallCounter += 1
 
 def p_sem_reset_param_count(p):

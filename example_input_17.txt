@@ -1,0 +1,40 @@
+program MeMyself;
+
+var int : i, j, p;
+var float : valor, yepei ;
+
+
+
+void module fact (int j)
+var int : cactus[5], pop;
+{	
+	i = i + 3;
+	write(i);
+	write(j);
+}
+
+int  module letsee (int j)
+var float : dai;
+{
+	return 3*4*j;
+}
+
+
+main ( )
+{ 
+	 i = 2;
+
+	 /fact(12);
+
+	 
+	 /fact(15);
+
+
+
+	 i = i + 3;
+
+	 write(i);
+
+
+
+}

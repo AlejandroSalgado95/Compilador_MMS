@@ -91,7 +91,7 @@ class FuncDirec():
                 "varTable": VarTable(),
                 "quadrupleIndex" : None,
                 "funcFirm" : [],
-                "paramsValuesStored": [],
+                "paramsAddresses": [],
                 "ParamsQ" : 0, 
                 "LIntQ" : 0,   
                 "LFloatQ" : 0, 
@@ -289,18 +289,18 @@ class FuncDirec():
         else:
             return "Failed operation. Cannot get variables table, function" + funcName +" not found"
 
-    def addParamValueOfFunc(self, funcName, paramValue):
+    def addParamAddressOfFunc(self, funcName, paramAddress):
         if funcName in self.directory:
-            self.directory[funcName]["paramsValuesStored"].append(paramValue)
+            self.directory[funcName]["paramsAddresses"].append(paramAddress)
         else:
-            return "Failed operation. Cannot add the param value, function" + funcName +" not found"
+            return "Failed operation. Cannot add the param address, function" + funcName +" not found"
 
 
-    def getParamValuesOfFunc(self,funcName):
+    def getParamAddressesOfFunc(self,funcName):
         if funcName in self.directory:
-            return  self.directory[funcName]["paramsValuesStored"]
+            return  self.directory[funcName]["paramsAddresses"]
         else:
-            return "Failed operation. Cannot retrieve the params values, function" + funcName +" not found"
+            return "Failed operation. Cannot retrieve the params addresses, function" + funcName +" not found"
 
     def addQuadrupleIndexToFunc(self,funcName,quadrupleIndex):
         if funcName in self.directory:
@@ -308,6 +308,11 @@ class FuncDirec():
         else:
             return "Failed operation. Cannot add quadruple index, function" + funcName +" not found"
 
+    def getQuadrupleIndexOfFunc(self, funcName):
+        if funcName in self.directory:
+            return self.directory[funcName]["quadrupleIndex"]
+        else:
+            return "Failed operation. Cannot get quadruple index, function" + funcName +" not found"
 
 
     def printContents(self, varTableToo):
