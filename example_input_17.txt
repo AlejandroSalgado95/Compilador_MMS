@@ -8,9 +8,21 @@ var float : valor, yepei ;
 void module fact (int j)
 var int : cactus[5], pop;
 {	
-	i = i + 3;
+	i = i / 3;
 	write(i);
 	write(j);
+}
+
+void module owow(int j)
+var int : wuat;
+{
+	wuat = 1;
+	write (wuat);
+}
+
+void module ohyeh()
+{
+	i = i + 1200;
 }
 
 int  module letsee (int j)
@@ -26,10 +38,11 @@ main ( )
 
 	 /fact(12);
 
-	 
+	 /owow(7);
+
 	 /fact(15);
 
-
+	 /ohyeh();
 
 	 i = i + 3;
 
