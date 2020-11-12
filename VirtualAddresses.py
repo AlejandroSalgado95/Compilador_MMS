@@ -9,25 +9,37 @@ class VirtualAdresses():
 
 
     def getAddressData(self,vAddress):
-
-        if (vAddress >= self.start) and (vAddress <= self.final):
-            if str(vAddress) in self.table:
-                return self.table[str(vAddress)]
+        if not (isinstance (vAddress,str)):
+            if (vAddress >= self.start) and (vAddress <= self.final):
+                if str(vAddress) in self.table:
+                    return self.table[str(vAddress)]
+                else:
+                    return "Failed operation. No data stored in vAddress " + str(vAddress) + " inside of vaddress table " + self.tableName
+            else: 
+                return "Failed operation. No vAddress " + str(vAddress) + " available in the range of this vaddress table: " + self.tableName
+        else:
+            if vAddress in self.table: 
+                return self.table[vAddress]
             else:
-                return "Failed operation. No data stored in vAddress " + str(vAddress) + " inside of vaddress table " + self.tableName
-        else: 
-            return "Failed operation. No vAddress " + str(vAddress) + " available in the range of this vaddress table: " + self.tableName
+                return "Failed operation. No vAddress " + vAddress + " available as the return value of " + vAddress
 
     def saveAddressData(self, vAddress, varValue, varType):
         
-        if (vAddress >= self.start) and (vAddress <= self.final):
+        if not (isinstance (vAddress,str)):
+            if (vAddress >= self.start) and (vAddress <= self.final):
+                self.table[str(vAddress)] = {
+                    "value" : varValue,
+                    "type" : varType 
+                 }
+            else:
+                return "Failed operation. No vAddress " + str(vAddress) + " available in the range of this vaddress table: " + self.tableName
+        
+        #se guardara el return de una funcion
+        else:
             self.table[str(vAddress)] = {
                 "value" : varValue,
                 "type" : varType 
              }
-        else: 
-            return "Failed operation. No vAddress " + str(vAddress) + " available in the range of this vaddress table: " + self.tableName
-
 
     def getAnAddress(self):
         self.actualVAddress += 1
