@@ -91,7 +91,12 @@ while IP < len(quadruples.quadruples):
 			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
-			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA) 
+			if (isinstance(op1Val,str)):
+				op1Val = previoustempMemory[op1TA].getAddressData(op1VA)["value"]
+			else:
+				op1Val = op1Val["value"]
+
 
 		if (op2TA == "isGlobalReturnValue"):
 			op2TA = determineGlobalMemoryChunkFromType(actualQuadruple[2].type)
@@ -99,7 +104,12 @@ while IP < len(quadruples.quadruples):
 			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]
 		else:
 			memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
-			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]  
+			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)
+			if (isinstance(op2Val,str)):
+				op2Val = previoustempMemory[op2TA].getAddressData(op2VA)["value"]
+			else:
+				op2Val = op2Val["value"]
+ 
 
 
 		resultValue = op1Val + op2Val
@@ -125,7 +135,12 @@ while IP < len(quadruples.quadruples):
 			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
-			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)  
+			if (isinstance(op1Val,str)):
+				op1Val = previoustempMemory[op1TA].getAddressData(op1VA)["value"]
+			else:
+				op1Val = op1Val["value"]
+
 
 		if (op2TA == "isGlobalReturnValue"):
 			op2TA = determineGlobalMemoryChunkFromType(actualQuadruple[2].type)
@@ -133,7 +148,12 @@ while IP < len(quadruples.quadruples):
 			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]
 		else:
 			memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
-			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]  
+			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)
+			if (isinstance(op2Val,str)):
+				op2Val = previoustempMemory[op2TA].getAddressData(op2VA)["value"]
+			else:
+				op2Val = op2Val["value"]
+
 
 		resultValue = op1Val - op2Val
 
@@ -158,7 +178,12 @@ while IP < len(quadruples.quadruples):
 			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
-			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)
+			if (isinstance(op1Val,str)):
+				op1Val = previoustempMemory[op1TA].getAddressData(op1VA)["value"]
+			else:
+				op1Val = op1Val["value"]
+
 
 		if (op2TA == "isGlobalReturnValue"):
 			op2TA = determineGlobalMemoryChunkFromType(actualQuadruple[2].type)
@@ -166,7 +191,13 @@ while IP < len(quadruples.quadruples):
 			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]
 		else:
 			memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
-			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]  
+			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)  
+			if (isinstance(op2Val,str)):
+				op2Val = previoustempMemory[op2TA].getAddressData(op2VA)["value"]
+			else:
+				op2Val = op2Val["value"]
+
+
 
 		resultValue = op1Val * op2Val
 
@@ -191,7 +222,11 @@ while IP < len(quadruples.quadruples):
 			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
-			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)
+			if (isinstance(op1Val,str)):
+				op1Val = previoustempMemory[op1TA].getAddressData(op1VA)["value"]
+			else:
+				op1Val = op1Val["value"]
 
 		if (op2TA == "isGlobalReturnValue"):
 			op2TA = determineGlobalMemoryChunkFromType(actualQuadruple[2].type)
@@ -199,7 +234,11 @@ while IP < len(quadruples.quadruples):
 			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]
 		else:
 			memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
-			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]  
+			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)
+			if (isinstance(op2Val,str)):
+				op2Val = previoustempMemory[op2TA].getAddressData(op2VA)["value"]
+			else:
+				op2Val = op2Val["value"] 
 
 		resultValue = ""
 
@@ -262,7 +301,11 @@ while IP < len(quadruples.quadruples):
 			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
-			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)
+			if (isinstance(op1Val,str)):
+				op1Val = previoustempMemory[op1TA].getAddressData(op1VA)["value"]
+			else:
+				op1Val = op1Val["value"]  
 
 		if (op2TA == "isGlobalReturnValue"):
 			op2TA = determineGlobalMemoryChunkFromType(actualQuadruple[2].type)
@@ -270,7 +313,11 @@ while IP < len(quadruples.quadruples):
 			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]
 		else:
 			memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
-			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]  
+			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)
+			if (isinstance(op2Val,str)):
+				op2Val = previoustempMemory[op2TA].getAddressData(op2VA)["value"]
+			else:
+				op2Val = op2Val["value"]
 
 		resultValue = op1Val < op2Val
 
@@ -295,15 +342,23 @@ while IP < len(quadruples.quadruples):
 			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
-			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA) 
+			if (isinstance(op1Val,str)):
+				op1Val = previoustempMemory[op1TA].getAddressData(op1VA)["value"]
+			else:
+				op1Val = op1Val["value"]
 
 		if (op2TA == "isGlobalReturnValue"):
 			op2TA = determineGlobalMemoryChunkFromType(actualQuadruple[2].type)
 			memoryChunk2 = globalMemory
-			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]
+			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)
 		else:
 			memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
-			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]  
+			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)  
+			if (isinstance(op2Val,str)):
+				op2Val = previoustempMemory[op2TA].getAddressData(op2VA)["value"]
+			else:
+				op2Val = op2Val["value"]
 
 		resultValue = op1Val == op2Val
 
@@ -328,7 +383,11 @@ while IP < len(quadruples.quadruples):
 			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
-			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)
+			if (isinstance(op1Val,str)):
+				op1Val = previoustempMemory[op1TA].getAddressData(op1VA)["value"]
+			else:
+				op1Val = op1Val["value"] 
 
 		if (op2TA == "isGlobalReturnValue"):
 			op2TA = determineGlobalMemoryChunkFromType(actualQuadruple[2].type)
@@ -336,7 +395,11 @@ while IP < len(quadruples.quadruples):
 			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]
 		else:
 			memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
-			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]  
+			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)
+			if (isinstance(op2Val,str)):
+				op2Val = previoustempMemory[op2TA].getAddressData(op2VA)["value"]
+			else:
+				op2Val = op2Val["value"]
 
 		resultValue = op1Val != op2Val
 
@@ -362,7 +425,11 @@ while IP < len(quadruples.quadruples):
 			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
-			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)
+			if (isinstance(op1Val,str)):
+				op1Val = previoustempMemory[op1TA].getAddressData(op1VA)["value"]
+			else:
+				op1Val = op1Val["value"] 
 
 		if (op2TA == "isGlobalReturnValue"):
 			op2TA = determineGlobalMemoryChunkFromType(actualQuadruple[2].type)
@@ -370,7 +437,11 @@ while IP < len(quadruples.quadruples):
 			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]
 		else:
 			memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
-			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]  
+			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)
+			if (isinstance(op2Val,str)):
+				op2Val = previoustempMemory[op2TA].getAddressData(op2VA)["value"]
+			else:
+				op2Val = op2Val["value"] 
 
 		resultValue = op1Val and op2Val
 
@@ -395,7 +466,12 @@ while IP < len(quadruples.quadruples):
 			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
-			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)
+			if (isinstance(op1Val,str)):
+				op1Val = previoustempMemory[op1TA].getAddressData(op1VA)["value"]
+			else:
+				op1Val = op1Val["value"]
+
 
 		if (op2TA == "isGlobalReturnValue"):
 			op2TA = determineGlobalMemoryChunkFromType(actualQuadruple[2].type)
@@ -403,7 +479,11 @@ while IP < len(quadruples.quadruples):
 			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]
 		else:
 			memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
-			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)["value"]  
+			op2Val = memoryChunk2[op2TA].getAddressData(op2VA)
+			if (isinstance(op2Val,str)):
+				op2Val = previoustempMemory[op2TA].getAddressData(op2VA)["value"]
+			else:
+				op2Val = op2Val["value"] 
 
 		resultValue = op1Val or op2Val
 
@@ -553,6 +633,7 @@ while IP < len(quadruples.quadruples):
 			memoryChunk1 = globalMemory
 			returnValue = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
 			returnType = memoryChunk1[op1TA].getAddressData(op1VA)["type"]
+
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
 			returnValue = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
@@ -606,7 +687,7 @@ while IP < len(quadruples.quadruples):
 			else:
 				paramNewValue = paramNewValue["value"]
 
-
+		#print("New param value:" , paramNewValue)
 
 		#Mete el valor dentro del address real del parametro 
 		op1TA = determineAddressTableBasedOnVAdress(actualParamAddress)

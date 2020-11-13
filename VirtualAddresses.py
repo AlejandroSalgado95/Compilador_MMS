@@ -36,10 +36,18 @@ class VirtualAdresses():
         
         #se guardara el return de una funcion
         else:
-            self.table[str(vAddress)] = {
-                "value" : varValue,
-                "type" : varType 
-             }
+            '''
+            if not vAddress in self.table
+                self.table[str(vAddress)] = { "returnStack" : []}
+                self.table[str(vAddress)]["returnStack"].append((varValue,varType))
+            else:
+                self.table[str(vAddress)]["returnStack"].append((varValue,varType))
+            '''
+            if not vAddress in self.table:
+                self.table[str(vAddress)] = { "value" : varValue, "type": varType }
+            else:
+                self.table[str(vAddress)]["value"] = varValue
+                self.table[str(vAddress)]["type"] = varType
 
     def getAnAddress(self):
         self.actualVAddress += 1
