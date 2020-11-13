@@ -584,7 +584,6 @@ def p_sem_add_minus(p):
   '''
   global operatorsList
   operatorsList.append("-")
-  print
 
 def p_sem_add_times(p):
   '''
@@ -863,8 +862,8 @@ def p_sem_verify_param(p):
     funcCallFirm = funcDirec.getFunctionFirm(funcCall)
 
     if isinstance(funcCallFirm, str):
-        errorQueue.append("Error: " + result)
-        print("Error: ", result)
+        errorQueue.append("Error: " + funcCallFirm)
+        print("Error: ", funcCallFirm)
     else:
       param = operandsList.pop()
       if param.type != funcCallFirm[paramsCallCounter]:

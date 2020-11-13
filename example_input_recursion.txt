@@ -1,0 +1,21 @@
+program equis;
+var int : numero, i, cantidad;
+
+void module sumRecursively(int n){
+    if(n == 0)  then {
+        write (cantidad) ;
+    }
+    else{
+        write (cantidad);
+        cantidad = cantidad + n;
+        /sumRecursively(n-1);
+    }
+}
+
+
+main(){
+    cantidad = 1;
+    read(numero);
+    /sumRecursively(numero);
+    write(i);
+}

@@ -1,0 +1,27 @@
+program MeMyself;
+
+var int : i, j, p, k, o;
+var float : valor ;
+
+
+int module nobois (int nopues)
+var int : vaspues;
+{
+	return nopues * 3;
+}
+
+int module fact (int wop)
+var int : nou;
+{
+	
+	nou = 3 + wop;
+	return nobois(nou);
+}
+
+
+main ( )
+{ 
+
+	i = fact (5);
+	write (i);
+}
