@@ -656,7 +656,7 @@ while IP < len(quadruples.quadruples):
 	elif (actualQuadruple[0] == "era"):
 		funcCalled = actualQuadruple[1]
 		funcCallStack.append(funcCalled)
-		print(funcCallStack)
+		#print(funcCallStack)
 		funcCalledIndexQuadruple = funcDirec.getQuadrupleIndexOfFunc(funcCalled)
 		tempMemoryStack.append(actualtempMemory)
 		previoustempMemory = actualtempMemory
