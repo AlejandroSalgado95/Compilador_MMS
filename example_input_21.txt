@@ -15,6 +15,7 @@ var int : nou;
 {
 	
 	nou = 3 + wop;
+	write("value of nou is ",nou);
 	return nobois(nou);
 }
 

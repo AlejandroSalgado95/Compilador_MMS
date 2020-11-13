@@ -46,12 +46,15 @@ tempMemory = {
 
 
 tempMemoryStack = []
+funcCallStack = []
 
 actualtempMemory = tempMemory
+previoustempMemory = ""
 
 while IP < len(quadruples.quadruples):
 	actualQuadruple = quadruples.getQuadruple(IP)
 	if (actualQuadruple[0] == '='):
+
 		op1VA = actualQuadruple[1].vAddress
 		op1TA = determineAddressTableBasedOnVAdress(op1VA)
 		memoryChunk1 = ""
@@ -563,6 +566,7 @@ while IP < len(quadruples.quadruples):
 			typeOfGMemory = "globalChar"
 		elif (returnType == "float"):
 			typeOfGMemory = "globalFloat"
+
 		globalMemory[typeOfGMemory].saveAddressData(funcCalled, returnValue, returnType)
 
 
@@ -570,8 +574,11 @@ while IP < len(quadruples.quadruples):
 
 	elif (actualQuadruple[0] == "era"):
 		funcCalled = actualQuadruple[1]
+		funcCallStack.append(funcCalled)
+		print(funcCallStack)
 		funcCalledIndexQuadruple = funcDirec.getQuadrupleIndexOfFunc(funcCalled)
 		tempMemoryStack.append(actualtempMemory)
+		previoustempMemory = actualtempMemory
 		actualtempMemory = EmptyTempMemoryInstantiator().InstateEmptyTempMemory()
 
 	elif (actualQuadruple[0] == "parameter"):
@@ -591,9 +598,15 @@ while IP < len(quadruples.quadruples):
 			memoryChunk2 = globalMemory
 			paramNewValue = memoryChunk2[op2TA].getAddressData(op2VA)["value"]
 		else:
-			print ("IP: ", IP)
 			memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
-			paramNewValue = memoryChunk2[op2TA].getAddressData(op2VA)["value"]  
+			paramNewValue = memoryChunk2[op2TA].getAddressData(op2VA)
+			#es un id local que se quedo en la memoria anterior, antes de hacer la llamada a la nueva funcion y crear otra tabla de temporales y locales
+			if (isinstance(paramNewValue,str)):
+				paramNewValue = previoustempMemory[op2TA].getAddressData(op2VA)["value"]
+			else:
+				paramNewValue = paramNewValue["value"]
+
+
 
 		#Mete el valor dentro del address real del parametro 
 		op1TA = determineAddressTableBasedOnVAdress(actualParamAddress)
@@ -606,11 +619,13 @@ while IP < len(quadruples.quadruples):
 		retrievedTempMemoryChunk = tempMemoryStack.pop()
 		actualtempMemory = retrievedTempMemoryChunk
 		IP = PendingIPList.pop()
+		funcCallStack.pop()
+		if (len(funcCallStack) > 0):
+			funcCalled = funcCallStack[-1]
 
 	elif (actualQuadruple[0] == "gosub"):
 		PendingIPList.append(IP) 
 		IP = funcCalledIndexQuadruple - 1
-		tempMemoryStack.append(actualtempMemory)
 
 
 	IP += 1
