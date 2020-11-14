@@ -511,6 +511,24 @@ while IP < len(quadruples.quadruples):
 			IP = newIP -1
 
 
+	elif (actualQuadruple[0] == "gotoV"):
+		newIP = actualQuadruple[3]
+		op1VA = actualQuadruple[1].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		memoryChunk1 = ""
+		op1Val = ""
+		if (op1TA == "isGlobalReturnValue"):
+			op1TA = determineGlobalMemoryChunkFromType(actualQuadruple[1].type)
+			memoryChunk1 = globalMemory
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
+		else:
+			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+
+		if (op1Val == True):
+			IP = newIP -1
+
+
 	elif (actualQuadruple[0] == "goto"):
 		newIP = actualQuadruple[3]
 		IP = newIP -1
