@@ -19,7 +19,7 @@ class VirtualAdresses():
                 return "Failed operation. No vAddress " + str(vAddress) + " available in the range of this vaddress table: " + self.tableName
         else:
             if vAddress in self.table: 
-                return self.table[vAddress]
+                return self.table[vAddress].pop(0)
             else:
                 return "Failed operation. No vAddress " + vAddress + " available as the return value of " + vAddress
 
@@ -44,10 +44,9 @@ class VirtualAdresses():
                 self.table[str(vAddress)]["returnStack"].append((varValue,varType))
             '''
             if not vAddress in self.table:
-                self.table[str(vAddress)] = { "value" : varValue, "type": varType }
+                self.table[str(vAddress)] = [{ "value" : varValue, "type": varType }]
             else:
-                self.table[str(vAddress)]["value"] = varValue
-                self.table[str(vAddress)]["type"] = varType
+                self.table[str(vAddress)].append({"value" : varValue, "type" : varType})
 
     def getAnAddress(self):
         self.actualVAddress += 1

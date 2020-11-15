@@ -45,8 +45,6 @@ This release performs:
 * So far there is no unary operator ‘-‘, only its binary version is available (subtraction operation)
 
 ### Bugs:
-* Consecutive calls to the same non void function provides the wrong result since the second function call overwrites the value of the first function call in a binary operation (+,-,/,etc) because the operands addresses
-are exactly the same (the name of the function. So, in order to avoid this, consecutive calls can be done like this: a = example(4) + 0 + example (5); the former will provide the right result, whereas something like: a = example(4) + example (5) would provide the wrong result, since the second call would overwrite the result of the first call, and it would end up being the sum of just the second call plus the second call.
 * Unary operator - is not available, in order to specify a negative number you must do it like this: i = 0 - 5 (to provide -5 as value) instead of i = -5
 * Due to ambiguity issues, a "/" must be added in order to call functions as statements (void functions that is) rather than expressions (non void functions that is), for example: /example(5)
 
