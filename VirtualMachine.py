@@ -17,6 +17,7 @@ pen = turtle.Turtle()
 
 funcCalled = ""
 funcCalledIndexQuadruple = ""
+penIsUp = False
 
 globalMemory = { 
 "globalInt" : dirAddresses["globalInt"],
@@ -609,11 +610,124 @@ while IP < len(quadruples.quadruples):
 		radius = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
 		pen.circle(radius)
 
+
+	elif (actualQuadruple[0] == "line"):
+		point1 = actualQuadruple[1]
+		point2 = actualQuadruple[2]
+
+		op1VA = point1.vAddress[0]
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		memoryChunk1 = ""
+		x1 = ""
+		if (op1TA == "isGlobalReturnValue"):
+			op1TA = determineGlobalMemoryChunkFromType(point1.type[0])
+			memoryChunk1 = globalMemory
+			x1 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
+		else:
+			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
+			x1 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+
+		x1 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+
+
+
+		op1VA = point1.vAddress[1]
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		memoryChunk1 = ""
+		y1 = ""
+		if (op1TA == "isGlobalReturnValue"):
+			op1TA = determineGlobalMemoryChunkFromType(point1.type[1])
+			memoryChunk1 = globalMemory
+			y1 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
+		else:
+			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
+			y1 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+
+		y1 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+
+
+
+		op1VA = point2.vAddress[0]
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		memoryChunk1 = ""
+		x2 = ""
+		if (op1TA == "isGlobalReturnValue"):
+			op1TA = determineGlobalMemoryChunkFromType(point2.type[0])
+			memoryChunk1 = globalMemory
+			x2 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
+		else:
+			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
+			x2 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+
+		x2 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+
+
+
+		op1VA = point2.vAddress[1]
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		memoryChunk1 = ""
+		y2 = ""
+		if (op1TA == "isGlobalReturnValue"):
+			op1TA = determineGlobalMemoryChunkFromType(point2.type[1])
+			memoryChunk1 = globalMemory
+			y2 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
+		else:
+			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
+			y2 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+
+		y2 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+
+		pen.up()
+		pen.home()
+		pen.goto(x1,y1)
+		if (penIsUp):
+			pen.up()
+		else:
+			pen.down()
+		pen.goto(x2,y2)
+
+	
+	elif (actualQuadruple[0] == "arc"):
+		op1VA = actualQuadruple[1].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		memoryChunk1 = ""
+		radius = ""
+		if (op1TA == "isGlobalReturnValue"):
+			op1TA = determineGlobalMemoryChunkFromType(actualQuadruple[1].type)
+			memoryChunk1 = globalMemory
+			radius = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
+		else:
+			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
+			radius = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+		
+		radius = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+
+
+		op1VA = actualQuadruple[2].vAddress
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		memoryChunk1 = ""
+		angle = ""
+		if (op1TA == "isGlobalReturnValue"):
+			op1TA = determineGlobalMemoryChunkFromType(actualQuadruple[2].type)
+			memoryChunk1 = globalMemory
+			angle = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
+		else:
+			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
+			angle = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+
+		angle = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+
+		pen.circle(radius,angle)
+
+
+
 	elif (actualQuadruple[0] == "penup"):
 		pen.penup()
+		penIsUp = True
 
 	elif (actualQuadruple[0] == "pendown"):
 		pen.pendown()
+		penIsUp = False
 
 	elif (actualQuadruple[0] == "color"):
 		op1VA = actualQuadruple[1].vAddress

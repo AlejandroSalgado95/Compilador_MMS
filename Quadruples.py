@@ -127,6 +127,12 @@ class Quadruples():
     def addDrawCircleQuadruple(self,radiusOperand):
         self.quadruples.append(("circle",radiusOperand,None,None))
 
+    def addDrawLineCuadruple(self,point1,point2):
+        self.quadruples.append(("line",point1,point2,None))
+
+    def addDrawArcQuadruple(self, radiusOperand, angleOperand):
+        self.quadruples.append(("arc",radiusOperand,angleOperand,None))
+
     def addPenupQuadruple(self):
         self.quadruples.append(("penup",None,None,None))
 

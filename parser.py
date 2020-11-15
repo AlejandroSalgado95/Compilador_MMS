@@ -466,6 +466,8 @@ def p_llamada_bi(p):
                  | COLOR 
                  | SIZE 
                  | CLEAR
+                 | LINE
+                 | ARC       
     '''
 
 def p_clear(p):
@@ -481,6 +483,16 @@ def p_point(p):
 def p_circle(p):
     '''
     CIRCLE : circle '(' EXPRESION ')' DRAW_CIRCLE
+    '''
+
+def p_line(p):
+    '''
+    LINE : line '(' EXPRESION ',' EXPRESION ',' EXPRESION ',' EXPRESION ')' DRAW_LINE
+    '''
+
+def p_arc(p):
+    '''
+    ARC : arc '(' EXPRESION ',' EXPRESION ')' DRAW_ARC
     '''
 
 def p_penup(p):
@@ -1166,6 +1178,40 @@ def p_draw_circle(p):
     print("Error: " + "Failed operation, int or float type parameter expected. " + radiusOperand.type + " was provided.")
   else:
     quadruples.addDrawCircleQuadruple(radiusOperand)
+
+
+def p_draw_line(p):
+  '''
+  DRAW_LINE :
+  '''
+  global operandsList
+  global quadruples
+  y2 = operandsList.pop()
+  x2 = operandsList.pop()
+  y1 = operandsList.pop()
+  x1 = operandsList.pop()
+  point1 = Operand("point1",(x1.value,y1.value),(x1.type,y1.type),(x1.vAddress,y1.vAddress))
+  point2 = Operand("point2",(x2.value,y2.value),(x2.type,y2.type),(x2.vAddress,y2.vAddress))
+  if ((y2.type != "int") and (y2.type != "float")) or ((x2.type != "int") and (x2.type != "float")) or ((y1.type != "int") and (y1.type != "float")) or ((x1.type != "int") and (x1.type != "float"))  :
+    errorQueue.append("Error: " + "Failed operation, int or float type parameters expected.")
+    print("Error: " + "Failed operation, int or float type parameters expected. " )
+  else:
+    quadruples.addDrawLineCuadruple(point1,point2)
+
+def p_draw_arc(p):
+  '''
+  DRAW_ARC :
+  '''
+  global operandsList
+  global quadruples
+  angleOperand = operandsList.pop()
+  radiusOperand = operandsList.pop()
+  if ((angleOperand.type != "int") and (angleOperand.type != "float")) or ((radiusOperand.type != "int") and (radiusOperand.type != "float")):
+    errorQueue.append("Error: " + "Failed operation, int or float type parameters expected. " )
+    print("Error: " + "Failed operation, int or float type parameter expected. ")
+  else:
+    quadruples.addDrawArcQuadruple(radiusOperand, angleOperand)
+
 
 def p_do_penup(p):
   '''

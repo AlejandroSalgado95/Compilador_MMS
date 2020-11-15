@@ -13,7 +13,16 @@ main ( )
 	pendown();
 	color("red");
 	circle(40.5);
+	size(5);
+	line(5,12,78,180);
 	clear();
+	line(5,12,78,180);
+	clear();
+	penup();
+	point(0,0);
+	pendown();
+	arc(50,170);
+
 
 	j[2] = 320;
 

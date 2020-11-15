@@ -35,7 +35,9 @@ reserved = {
 'pendown' : 'pendown',
 'color' : 'color',
 'size' : 'size',
-'global' : 'global'
+'global' : 'global',
+"line" : "line",
+"arc" : "arc"
 
 }
 
