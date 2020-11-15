@@ -38,10 +38,10 @@ This release performs:
 * Source code (virtualmachine.py) for the virtual machine that interprets the quadruples actions
 * Source code (tools.py) for a file that contains a repertory of functions used many times, used for the author in order to avoid rewriting his own code many times 
 * Source code (operand.py) used for the operands included within each generated quadruple
+* Source code (EmtpyTempMemoryInstance.py) used for instanciating new temporal memory
 
 
 ### Pending:
-* Everything related to the special function ARC  is pending (tokenization, rules, code,etc.)
 * So far there is no unary operator ‘-‘, only its binary version is available (subtraction operation)
 
 ### Bugs:
