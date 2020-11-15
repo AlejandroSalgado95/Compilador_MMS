@@ -1,0 +1,38 @@
+program MeMyself;
+
+var int : i, j, p, k, o;
+var float : valor ;
+
+
+int module nobois (int nopues)
+var int : vaspues;
+{
+	return nopues * 3;
+}
+
+int module fact (int wop)
+var int : nou;
+{
+	
+	nou = 3 + wop;
+	write("value of nou is ",nou);
+	return nobois(nou);
+}
+
+
+main ( )
+{ 
+	  p = 1;
+
+	  for j = 1 to j > 3 do {
+
+	  	p = p + 2;
+	  	k = nobois(2) + 0 + nobois(3) ;
+	  	j = j + 1;
+
+
+	  }
+
+	  write(p);
+	  write(k);
+}

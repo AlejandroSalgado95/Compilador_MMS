@@ -1,0 +1,69 @@
+program MeMyself;
+
+var int : i, j, p;
+var float : valor, yepei ;
+
+
+
+int module fact (int j)
+var int : pop;
+{
+	return  1+2;
+}
+
+int module faceless (int h)
+var int : popa[10], wenas;
+{
+	return  h + 10;
+}
+
+void module snip()
+var int : nopusok[5],sobresitos;
+{
+	
+	p = 2;
+	j = 3;
+}
+
+int  module letsee (int j)
+var float : dai;
+{
+	return 2*j;
+}
+
+
+main ( )
+{ 	
+	 i = letsee(2+2) + 2 + letsee(1) + letsee(1) + letsee(2);
+	 write(i);
+	 j = faceless(12) + i + faceless(5) + letsee(2);
+	 write(j);
+	 j = faceless(12) + faceless(1);
+	 write(j);
+	 j = 2 + faceless(5);
+	 write(j);
+	 j = faceless(5) - 2 ;
+	 write(j);
+	 j =  2 * faceless(0) ;
+	 write(j);
+	 j =  100 / faceless(0) ;
+	 write(j);
+	 write (faceless(120));
+	 write (faceless(10) > 9);
+	 write(faceless(10) < 9);
+	 write(faceless(10) == 9);
+	 write (faceless(10) != 9);
+	 write ((faceless(10) == 9) || (faceless(10) != 9));
+	 write ((faceless(10) != 9) && (faceless(10 ) != 9));
+
+	 if (faceless(10) != 9) then {
+
+	 	write("well it got in");
+	 }
+
+
+
+
+
+
+}

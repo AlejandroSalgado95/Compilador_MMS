@@ -11,16 +11,34 @@ var int : pop;
 	return  1+2;
 }
 
+int module faceless (int h)
+var int : popa;
+{
+	return  popa;
+}
+
+void module snip()
+{
+	
+	j = 2;
+}
+
 int  module letsee (int j)
 var float : dai;
 {
-	 return  3*4*j;
+	return 3*4*j;
 }
+
 
 main ( )
 { 
-	
-	 /letsee(3*2);
+	 i = letsee(2+2) + 2 ;
+
+	 j = faceless(i+j);
+
+	 /snip();
+
+	 write("hola",3+3,"comostas",2+2);
 
 	if (2>1) then {
 	 

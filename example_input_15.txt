@@ -1,0 +1,47 @@
+program MeMyself;
+
+var int : i, j[10], p;
+var float : valor, yepei ;
+
+
+
+main ( )
+{ 
+	penup();
+	size(15);
+	point(30.5,30.5);
+	pendown();
+	color("red");
+	circle(40.5);
+	size(5);
+	line(5,12,78,180);
+	clear();
+	line(5,12,78,180);
+	clear();
+	penup();
+	point(0,0);
+	pendown();
+	arc(50,170);
+
+
+	j[2] = 320;
+
+	write(j[2]);
+
+	if (j[2] > 3) then {
+
+		write("paso dentro del if");
+		j[3] = 210;
+		write (j[3]);
+		read(j[3]);
+		write (j[2] + j[3]);
+
+
+	} else {
+
+		write ("paso afuera del if, osea en el else");
+
+	}
+
+
+}

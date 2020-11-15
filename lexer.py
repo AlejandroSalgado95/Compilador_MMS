@@ -35,7 +35,9 @@ reserved = {
 'pendown' : 'pendown',
 'color' : 'color',
 'size' : 'size',
-'global' : 'global'
+'global' : 'global',
+"line" : "line",
+"arc" : "arc"
 
 }
 
@@ -83,7 +85,7 @@ def t_cte_c(t):
     return t
 
 def t_cte_s(t):
-    r' (\“[a-zA-z_0-9]*\”) | (\"[a-zA-z_0-9]*\")'
+    r' (\“[a-zA-z_0-9\s\,\=]*\”) | (\"[a-zA-z_0-9\s\,\=]*\")'
     t.value = str(t.value)
     return t
 

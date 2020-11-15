@@ -32,7 +32,7 @@ var float : dai;
 
 main ( )
 { 
-	 i = letsee() + 2 ;
+	 i = letsee(2+2) + 2 ;
 
 	 j = faceless(i+j);
 
