@@ -27,7 +27,7 @@ main ( )
 	  for j = 1 to j > 3 do {
 
 	  	p = p + 2;
-	  	k = nobois(2) + 0 + nobois(3) ;
+	  	k = nobois(2) + nobois(3) ;
 	  	j = j + 1;
 
 

@@ -32,6 +32,7 @@ funcCall = ""
 pendingReturnOperand = ""
 hasReturn = False
 mustBeVoidCall = False
+idForArray = ""
 
 #Variables globales
 dirAddresses = {
@@ -258,39 +259,78 @@ def p_sem_id_for_array(p):
   '''
   SEM_ID_FOR_ARRAY : id
   '''
-  global varName
-  varName = p[1]
+  global idForArray
+  idForArray = p[1]
 
 
 def p_sem_check_array(p):
   '''  
   SEM_CHECK_ARRAY : 
   '''
-  global varName
+  global idForArray
   global funcDirec
   global operandsList
+  global operatorsList
   global funcDirec
   global dirAddresses
   global funcName
+  global quadruples
   
   #checa si existe el arreglo
-  retrievedArrayData = funcDirec.getVariableInFunc(funcName, varName)
+  retrievedArrayData = funcDirec.getVariableInFunc(funcName, idForArray)
   if isinstance(retrievedArrayData, str):
       errorQueue.append("Error: " + retrievedArrayData)
       print("Error: ", retrievedArrayData)
+  elif not retrievedArrayData["isArray"]:
+      errorQueue.append("Error: Failed operation. " + "variable " + idForArray + " is not an array")
+      print("Error: Failed operation. " + "variable " + idForArray + " is not an array")
   else:
     arrayIndexExpression = operandsList.pop()
-    actualAddress = retrievedArrayData["vAddress"] + arrayIndexExpression.value
+    #print (arrayIndexExpression.value)
+    #print (arrayIndexExpression.type)
+    
+
     #checa que el index del arreglo sea tipo int
     if arrayIndexExpression.type != "int":
-      errorQueue.append("Error: Failed operation. Int type index expected for array " + varName + ". " + arrayIndexExpression.type + "type was received instead.")
+      errorQueue.append("Error: Failed operation. Int type index expected for array " + idForArray + ". " + arrayIndexExpression.type + "type was received instead.")
       print("Error: ", retrievedVar)
-    #checa que el index tipo int del arreglo se encuentre en el rango de direcciones validas para el arreglo
-    elif (actualAddress < retrievedArrayData["vAddress"]) or (actualAddress > retrievedArrayData["sLimit"]):  
-      errorQueue.append("Error: Failed operation. Index " + arrayIndexExpression.value + " is out of bounds for array " + varname  )
-      print("Error: ", retrievedVar)
+    
+    #si ya recibi un index que es una constante
+    if isinstance(arrayIndexExpression.value,int):
+      actualAddress = retrievedArrayData["vAddress"] + arrayIndexExpression.value
+      #checa que el index tipo int del arreglo se encuentre en el rango de direcciones validas para el arreglo
+      if (actualAddress < retrievedArrayData["vAddress"]) or (actualAddress > retrievedArrayData["sLimit"]):  
+        errorQueue.append("Error: Failed operation. Index " + arrayIndexExpression.value + " is out of bounds for array " + idForArray  )
+        print("Error: ", retrievedVar)
+      else:
+        operandsList.append(Operand(idForArray,None,retrievedArrayData["varType"],actualAddress))
+     
+      #oh sorpresa, el index es una expresion cuyo valor solo se puede conocer en ejecucion, por lo tanto no sabemos el address del arreglo
     else:
-      operandsList.append( Operand(varName, None, retrievedArrayData["varType"], actualAddress) )
+
+      addressTableKey = determineTypeAddressTable(None,"int",retrievedArrayData["vAddress"],None)
+      vAddress = dirAddresses[addressTableKey].getAnAddress()
+      dirAddresses[addressTableKey].saveAddressData(vAddress, retrievedArrayData["vAddress"], "int")
+      
+      baseAddressOperand = Operand(None, retrievedArrayData["vAddress"], "int", vAddress)
+      realAdressOperand = quadruples.addExpressionCuadruple("+", baseAddressOperand , arrayIndexExpression, dirAddresses)
+      funcDirec.addTempVarCountInFunc(funcName,realAdressOperand.type)
+      #baseArrayInfo = Operand(idForArray, None, retrievedArrayData["varType"],retrievedArrayData["vAddress"])
+      #resultOperand = quadruples.addArrayIndexCuadruple(baseArrayInfo,realAdressOperand)
+      resultOperand = Operand(idForArray,funcName,retrievedArrayData["varType"], realAdressOperand.vAddress)
+      resultOperand.fakeAddress = realAdressOperand.vAddress
+      quadruples.addArrayIndexCuadruple(resultOperand)
+      copyResultOperand = Operand(resultOperand.name,resultOperand.value,resultOperand.type,resultOperand.vAddress)
+      copyResultOperand.fakeAddress = realAdressOperand.vAddress
+      operandsList.append(copyResultOperand)
+
+
+      #baseArrayInfo = Operand(arrayIndexExpression, None, retrievedArrayData["varType"],retrievedArrayData["vAddress"])
+      #quadruples.addEvualuateArrayIndexQuadruple(baseArrayInfo,arrayIndexExpression,retrievedArrayData)
+      #operandsList.append(baseArrayInfo)
+
+
+
 
 
 
@@ -374,6 +414,7 @@ def p_cte(p):
     CTE : cte_i 
          | cte_f 
          | cte_c
+         | null
     '''
     global cteValue
     global cteType
@@ -387,6 +428,10 @@ def p_cte(p):
       cteType = "int"
     elif isinstance(p[1],float):
       cteType = "float"
+
+    elif p[1] == "null":
+      cteType = "string"
+
     elif isinstance(p[1],str):
       cteType = "char"
 
@@ -394,8 +439,12 @@ def p_cte(p):
     vAddress = dirAddresses[addressTableKey].getAnAddress()
     dirAddresses[addressTableKey].saveAddressData(vAddress, cteValue, cteType)
     #print (str(vAddress) + " : " + str(dirAddresses[addressTableKey].getAddressData(vAddress)["value"]))
+    if p[1] == "null":
+      cteType = "null"
+
     consOperand = Operand(None, cteValue, cteType, vAddress)
     operandsList.append( consOperand )
+
     
 
 
@@ -1107,6 +1156,10 @@ def p_sem_pending_rel_op(p):
     topOp = operatorsList.pop()
     rOperand = operandsList.pop()
     lOperand = operandsList.pop()
+
+    print (str(rOperand.value) + ", " + str(rOperand.type))
+    print (str(lOperand.value) + ", " + str(lOperand.type))
+
     resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand,dirAddresses )
     if isinstance(resultOperand,str):
       errorQueue.append("Error: " + resultOperand)

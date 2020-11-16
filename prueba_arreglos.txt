@@ -1,0 +1,24 @@
+program foreveralone;
+var int : numero, index, sum, valores[10];
+
+main(){
+	
+	valores[7] = 5;
+	index = 0-1;
+	
+	for numero = 0 to numero > 9 do {
+
+		if (valores[numero] != null) then {
+
+			if (valores[numero] == 5) then {
+				index = numero;
+			}
+		}
+
+		numero = numero + 1;
+		write(valores[7]);
+	}
+
+	write(index);
+
+}

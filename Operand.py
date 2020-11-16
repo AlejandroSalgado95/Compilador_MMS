@@ -4,3 +4,4 @@ class Operand():
         self.value = oValue
         self.type = oType
         self.vAddress = oVAddress
+        self.fakeAddress = ""

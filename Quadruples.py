@@ -148,6 +148,13 @@ class Quadruples():
     def addSizeQuadruple(self, sizeOperand):
         self.quadruples.append(("size",sizeOperand,None,None))
 
+    def addArrayIndexCuadruple(self,resultOperand):
+        self.quadruples.append(("arrayindex",resultOperand,None,None))
+
+    def updateQuadruple(self,index,newQuadruple):
+        self.quadruples[index] = newQuadruple
+
+
     def printContents(self):
         quadrupleCounter = 0
 

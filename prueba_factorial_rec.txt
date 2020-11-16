@@ -1,0 +1,20 @@
+program Factorial;
+var int: num,result;
+
+int module fact(int x){
+	
+	if ((x==0)||(x==1)) then{
+		return (1);
+	}
+	else {
+		return(x * fact(x -1));
+	}
+}
+
+main(){
+	
+	write("Ingresa el numero a evaluar con factorial");
+	read(num);
+	result = fact(num);
+	write(fact(num));
+}

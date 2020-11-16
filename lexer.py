@@ -14,6 +14,7 @@ reserved = {
 'main' : 'main',
 'module' : 'module',
 'void' : 'void',
+'null' : 'null',
 'var' : 'var',
 'int' :'int',
 'float' : 'float',

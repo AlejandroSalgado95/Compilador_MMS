@@ -10,7 +10,7 @@ from EmptyTempMemoryInstantiator import EmptyTempMemoryInstantiator
 import turtle
 
 
-IP = quadruples.getQuadruple(0)[3]
+IP = quadruples.getQuadruple(0)[3] 
 PendingIPList = []
 lastIP = len(quadruples.quadruples)
 pen = turtle.Turtle() 
@@ -18,6 +18,10 @@ pen = turtle.Turtle()
 funcCalled = ""
 funcCalledIndexQuadruple = ""
 penIsUp = False
+addedArrayAddress = False
+
+ArrayToChangeFound = False
+ArrayToChangeQuadruple = ""
 
 globalMemory = { 
 "globalInt" : dirAddresses["globalInt"],
@@ -385,6 +389,7 @@ while IP < len(quadruples.quadruples):
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
 			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)
+			print ("weirdness: ", op1Val)
 			if (isinstance(op1Val,str)):
 				op1Val = previoustempMemory[op1TA].getAddressData(op1VA)["value"]
 			else:
@@ -403,6 +408,8 @@ while IP < len(quadruples.quadruples):
 				op2Val = op2Val["value"]
 
 		resultValue = op1Val != op2Val
+		print("value of array index = ", str(op1Val), " at address = ", op1VA, " at fakeAddress = ", str(actualQuadruple[1].fakeAddress))
+
 
 		tempOperandVA = actualQuadruple[3].vAddress
 		tempOpType = actualQuadruple[3].type
@@ -841,6 +848,60 @@ while IP < len(quadruples.quadruples):
 		IP = funcCalledIndexQuadruple - 1
 
 
+	elif (actualQuadruple[0] == "arrayindex"):
+		#get the real address of the  array index
+		print ("IP: ", IP)
+		baseAdress = funcDirec.getVariableInFunc(actualQuadruple[1].value, actualQuadruple[1].name)["vAddress"] #Just for this once, funcname was stored inside the value attribute of the quadruple
+		limitAddress = funcDirec.getVariableInFunc(actualQuadruple[1].value, actualQuadruple[1].name)["sLimit"]
+		op1VA = actualQuadruple[1].vAddress	
+		fakeAddress = op1VA
+		op1TA = determineAddressTableBasedOnVAdress(op1VA)
+		memoryChunk1 = ""
+		op1Val = ""
+		if (op1TA == "isGlobalReturnValue"):
+			op1TA = determineGlobalMemoryChunkFromType(actualQuadruple[1].type)
+			memoryChunk1 = globalMemory
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)["value"]
+		else:
+			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
+			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)
+			if (isinstance(op1Val,str)):
+				op1Val = previoustempMemory[op1TA].getAddressData(op1VA)["value"]
+			else:
+				op1Val = op1Val["value"] #this is real address of the array index
+
+		print ("op1Val: ", op1Val)
+		print ("baseaddress: ", baseAdress)
+		print ("limitAddress: ", limitAddress)
+		if (op1Val < baseAdress) or (op1Val > limitAddress):  
+	         	print("Error: array index out of bounds")
+
+		#Get the operand that represents the array whose index address was missing, and fill it 
+		tempIP = IP + 1;
+		tempQuadruple = ""
+		while tempIP < len(quadruples.quadruples):
+			tempQuadruple = quadruples.getQuadruple(tempIP)
+			#print ("tempip:", tempIP)
+
+			if tempQuadruple[1]:
+				#print("tempuadruple1.vadress = ", tempQuadruple[1].vAddress, " fakeAddress =", fakeAddress)
+				if tempQuadruple[1].fakeAddress == fakeAddress:
+					tempQuadruple[1].vAddress = op1Val
+					quadruples.updateQuadruple(tempIP,tempQuadruple)
+					print ("tempIP modificado :",tempIP)
+					tempIP += len(quadruples.quadruples)
+
+			elif tempQuadruple[2]:
+				if tempQuadruple[2].fakeAddress == fakeAddress:
+					tempQuadruple[2].vAddress = op1Val
+					quadruples.updateQuadruple(tempIP,tempQuadruple)
+					print ("tempIP modificado :",tempIP)
+					tempIP += len(quadruples.quadruples)
+
+			tempIP += 1
+
+
+		#quadruples.printContents()
 	IP += 1
 
 

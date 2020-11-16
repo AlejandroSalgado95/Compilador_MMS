@@ -69,7 +69,21 @@ SC = {
             "-" :  "error",
             "/" :  "error",
             "*" :  "error"
+        },
+        "null":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "bool",
+            "!=" : "bool",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
         }
+
     },
     "float":{
         "int":{
@@ -136,8 +150,20 @@ SC = {
             "-" :  "error",
             "/" :  "error",
             "*" :  "error"
+        },         
+        "null":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "bool",
+            "!=" : "bool",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
         }
-
     },
     "char":{
         "int":{
@@ -199,6 +225,19 @@ SC = {
             "<" :  "error",
             "==" : "error",
             "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
+        },
+        "null":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "bool",
+            "!=" : "bool",
             "=" : "error",
             "+" :  "error",
             "-" :  "error",
@@ -272,6 +311,19 @@ SC = {
             "-" :  "error",
             "/" :  "error",
             "*" :  "error"
+        },
+        "null":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "bool",
+            "!=" : "bool",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
         }
 
     },
@@ -322,6 +374,86 @@ SC = {
             "<" :  "error",
             "==" : "error",
             "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
+        },
+        "void":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "error",
+            "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
+        },
+        "null":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "error",
+            "!=" : "error",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
+        }
+    },
+    "null":{
+        "int":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "bool",
+            "!=" : "bool",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
+        },
+        "float":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "bool",
+            "!=" : "bool",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
+        },
+        "char":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "bool",
+            "!=" : "bool",
+            "=" : "error",
+            "+" :  "error",
+            "-" :  "error",
+            "/" :  "error",
+            "*" :  "error"
+        },
+        "bool":{
+            "&&" : "error",
+            "||" : "error",
+            ">" :  "error",
+            "<" :  "error",
+            "==" : "bool",
+            "!=" : "bool",
             "=" : "error",
             "+" :  "error",
             "-" :  "error",

@@ -1,0 +1,50 @@
+program MeMyself;
+
+var int : i, j, p;
+var float : valor, yepei ;
+
+
+
+main ( )
+{ 
+	j= 3;
+	yepei = 3;
+	p = 4;
+
+	write(j+p);
+	write(20-j);
+	write(j/p);
+	write(yepei/p);
+	write(p > yepei);
+	write(p < yepei);
+	write(p == yepei);
+	write(p != yepei);
+	write( (p>yepei) || (p<yepei));
+	write( (p>yepei) && (p<yepei));
+	write("ah bueno");
+
+	if (p > 3) then {
+
+		write("paso dentro del if");
+
+		while ( j < 7) do {
+
+		  j = j + 1;
+		  yepei = yepei + 10;
+	
+	  	}
+
+
+	} else {
+
+		write ("paso afuera del if, osea en el else");
+
+	}
+
+	write("quibo como istais");
+	
+	write ("j =", j);
+	write("yepei =", yepei);
+
+
+}

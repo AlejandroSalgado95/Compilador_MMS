@@ -27,10 +27,10 @@ class VirtualAdresses():
         
         if not (isinstance (vAddress,str)):
             if (vAddress >= self.start) and (vAddress <= self.final):
-                self.table[str(vAddress)] = {
-                    "value" : varValue,
-                    "type" : varType 
-                 }
+                    self.table[str(vAddress)] = {
+                        "value" : varValue,
+                        "type" : varType 
+                     }
             else:
                 return "Failed operation. No vAddress " + str(vAddress) + " available in the range of this vaddress table: " + self.tableName
         
@@ -54,6 +54,14 @@ class VirtualAdresses():
 
     def getAnAdressForArray(self,arraySize):
         availableAddress = self.actualVAddress
+        vAddressCounter = availableAddress
+        while vAddressCounter < (availableAddress + arraySize ):
+            self.table[str(vAddressCounter)] = {
+                    "value" : "null",
+                    "type" : "null" 
+            }
+            vAddressCounter += 1
+
         self.actualVAddress += arraySize
         return availableAddress
 

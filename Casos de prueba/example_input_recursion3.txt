@@ -1,0 +1,18 @@
+program foreveralone;
+var int : numero, sum;
+
+int module fibonacci(int n){
+    if((n == 0) || (n==1)) then {
+        return(1);
+    }
+    else{
+        return(fibonacci(n-1)  + fibonacci(n-2));
+    }
+}
+
+
+main(){
+    numero = 4;
+    sum = fibonacci(numero) + fibonacci(4) ;
+    write(sum);
+}
