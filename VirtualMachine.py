@@ -891,12 +891,22 @@ while IP < len(quadruples.quadruples):
 					print ("tempIP modificado :",tempIP)
 					tempIP += len(quadruples.quadruples)
 
-			elif tempQuadruple[2]:
+			if tempQuadruple[2]:
 				if tempQuadruple[2].fakeAddress == fakeAddress:
 					tempQuadruple[2].vAddress = op1Val
 					quadruples.updateQuadruple(tempIP,tempQuadruple)
 					print ("tempIP modificado :",tempIP)
 					tempIP += len(quadruples.quadruples)
+
+
+			if tempQuadruple[3]:
+				print ("Operand:",str(tempQuadruple[3]), "on quadruple " + str(tempIP))
+				if not (isinstance(tempQuadruple[3],int)):
+					if tempQuadruple[3].fakeAddress == fakeAddress:
+						tempQuadruple[3].vAddress = op1Val
+						quadruples.updateQuadruple(tempIP,tempQuadruple)
+						print ("tempIP modificado :",tempIP)
+						tempIP += len(quadruples.quadruples)
 
 			tempIP += 1
 
