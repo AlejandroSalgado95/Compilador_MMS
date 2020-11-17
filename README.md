@@ -1,4 +1,4 @@
-# SPRINT 5
+# SPRINT 6
 
 ## Description
 This release performs: 
@@ -10,6 +10,7 @@ This release performs:
 * Temporal and global Memory managing based on function calls memory stacking on run time
 * The virtual machine that interprets all the quadruple actions in runtime
 * Displaying on console of the runtime execution of an accepted input text
+* Unidimensional Arrays as data structures where you can create, asign or modify any part of it
 * Graphical displays via the built-in library Turtle
 
 ## Installation 
