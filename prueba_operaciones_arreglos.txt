@@ -1,0 +1,43 @@
+program foreveralone;
+var int : A[10], B[20], i,j,casilla1,casilla2,numero1,numero2,suma, temp, contador;
+
+
+
+main(){
+
+    for i = 0 to i > 9 do {
+        A[i] = i;
+        i = i + 1 ;
+
+    }
+
+
+    for j = 0 to i > 19 do {
+        B[j] = j;
+        j = j + 1 ;
+
+    }
+
+
+
+    write( "Escribe una casilla del 1 al 10" );
+    read (casilla1);
+    numero1 = A[casilla1-1];
+    write( "numero obtenido ");
+    write (numero1);
+
+    write( "Escribe una casilla del 1 al 20" );
+    read (casilla2);
+    numero2 = B[casilla2-1];
+    write( "numero obtenido ");
+    write (numero2);
+
+    suma = numero1 + numero2;
+
+    write("suma es igual a ");
+    write (suma);
+
+
+
+
+}

@@ -1,5 +1,5 @@
 program equis;
-var int : numero, i, cantidad;
+var int : numero, i, cantidad,resultado;
 
 int module sumRecursively(int n){
     if(n >0) then {
@@ -12,6 +12,8 @@ int module sumRecursively(int n){
 
 
 main(){
-    cantidad = sumRecursively(4);
-    write(cantidad);
+	write("Escribe un numero n para hacer la sumatoria de 0 hasta n ");
+	read (cantidad);
+    resultado = sumRecursively(cantidad);
+    write(resultado);
 }

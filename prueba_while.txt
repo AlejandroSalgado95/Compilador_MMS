@@ -11,17 +11,6 @@ main ( )
 	yepei = 3;
 	p = 4;
 
-	write(j+p);
-	write(20-j);
-	write(j/p);
-	write(yepei/p);
-	write(p > yepei);
-	write(p < yepei);
-	write(p == yepei);
-	write(p != yepei);
-	write( (p>yepei) || (p<yepei));
-	write( (p>yepei) && (p<yepei));
-	write("ah bueno");
 
 	if (p > 3) then {
 
@@ -41,7 +30,7 @@ main ( )
 
 	}
 
-	write("quibo como istais");
+	write("hola como estais");
 	
 	write ("j =", j);
 	write("yepei =", yepei);

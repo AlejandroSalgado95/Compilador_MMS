@@ -77,7 +77,7 @@ while IP < len(quadruples.quadruples):
 		asignOpTA = determineAddressTableBasedOnVAdress(asignOpVA)
 		memoryChunk2 =  determineMemoryChunkBasedOnName(asignOpTA,constMemory,globalMemory,actualtempMemory)
 		memoryChunk2[asignOpTA].saveAddressData(asignOpVA, op1Val, asignOpType)
-		
+		#print ("value: ",op1Val)
 
 
 
@@ -389,7 +389,7 @@ while IP < len(quadruples.quadruples):
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
 			op1Val = memoryChunk1[op1TA].getAddressData(op1VA)
-			print ("weirdness: ", op1Val)
+			#print ("weirdness: ", op1Val)
 			if (isinstance(op1Val,str)):
 				op1Val = previoustempMemory[op1TA].getAddressData(op1VA)["value"]
 			else:
@@ -408,7 +408,7 @@ while IP < len(quadruples.quadruples):
 				op2Val = op2Val["value"]
 
 		resultValue = op1Val != op2Val
-		print("value of array index = ", str(op1Val), " at address = ", op1VA, " at fakeAddress = ", str(actualQuadruple[1].fakeAddress))
+		#print("value of array index = ", str(op1Val), " at address = ", op1VA, " at fakeAddress = ", str(actualQuadruple[1].fakeAddress))
 
 
 		tempOperandVA = actualQuadruple[3].vAddress
@@ -900,7 +900,7 @@ while IP < len(quadruples.quadruples):
 
 
 			if tempQuadruple[3]:
-				print ("Operand:",str(tempQuadruple[3]), "on quadruple " + str(tempIP))
+				#print ("Operand:",str(tempQuadruple[3]), "on quadruple " + str(tempIP))
 				if not (isinstance(tempQuadruple[3],int)):
 					if tempQuadruple[3].fakeAddress == fakeAddress:
 						tempQuadruple[3].vAddress = op1Val

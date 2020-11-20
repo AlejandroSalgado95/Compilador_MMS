@@ -16,7 +16,6 @@ main(){
 		}
 
 		numero = numero + 1;
-		write(valores[7]);
 	}
 
 	write(index);

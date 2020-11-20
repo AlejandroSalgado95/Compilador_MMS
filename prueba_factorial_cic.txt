@@ -1,0 +1,21 @@
+program Factorial;
+var int: i,num,result;
+
+
+main(){
+	
+	write("Ingresa el numero a evaluar ");
+	read(num);
+
+	result = num;
+
+	for i = num - 1 to i < 1 do {
+ 
+		result = result * i;
+		i = i - 1;
+
+ 	}
+
+ 	write ("resultado ");
+ 	write(result);
+}

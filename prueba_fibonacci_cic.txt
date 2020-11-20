@@ -1,0 +1,27 @@
+program foreveralone;
+var int : numero, contador, x,y,z;
+
+
+
+main(){
+
+	
+	x = 0;
+	y = 1;
+	z = 0;
+	contador = 0;
+
+	write("Escriba el numero para evaluar la serie fibonacci ");
+	read(numero);
+	while (contador < numero ) do {
+
+      z = x + y;
+      x = y;
+      y = z;
+
+      contador = contador + 1;
+
+	}
+	write ("resultado ");
+    write(z);
+}

@@ -308,16 +308,23 @@ def p_sem_check_array(p):
       #oh sorpresa, el index es una expresion cuyo valor solo se puede conocer en ejecucion, por lo tanto no sabemos el address del arreglo
     else:
 
+      #Guarda la direccion base del arreglo en una direccion temporal
       addressTableKey = determineTypeAddressTable(None,"int",retrievedArrayData["vAddress"],None)
       vAddress = dirAddresses[addressTableKey].getAnAddress()
       dirAddresses[addressTableKey].saveAddressData(vAddress, retrievedArrayData["vAddress"], "int")
       
+      #Crea un operando que represente la direccion base del arreglo
       baseAddressOperand = Operand(None, retrievedArrayData["vAddress"], "int", vAddress)
+
+      #Suma el operando de la direccion base con el operando del indicie del arreglo para obtener la verdadera direccion
       realAdressOperand = quadruples.addExpressionCuadruple("+", baseAddressOperand , arrayIndexExpression, dirAddresses)
       funcDirec.addTempVarCountInFunc(funcName,realAdressOperand.type)
       #baseArrayInfo = Operand(idForArray, None, retrievedArrayData["varType"],retrievedArrayData["vAddress"])
       #resultOperand = quadruples.addArrayIndexCuadruple(baseArrayInfo,realAdressOperand)
+
+      #Crea un operando de  resultado con la informacion basica del arreglo (nombre, funcion, direccion base) 
       resultOperand = Operand(idForArray,funcName,retrievedArrayData["varType"], realAdressOperand.vAddress)
+      #y ademas, agregale al operando de resultado la info del operando tipo apuntador que tiene guardada su verdadera direccion (la migaja de pan para encontrar al operando del arreglo en los cuadruplos siguientes y resolver su address correcta en ejecucion)
       resultOperand.fakeAddress = realAdressOperand.vAddress
       quadruples.addArrayIndexCuadruple(resultOperand)
       copyResultOperand = Operand(resultOperand.name,resultOperand.value,resultOperand.type,resultOperand.vAddress)

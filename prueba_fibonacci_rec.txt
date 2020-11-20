@@ -1,5 +1,5 @@
 program foreveralone;
-var int : numero, sum;
+var int : numero, resultado;
 
 int module fibonacci(int n){
     if((n == 0) || (n==1)) then {
@@ -12,7 +12,8 @@ int module fibonacci(int n){
 
 
 main(){
-    numero = 4;
-    sum = fibonacci(numero) + fibonacci(4) ;
-    write(sum);
+	write ("Escribe el numero para evaluar la serie fibonacci ");
+	read(numero);
+    resultado = fibonacci(numero) ;
+    write(resultado);
 }

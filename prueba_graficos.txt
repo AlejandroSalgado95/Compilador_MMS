@@ -24,24 +24,4 @@ main ( )
 	arc(50,170);
 
 
-	j[2] = 320;
-
-	write(j[2]);
-
-	if (j[2] > 3) then {
-
-		write("paso dentro del if");
-		j[3] = 210;
-		write (j[3]);
-		read(j[3]);
-		write (j[2] + j[3]);
-
-
-	} else {
-
-		write ("paso afuera del if, osea en el else");
-
-	}
-
-
 }
