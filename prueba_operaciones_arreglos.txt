@@ -1,4 +1,4 @@
-program foreveralone;
+program MeMyself;
 var int : A[10], B[20], i,j,casilla1,casilla2,numero1,numero2,suma, temp, contador;
 
 

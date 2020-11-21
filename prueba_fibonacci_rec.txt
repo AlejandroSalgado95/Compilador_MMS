@@ -1,4 +1,4 @@
-program foreveralone;
+program MeMyself;
 var int : numero, resultado;
 
 int module fibonacci(int n){

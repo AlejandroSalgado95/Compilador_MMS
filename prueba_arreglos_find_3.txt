@@ -1,4 +1,4 @@
-program foreveralone;
+program MeMyself;
 var int : numero, index, sum, valores[10];
 
 main(){
