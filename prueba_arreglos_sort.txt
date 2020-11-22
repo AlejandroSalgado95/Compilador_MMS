@@ -31,8 +31,7 @@ main(){
 			i = i + 1 ;
 
 	}
-	write(i);
-	write(j);
+	
 	write(valores[0]);
 	write(valores[1]);
 	write(valores[2]);
