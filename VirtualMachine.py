@@ -13,7 +13,7 @@ import turtle
 IP = quadruples.getQuadruple(0)[3] 
 PendingIPList = []
 lastIP = len(quadruples.quadruples)
-pen = turtle.Turtle() 
+pen = False 
 
 funcCalled = ""
 funcCalledIndexQuadruple = ""
@@ -55,6 +55,20 @@ funcCallStack = []
 
 actualtempMemory = tempMemory
 previoustempMemory = ""
+
+print("ACCEPTED")
+#funcDirec.printContents(True)
+quadruples.printContents()
+print("amount of cuadruples: " + str( len(quadruples.quadruples) ) )
+for operand in operandsList:
+	print("Name: " + str(operand.name), "Value: " + str(operand.value), "Type: " + str(operand.type))
+for operator in operatorsList:
+    print ("operator: " + operator)
+for error in errorQueue:
+    print(error)
+
+
+
 
 while IP < len(quadruples.quadruples):
 	actualQuadruple = quadruples.getQuadruple(IP)
@@ -596,6 +610,8 @@ while IP < len(quadruples.quadruples):
 			memoryChunk2 =  determineMemoryChunkBasedOnName(op2TA,constMemory,globalMemory,actualtempMemory)
 			yCor = memoryChunk2[op2TA].getAddressData(op2VA)["value"]  
 
+		if (pen == False):
+			pen = turtle.Turtle()
 		pen.home()
 		pen.goto(xCor,yCor)
 		pen.dot()
@@ -614,7 +630,9 @@ while IP < len(quadruples.quadruples):
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
 			radius = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
 
-		radius = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+		radius = memoryChunk1[op1TA].getAddressData(op1VA)["value"] 
+		if (pen == False):
+			pen = turtle.Turtle() 
 		pen.circle(radius)
 
 
@@ -684,6 +702,9 @@ while IP < len(quadruples.quadruples):
 
 		y2 = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
 
+		if (pen == False):
+			pen = turtle.Turtle()
+
 		pen.up()
 		pen.home()
 		pen.goto(x1,y1)
@@ -724,15 +745,22 @@ while IP < len(quadruples.quadruples):
 
 		angle = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
 
+		if (pen == False):
+			pen = turtle.Turtle()
+
 		pen.circle(radius,angle)
 
 
 
 	elif (actualQuadruple[0] == "penup"):
+		if (pen == False):
+			pen = turtle.Turtle()
 		pen.penup()
 		penIsUp = True
 
 	elif (actualQuadruple[0] == "pendown"):
+		if (pen == False):
+			pen = turtle.Turtle()
 		pen.pendown()
 		penIsUp = False
 
@@ -741,9 +769,13 @@ while IP < len(quadruples.quadruples):
 		op1TA = determineAddressTableBasedOnVAdress(op1VA)
 		memoryChunk1 = determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
 		color = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
+		if (pen == False):
+			pen = turtle.Turtle()
 		pen.pencolor(color.strip('"'))
 
 	elif (actualQuadruple[0] == "clear"):
+		if (pen == False):
+			pen = turtle.Turtle()
 		pen.clear()
 
 	elif (actualQuadruple[0] == "size"):
@@ -758,7 +790,9 @@ while IP < len(quadruples.quadruples):
 		else:
 			memoryChunk1 =  determineMemoryChunkBasedOnName(op1TA,constMemory,globalMemory,actualtempMemory)
 			size = memoryChunk1[op1TA].getAddressData(op1VA)["value"]  
-
+		
+		if (pen == False):
+			pen = turtle.Turtle()
 		pen.pensize(size)
 
 	elif (actualQuadruple[0] == "return"):
@@ -850,7 +884,7 @@ while IP < len(quadruples.quadruples):
 
 	elif (actualQuadruple[0] == "arrayindex"):
 		#get the real address of the  array index
-		print ("IP: ", IP)
+		#print ("IP: ", IP)
 		baseAdress = funcDirec.getVariableInFunc(actualQuadruple[1].value, actualQuadruple[1].name)["vAddress"] #Just for this once, funcname was stored inside the value attribute of the quadruple
 		limitAddress = funcDirec.getVariableInFunc(actualQuadruple[1].value, actualQuadruple[1].name)["sLimit"]
 		op1VA = actualQuadruple[1].vAddress	
@@ -870,9 +904,9 @@ while IP < len(quadruples.quadruples):
 			else:
 				op1Val = op1Val["value"] #this is real address of the array index
 
-		print ("op1Val: ", op1Val)
-		print ("baseaddress: ", baseAdress)
-		print ("limitAddress: ", limitAddress)
+		#print ("op1Val: ", op1Val)
+		#print ("baseaddress: ", baseAdress)
+		#print ("limitAddress: ", limitAddress)
 		if (op1Val < baseAdress) or (op1Val > limitAddress):  
 	         	print("Error: array index out of bounds")
 
@@ -888,14 +922,14 @@ while IP < len(quadruples.quadruples):
 				if tempQuadruple[1].fakeAddress == fakeAddress:
 					tempQuadruple[1].vAddress = op1Val
 					quadruples.updateQuadruple(tempIP,tempQuadruple)
-					print ("tempIP modificado :",tempIP)
+					#print ("tempIP modificado :",tempIP)
 					tempIP += len(quadruples.quadruples)
 
 			if tempQuadruple[2]:
 				if tempQuadruple[2].fakeAddress == fakeAddress:
 					tempQuadruple[2].vAddress = op1Val
 					quadruples.updateQuadruple(tempIP,tempQuadruple)
-					print ("tempIP modificado :",tempIP)
+					#print ("tempIP modificado :",tempIP)
 					tempIP += len(quadruples.quadruples)
 
 
@@ -905,7 +939,7 @@ while IP < len(quadruples.quadruples):
 					if tempQuadruple[3].fakeAddress == fakeAddress:
 						tempQuadruple[3].vAddress = op1Val
 						quadruples.updateQuadruple(tempIP,tempQuadruple)
-						print ("tempIP modificado :",tempIP)
+						#print ("tempIP modificado :",tempIP)
 						tempIP += len(quadruples.quadruples)
 
 			tempIP += 1

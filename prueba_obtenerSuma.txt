@@ -1,0 +1,28 @@
+program MeMyself;
+
+var float : i,  p, k, o,suma;
+var int : datos, j ;
+
+
+
+main ( )
+{ 
+		
+	  write("cuantos datos deseas sumar ");
+	  read (datos);
+	  suma = 0;
+	  j = 0;
+
+	  while (j < datos ) do {
+	  	write ("Escribe un numero ") ;
+	  	read(p);
+	  	suma = suma + p;
+	  	j = j + 1;
+
+	  }
+
+	  write("La sumatoria es ");
+	  write(suma);
+
+
+}

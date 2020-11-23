@@ -75,19 +75,6 @@ def p_programa(p):
      PROGRAMA : SEM_ADD_GOTO_MAIN program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PROGRAMA_OPTS PRINCIPAL 
                | SEM_ADD_GOTO_MAIN program  SEM_GLOBAL_NAME  SEM_ADD_FUNC ';' PRINCIPAL 
     '''
-    global operandsList
-    global errorQueue
-    print("ACCEPTED")
-    funcDirec.printContents(True)
-    quadruples.printContents()
-    print("amount of cuadruples: " + str( len(quadruples.quadruples) ) )
-    for operand in operandsList:
-        print("Name: " + str(operand.name), "Value: " + str(operand.value), "Type: " + str(operand.type))
-    for operator in operatorsList:
-        print ("operator: " + operator)
-    for error in errorQueue:
-        print(error)
-
 
 
 def p_programa_opts(p):
@@ -1164,8 +1151,8 @@ def p_sem_pending_rel_op(p):
     rOperand = operandsList.pop()
     lOperand = operandsList.pop()
 
-    print (str(rOperand.value) + ", " + str(rOperand.type))
-    print (str(lOperand.value) + ", " + str(lOperand.type))
+    #print (str(rOperand.value) + ", " + str(rOperand.type))
+    #print (str(lOperand.value) + ", " + str(lOperand.type))
 
     resultOperand = quadruples.addExpressionCuadruple(topOp,lOperand,rOperand,dirAddresses )
     if isinstance(resultOperand,str):

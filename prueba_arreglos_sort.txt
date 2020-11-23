@@ -2,7 +2,6 @@ program MeMyself;
 var int : i, j, index, sum, valores[7], temp;
 
 main(){
-	
 	valores[0] = 5;
 	valores[1] = 12;
 	valores[2] = 1;
@@ -10,26 +9,17 @@ main(){
 	valores[4] = 145;
 	valores[5] = 57;
 	valores[6] = 78;
-
 	index = 0-1;
-	
 	for i = 0 to i > 6 do {
-
 			for j = 0 to j > 6 do {
-
 				if (valores[i] < valores[j]) then {
-
 					temp = valores[i];
 					valores[i] = valores[j];
 					valores[j] = temp ;
-
 				}
-
 				j = j + 1 ;
 			}
-
 			i = i + 1 ;
-
 	}
 	
 	write(valores[0]);

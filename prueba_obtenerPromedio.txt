@@ -1,0 +1,29 @@
+program MeMyself;
+
+var float : i, j, p, k, o,suma, resultado;
+var int : datos ;
+
+
+
+main ( )
+{ 
+		
+	  write("cuantos datos deseas promediar ");
+	  read (datos);
+	  suma = 0;
+
+	  for j = 1 to j > datos do {
+
+	  	write ("Escribe un numero ") ;
+	  	read(p);
+	  	suma = suma + p;
+	  	j = j + 1;
+
+	  }
+
+	  resultado = suma / datos;
+	  write("El promedio es ");
+	  write(resultado);
+
+
+}
