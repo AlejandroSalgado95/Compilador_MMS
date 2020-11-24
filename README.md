@@ -1,4 +1,4 @@
-# SPRINT 6
+# SPRINT 7
 
 ## Description
 This release performs: 
@@ -20,7 +20,7 @@ This release performs:
 
 3.Install ply: pip3 install ply
 
-4.Run parser: python3 parser.py [file name]
+4.Run parser: python3 memyselfcompiler.py [file name]
  
 
 ## About
@@ -40,7 +40,10 @@ This release performs:
 * Source code (tools.py) for a file that contains a repertory of functions used many times, used for the author in order to avoid rewriting his own code many times 
 * Source code (operand.py) used for the operands included within each generated quadruple
 * Source code (EmtpyTempMemoryInstance.py) used for instanciating new temporal memory
-
+* Documentation of the compiler design process and its design itself
+* User manual which documents basic usage of the designed language 
+* Two firmed documents to agree everything that's is being included is original and created by its author (A00513221)
+* one quick reference video
 
 ### Pending:
 * So far there is no unary operator ‘-‘, only its binary version is available (subtraction operation)
